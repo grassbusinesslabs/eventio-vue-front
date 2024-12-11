@@ -1,0 +1,36 @@
+{
+  "INPUTS": {
+    "USERNAME": "Username",
+    "EMAIL": "Email",
+    "FIRST_NAME": "First name",
+    "LAST_NAME": "Last name",
+    "GENDER": "Gender",
+    "PASSWORD": "Password",
+    "TITLE": "Title",
+    "TEXT": "Text",
+    "MALE": "Male",
+    "FEMALE": "Female",
+    "OTHER": "Other",
+    "PAST": "Past",
+    "FUTURE": "Future"
+  },
+  "BTNS": {
+    "SIGN_IN": "Sign in",
+    "LOGOUT": "Logout",
+    "ADD_POST": "Add post",
+    "REGISTER": "Register",
+    "OVERVIEW": "Event overview",
+    "MY_EVENTS": "My events",
+    "ADD_EVENT": "Add"
+  },
+  "LANGUAGES": {
+    "ENGLISH": "English",
+    "UKRAINIAN": "Ukrainian"
+  },
+  "ERRORS": {
+    "SESSION_IS_EXPIRED": "Session is expired!"
+  },
+  "TEXT": {
+    "PAGE_NOT_FOUND": "404 Page not found"
+  }
+}
