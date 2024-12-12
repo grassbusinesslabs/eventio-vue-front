@@ -9,28 +9,30 @@
        </v-sheet>
        <v-row class="d-flex align-center ma-0">
    <v-col cols="auto">
-      <v-btn-toggle >
-         <v-btn value="male">
+      <v-btn-toggle v-model="selectedDateValue"
+                    @change="handleToggleChange"
+                    >
+         <v-btn value="past" variant="outlined">
             {{ translate('INPUTS.PAST') }}
          </v-btn>
-         <v-btn value="female">
+         <v-btn value="future" variant="outlined">
             {{ translate('INPUTS.FUTURE') }}
          </v-btn>
       </v-btn-toggle>
    </v-col>
    <v-col cols="auto" class="d-flex align-center">
       <v-text-field placeholder="Пошук подій" 
-                    variant="plain"
-                     class="search-input"
-                     density="comfortable"
-                     >
+                  v-model="searchQuery"
+                  variant="plain"
+                  class="search-input"
+                  density="comfortable">
          <v-icon left>mdi-magnify</v-icon>
       </v-text-field>
    </v-col>
 </v-row>
        <v-row class='ma-0'>
           <app-post
-             v-for='post in posts'
+             v-for='post in filteredPosts'
              :key='post.id'
              :post='post'
           />
@@ -39,7 +41,7 @@
  </template>
  <script lang='ts' setup>
  import type {MaybeRefOrGetter, Ref} from 'vue'
- import {onMounted, ref} from 'vue'
+ import {onMounted, ref, computed} from 'vue'
  import {useForm} from 'vee-validate'
  import {toTypedSchema} from '@vee-validate/yup'
  import {storeToRefs} from 'pinia'
@@ -80,8 +82,19 @@
  })
  
  const isSubmitting = ref<boolean>(false)
- const [title, titleAttrs] = form.defineField('title' as MaybeRefOrGetter, vuetifyConfig)
- const [text, textAttrs] = form.defineField('text' as MaybeRefOrGetter, vuetifyConfig)
+
+ const selectedDateValue = null;
+ const searchQuery = ref<string>('');
+
+ const filteredPosts = computed(() =>
+  posts.value.filter(post =>
+    post.title.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+    post.body.toLowerCase().includes(searchQuery.value.toLowerCase())
+  )
+);
+
+ //const [title, titleAttrs] = form.defineField('title' as MaybeRefOrGetter, vuetifyConfig)
+ //const [text, textAttrs] = form.defineField('text' as MaybeRefOrGetter, vuetifyConfig)
  
  onMounted(() => {
     loadPosts()
