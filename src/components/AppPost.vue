@@ -100,14 +100,14 @@ const toggleExpand = () => {
 }
 
 .text-content {
-  flex-grow: 1; /* Текст займає весь доступний простір */
-  padding: 10px; /* Видаляємо внутрішні відступи */
+  flex-grow: 1;
+  padding: 10px;
 }
 .button-join {
    margin-top: 15px;
-  width:fit-content; /* Задає ширину кнопки 100%, щоб вона займала всю доступну ширину контейнера */
-  align-content: right; /* Вирівнює текст кнопки вправо */
+  width:fit-content; 
+  align-content: right; 
   display: flex;
-  justify-content: flex-end; /* Вирівнює кнопку вправо всередині контейнера */
+  justify-content: flex-end; 
 }
 </style>
