@@ -32,11 +32,10 @@
                @click="toggleExpand" 
                text
                >
-          {{ isExpanded ?  translate("BTNS.ROLL-UP") : translate("BTNS.MORE") }}
+          {{ isExpanded ? 'Згорнути' : 'Детальніше' }}
         </v-btn>
         <v-divider></v-divider>
-        <v-btn class="button-join ml-auto"
-               prepend-icon="mdi-check">{{translate("BTNS.JOIN")}}</v-btn>
+        <p class="card-members-number">Кількість учасників: 18</p>
        </v-card-text>
      </v-card>
    </v-col>
@@ -45,11 +44,8 @@
 import {defineProps} from 'vue'
 
 import { ref, computed } from 'vue';
-import {useAppI18n} from '@/i18n'
+
 import type {Post} from '@/models'
-
-
-const {translate} = useAppI18n()
 
 const isExpanded = ref(false)
 
@@ -104,13 +100,16 @@ const toggleExpand = () => {
 
 .text-content {
   flex-grow: 1;
-  padding: 10px;
+  padding: 10px; 
 }
 .button-join {
    margin-top: 15px;
   width:fit-content; 
-  align-content: right; 
+  align-content: right;
   display: flex;
-  justify-content: flex-end; 
+  justify-content: flex-end;
+}
+.card-members-number{
+  margin-top: 15px;
 }
 </style>

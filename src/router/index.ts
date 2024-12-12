@@ -64,7 +64,6 @@ router.beforeEach(async (to: RouteLocationNormalized) => {
    try {
       const metaAuth: boolean = (to.meta as any).auth as boolean
       const authTokenValue: string | null = await authToken.get()
-
       if (typeof metaAuth as any !== 'boolean') {
          return true
       }

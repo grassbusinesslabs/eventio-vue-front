@@ -35,6 +35,9 @@
           <label>Завантажити файл</label>
           <input
             type="file"
+            accept="image/*"
+            @change="handleFileChange"
+            ref="fileInput"
           />
         </div>
         <div class="form-group">
@@ -116,6 +119,23 @@ const selectDate = (date: string) => {
     showDatePicker.value = false  
 }  
 
+const selectedFile = ref<File | null>(null)
+
+const handleFileChange = (event: Event) => {
+  const target = event.target as HTMLInputElement;
+  const file = target?.files?.[0];
+
+  if (file) {
+    if (!file.type.startsWith('image/')) {
+      alert('Будь ласка, виберіть лише зображення.');
+      target.value = '';
+      return;
+    }
+
+    selectedFile.value = file;
+  }
+};
+
 const submit = form.handleSubmit(async values => {  
     try {  
        if (isSubmitting.value) {  
@@ -127,7 +147,8 @@ const submit = form.handleSubmit(async values => {
         eventTitle: values.eventTitle,
         description: values.description,
         eventDate: values.eventDate,
-        location: values.location
+        location: values.location,
+        image: selectedFile.value
        }  
 
        //await request.register(body)  

@@ -1,5 +1,5 @@
 import {apiService} from '@/services/api'
-import type {AddPostBody, CurrentUser, GetPostsResponse, LoginBody, Post} from '@/models'
+import type {AddPostBody, CurrentUser, UpdateUserBody, GetPostsResponse, LoginBody, Post} from '@/models'
 
 export const requestService = () => {
    const api = apiService()
@@ -7,33 +7,37 @@ export const requestService = () => {
    async function login(body: LoginBody): Promise<CurrentUser> {
       return api.post('/auth/login', body)
    }
-
+/*
    async function getPosts(): Promise<GetPostsResponse> {
       return api.get('/auth/posts')
-   }
-
+   }*/
+/*
    async function addPost(body: AddPostBody): Promise<Post> {
       // WARNING!!! This request only simulates adding a new post
       return api.post('/auth/posts/add', body)
-   }
+   }*/
 
    async function getCurrentUser(): Promise<CurrentUser> {
-      // WARNING!!! In real projects, this request will look something like this api.get('/users/me')
-      return login({
-         username: 'emilys',
-         password: 'emilyspass'
-      })
+      return api.get('/users/me')
    }
 
    async function logout(): Promise<void> {
-      // WARNING!!! In real projects, this request will look something like this api.post('/logout')
+      return api.post('/auth/logout')
+   }
+   async function register(body: Record<string, string>): Promise<any> {
+      return api.post('/auth/register', body)
+   }
+   async function updateUser(id: string, body: UpdateUserBody): Promise<CurrentUser> {
+      return api.put(`/users/${id}`, body);
    }
 
    return {
       login,
-      getPosts,
+      //getPosts,
       getCurrentUser,
       logout,
-      addPost
+      //addPost,
+      register,
+      updateUser
    }
 }

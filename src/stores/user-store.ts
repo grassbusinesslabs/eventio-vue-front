@@ -21,7 +21,7 @@ export const useUserStore = defineStore('user', () => {
 
    async function getUserData(): Promise<CurrentUser | null> {
       try {
-         if (currentUser.value?.id) {
+         if (currentUser.value?.user.id) {
             return currentUser.value
          }
 

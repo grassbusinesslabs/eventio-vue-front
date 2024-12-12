@@ -1,17 +1,17 @@
 <template>
     <home-layout>
        <v-sheet class='mx-auto'>
-          <v-form @submit.prevent='submit'>
              <v-row class='ma-0'>
                <h2 class="element">Всі заходи</h2>
-             </v-row>
-          </v-form>
+               </v-row>
        </v-sheet>
        <v-row class="d-flex align-center ma-0">
    <v-col cols="auto">
       <v-btn-toggle v-model="selectedDateValue"
-                    @change="handleToggleChange"
-                    >
+                    @change="handleToggleChange">
+         <v-btn value="all" variant="outlined">
+            {{ translate('INPUTS.ALL') }}
+         </v-btn>
          <v-btn value="past" variant="outlined">
             {{ translate('INPUTS.PAST') }}
          </v-btn>
@@ -21,7 +21,8 @@
       </v-btn-toggle>
    </v-col>
    <v-col cols="auto" class="d-flex align-center">
-      <v-text-field placeholder="Пошук подій" 
+      <v-text-field  
+                  :placeholder="translate('INPUTS.SEARCH')"
                   v-model="searchQuery"
                   variant="plain"
                   class="search-input"
@@ -68,39 +69,35 @@
  
  let lastPostId: number = 0
  
- const form = useForm({
-    validationSchema: toTypedSchema(
-       yup.object({
-          title: eventTitleValidator(),
-          text: textValidator()
-       })
-    ),
-    initialValues: {
-       title: '',
-       text: ''
-    }
- })
- 
  const isSubmitting = ref<boolean>(false)
 
- const selectedDateValue = null;
- const searchQuery = ref<string>('');
+ const selectedDateValue = ref('all')
+ const searchQuery = ref<string>('')
 
- const filteredPosts = computed(() =>
-  posts.value.filter(post =>
-    post.title.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-    post.body.toLowerCase().includes(searchQuery.value.toLowerCase())
-  )
-);
+ /*const filteredPosts = computed(() => {
+   return posts.value.filter(post => {
+     const matchesSearch = post.title.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+                           post.body.toLowerCase().includes(searchQuery.value.toLowerCase());
+
+     if (selectedDateValue.value === 'past') {
+       return matchesSearch && new Date(post.date) < new Date();
+     } else if (selectedDateValue.value === 'future') {
+       return matchesSearch && new Date(post.date) >= new Date();
+     }
+
+     return matchesSearch; // 'all'
+   })
+ })*/
+
 
  //const [title, titleAttrs] = form.defineField('title' as MaybeRefOrGetter, vuetifyConfig)
  //const [text, textAttrs] = form.defineField('text' as MaybeRefOrGetter, vuetifyConfig)
  
- onMounted(() => {
+ /*onMounted(() => {
     loadPosts()
- })
+ })*/
  
- async function loadPosts(): Promise<void> {
+ /*async function loadPosts(): Promise<void> {
     try {
        loadingPosts.value = true
  
@@ -115,36 +112,7 @@
        posts.value = []
        loadingPosts.value = false
     }
- }
- 
- const submit = form.handleSubmit(async values => {
-    try {
-       if (isSubmitting.value) {
-          return
-       }
-       isSubmitting.value = true
- 
-       const body: AddPostBody = {
-          title: values.title,
-          body: values.text,
-          userId: currentUser.value.id
-       }
- 
-       const post: Post = await request.addPost(body)
-       post.id = lastPostId + 1
-       lastPostId = post.id
- 
-       posts.value.unshift(post)
- 
-       form.resetForm()
- 
-       isSubmitting.value = false
-    } catch (e) {
-       console.error(e)
-       handleError(e)
-       isSubmitting.value = false
-    }
- })
+ }*/
  </script>
  
  <style lang='scss' scoped>

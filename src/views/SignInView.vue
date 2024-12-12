@@ -11,8 +11,8 @@
 
                <v-col cols='12'>
                   <v-text-field
-                     v-model='username'
-                     v-bind='usernameAttrs'
+                     v-model='email'
+                     v-bind='emailAttrs'
                      :label='translate("INPUTS.EMAIL")'
                      :disabled='isSubmitting'
                      :hide-details='true'
@@ -80,25 +80,25 @@ const routing = useRouting()
 const userStore = useUserStore()
 const {setCurrentUser} = userStore
 
-const {vuetifyConfig, usernameValidator, passwordValidator} = formService()
+const {vuetifyConfig, emailValidator, passwordValidator} = formService()
 const request = requestService()
 const authToken = authTokenService()
 
 const form = useForm({
    validationSchema: toTypedSchema(
       yup.object({
-         username: usernameValidator(),
+         email: emailValidator(),
          password: passwordValidator()
       })
    ),
    initialValues: {
-      username: 'emilys',
-      password: 'emilyspass'
+      email: '',
+      password: ''
    }
 })
 
 const isSubmitting = ref<boolean>(false)
-const [username, usernameAttrs] = form.defineField('username' as MaybeRefOrGetter, vuetifyConfig)
+const [email, emailAttrs] = form.defineField('email' as MaybeRefOrGetter, vuetifyConfig)
 const [password, passwordAttrs] = form.defineField('password' as MaybeRefOrGetter, vuetifyConfig)
 
 const showPassword = ref<boolean>(false)
@@ -111,18 +111,17 @@ const submit = form.handleSubmit(async values => {
       isSubmitting.value = true
 
       const body: LoginBody = {
-         username: values.username,
-         password: values.password
+         email: values.email|| '',
+         password: values.password|| ''
       }
-
       const currentUser: CurrentUser = await request.login(body)
       setCurrentUser(currentUser)
-      await authToken.set(currentUser.refreshToken)
-
-      await routing.toAllEvents()
+      await authToken.set(currentUser.token)
+       routing.toAllEvents()
 
       isSubmitting.value = false
    } catch (e) {
+      alert('Помилка обробляється')
       console.error(e)
       handleError(e)
       isSubmitting.value = false

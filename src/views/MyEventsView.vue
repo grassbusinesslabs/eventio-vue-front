@@ -2,7 +2,7 @@
     <home-layout>
       <v-row 
       align="center" class="no-spacing">
-         <h2 class="text-h5 mr-2">N подій</h2>
+         <h2 class="header">N подій</h2>
       <v-btn
         class="ma-3"
         text to="/addEvent"
@@ -37,7 +37,7 @@
  import {useAppI18n} from '@/i18n'
  import {useUserStore} from '@/stores'
  import HomeLayout from '@/layouts/HomeLayout.vue'
- import AppPost from '@/components/AppPost.vue'
+ import AppPost from '@/components/AppMyPost.vue'
  
  const {handleError} = useHandleError()
  const {translate} = useAppI18n()
@@ -121,6 +121,8 @@
  </script>
  
  <style lang='scss' scoped>
- 
+ .header{
+   margin-left: 40px;
+   font-weight: normal;}
  </style>
  

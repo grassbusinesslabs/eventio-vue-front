@@ -7,6 +7,7 @@ export interface Post {
    userId: number
    tags?: string[]
    reactions?: number
+   date: Date
 }
 
 export type GetPostsResponse = Pagination<{posts: Post[]}>
@@ -17,4 +18,5 @@ export interface AddPostBody {
    userId: number
    tags?: string[]
    reactions?: number
+   date: Date
 }

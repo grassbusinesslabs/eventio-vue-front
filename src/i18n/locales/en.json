@@ -12,7 +12,9 @@
     "FEMALE": "Female",
     "OTHER": "Other",
     "PAST": "Past",
-    "FUTURE": "Future"
+    "FUTURE": "Future",
+    "ALL": "All",
+    "SEARCH": "Search for an event"
   },
   "BTNS": {
     "SIGN_IN": "Sign in",
@@ -21,7 +23,10 @@
     "REGISTER": "Register",
     "OVERVIEW": "Event overview",
     "MY_EVENTS": "My events",
-    "ADD_EVENT": "Add"
+    "ADD_EVENT": "Add",
+    "ROLL-UP": "Roll up",
+    "MORE": "Read more",
+    "JOIN": "Join event"
   },
   "LANGUAGES": {
     "ENGLISH": "English",
