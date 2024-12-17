@@ -42,7 +42,8 @@
  </template>
  <script lang='ts' setup>
  import type {MaybeRefOrGetter, Ref} from 'vue'
- import {onMounted, ref, computed} from 'vue'
+ import {onMounted, ref, computed, watch} from 'vue'
+ import { useRoute, useRouter } from 'vue-router';
  import {useForm} from 'vee-validate'
  import {toTypedSchema} from '@vee-validate/yup'
  import {storeToRefs} from 'pinia'
@@ -76,10 +77,17 @@ import { uk } from 'date-fns/locale'
  const selectedDateValue = ref('all')
  const searchQuery = ref<string>('')
 
+ const route = useRoute();
+const router = useRouter();
+
  
  onMounted(() => {
-    loadEvents()
- })
+  loadEvents();
+});
+
+watch(route, () => {
+  loadEvents();
+})
 
  const filteredEvents = computed(() => {
   return events.value.filter(event => {

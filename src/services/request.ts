@@ -12,7 +12,7 @@ export const requestService = () => {
       return api.get('/events/findAll')
    }
 
-   async function addEvent(body: AddEventBody): Promise<Event> {
+   async function addEvent(body: Record<string, any>): Promise<Event> {
       return api.post('/events', body)
    }
 

@@ -112,6 +112,7 @@ const formatDate = (dateString: string | Date): string => {
 .text-content {
   flex-grow: 1;
   padding: 10px;
+  width: 470px;
 }
 .button-join {
   margin-top: 15px;

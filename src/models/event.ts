@@ -6,7 +6,7 @@ export interface Event {
     title: string  
     description: string  
     date: Date | string   
-    image: string  
+    image: File | string
     location: string  
     lat: number 
     lon: number    
@@ -19,7 +19,7 @@ export interface Event {
      title: string  
      description: string  
      date: Date | string   
-     image?: string  
+     image?: File | string
      location: string  
      lat: number 
     lon: number   
