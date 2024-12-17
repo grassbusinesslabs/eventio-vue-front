@@ -1,5 +1,5 @@
 <template>
-    <auth-layout>
+  <auth-layout>
     <div class="container">
       <h1>Створення заходу</h1>
       <form @submit.prevent="submit">
@@ -8,164 +8,124 @@
           <input
             type="text"
             v-model="eventTitle"
-            v-bind='eventTitleAttrs'
+            v-bind="eventTitleAttrs"
             placeholder="Введіть назву"
           />
         </div>
+
         <div class="form-group">
           <label>Опис заходу</label>
           <textarea
             v-model="description"
-            v-bind='descriptionAttrs'
+            v-bind="descriptionAttrs"
             placeholder="Введіть опис"
           ></textarea>
         </div>
+
         <div class="form-group">
           <label>Дата проведення</label>
           <input
             type="date"
             v-model="eventDate"
-            v-bind='eventDateAttrs'
-            :max="maxDate"  
-            :min="minDate" 
-            @update:model-value="selectDate" 
+            v-bind="eventDateAttrs"
+            :min="minDate"
+            :max="maxDate"
           />
         </div>
+
         <div class="form-group">
-          <label>Завантажити файл</label>
-          <input
-            type="file"
-            accept="image/*"
-            @change="handleFileChange"
-            ref="fileInput"
-          />
-        </div>
-        <div class="form-group">
-          <label>Місце проведення</label>
-          <input
-            type="text"
-            v-model="location"
-            v-bind='locationAttrs'
-            placeholder="Введіть адресу"
-          />
-          </div>
+        <label>Місце проведення</label>
+        <app-address-autocomplete @select="onAddressSelect" />
+      </div>
+
+      <div v-if="coordinates" class="form-group">
+        <label>Координати обраного місця</label>
+        <p>Широта: {{ coordinates.lat }}</p>
+        <p>Довгота: {{ coordinates.lng }}</p>
+      </div>
+
         <div class="form-actions">
           <v-btn type="submit" class="save">Зберегти</v-btn>
-          <v-btn class="mr-4" text to="/myEvents">
-            Скасувати
-          </v-btn>
+          <v-btn text to="/myEvents">Скасувати</v-btn>
         </div>
       </form>
     </div>
-</auth-layout>
-  </template>
-  
-  <script lang='ts' setup>  
-import {useForm} from 'vee-validate'  
-import {toTypedSchema} from '@vee-validate/yup'  
-import * as yup from 'yup'  
-import type {MaybeRefOrGetter} from 'vue'  
-import {ref, computed} from 'vue'  
+  </auth-layout>
+</template>
 
-import {useHandleError, useRouting} from '@/composables'  
-import {useAppI18n} from '@/i18n'  
-import {formService, requestService} from '@/services'
-import AuthLayout from '@/layouts/AuthLayout.vue' 
+<script lang="ts" setup>
+import { ref, computed } from "vue";
+import { useForm } from "vee-validate";
+import { toTypedSchema } from "@vee-validate/yup";
+import * as yup from "yup";
+import { mapService } from "@/services/map";
+import AuthLayout from "@/layouts/AuthLayout.vue";
+import AppAddressAutocomplete from "@/components/AppAddressAutocomplete.vue";
+import type { AddressItem } from "@/services/map";
 
-const {handleError} = useHandleError()  
-const {translate} = useAppI18n()  
-const routing = useRouting()  
-const {vuetifyConfig, eventTitleValidator, descriptionValidator, locationValidator} = formService()  
+// Валідація форми
+const { eventTitleValidator, descriptionValidator } = {
+  eventTitleValidator: () => yup.string().required("Назва є обов'язковою"),
+  descriptionValidator: () => yup.string().required("Опис є обов'язковим"),
+};
 
-const form = useForm({  
-    validationSchema: toTypedSchema(  
-       yup.object({  
-        eventTitle: eventTitleValidator(),
-        description: descriptionValidator(),
-        location: locationValidator(),
-        eventDate: yup.date().required('Оберіть дату заходу')  
-       })  
-    ),  
-    initialValues: {  
-        eventTitle:'',
-        description: '',
-        location: '',  
-        eventDate: undefined 
-    }  
-})  
+const form = useForm({
+  validationSchema: toTypedSchema(
+    yup.object({
+      eventTitle: eventTitleValidator(),
+      description: descriptionValidator(),
+      eventDate: yup.date().required("Оберіть дату заходу"),
+    })
+  ),
+  initialValues: {
+    eventTitle: "",
+    description: "",
+    eventDate: undefined,
+  },
+});
 
-const isSubmitting = ref<boolean>(false)  
-const showDatePicker = ref<boolean>(false)  
-const [eventTitle, eventTitleAttrs] = form.defineField('eventTitle' as MaybeRefOrGetter, vuetifyConfig)  
-const [description, descriptionAttrs] = form.defineField('description' as MaybeRefOrGetter, vuetifyConfig)  
-const [eventDate, eventDateAttrs] = form.defineField('eventDate' as MaybeRefOrGetter, vuetifyConfig)
-const [location, locationAttrs] = form.defineField('location' as MaybeRefOrGetter, vuetifyConfig)    
+// Поля форми
+const [eventTitle, eventTitleAttrs] = form.defineField("eventTitle");
+const [description, descriptionAttrs] = form.defineField("description");
+const [eventDate, eventDateAttrs] = form.defineField("eventDate");
 
-const minDate = computed(() => new Date().toISOString().split('T')[0])  
-const maxDate = computed(() => {  
-    const nextYear = new Date()  
-    nextYear.setFullYear(nextYear.getFullYear() + 1)  
-    return nextYear.toISOString().split('T')[0]  
-})  
+// Обмеження для дати
+const minDate = computed(() => new Date().toISOString().split("T")[0]);
+const maxDate = computed(() => {
+  const nextYear = new Date();
+  nextYear.setFullYear(nextYear.getFullYear() + 1);
+  return nextYear.toISOString().split("T")[0];
+});
 
-/*
-const formattedEventDate = computed(() => {  
-    if (!eventDate.value) return ''  
-    return new Date(eventDate.value).toLocaleDateString('uk-UA')  
-})  */
+// Координати для обраного місця
+const coordinates = ref<{ lat: number; lng: number } | null>(null);
 
-const selectDate = (date: string) => {  
-    eventDate.value = date  
-    showDatePicker.value = false  
-}  
-
-const selectedFile = ref<File | null>(null)
-
-const handleFileChange = (event: Event) => {
-  const target = event.target as HTMLInputElement;
-  const file = target?.files?.[0];
-
-  if (file) {
-    if (!file.type.startsWith('image/')) {
-      alert('Будь ласка, виберіть лише зображення.');
-      target.value = '';
-      return;
-    }
-
-    selectedFile.value = file;
+// Обробник вибору адреси
+const onAddressSelect = (address: AddressItem) => {
+  if (address.details.position) {
+    coordinates.value = {
+      lat: address.details.position.lat as number,
+      lng: address.details.position.lng as number
+    };
+  } else {
+    console.error('No position data found for the selected address', address);
+    coordinates.value = null;
   }
 };
 
-const submit = form.handleSubmit(async values => {  
-    try {  
-       if (isSubmitting.value) {  
-          return  
-       }  
-       isSubmitting.value = true  
-
-       const body = {  
-        eventTitle: values.eventTitle,
-        description: values.description,
-        eventDate: values.eventDate,
-        location: values.location,
-        image: selectedFile.value
-       }  
-
-       //await request.register(body)  
-       routing.toSignIn()  
-
-       isSubmitting.value = false  
-    } catch (e) {  
-       console.error(e)  
-       handleError(e)  
-       isSubmitting.value = false  
-    }  
-})  
- 
+// Сабміт форми
+const submit = form.handleSubmit((values) => {
+  console.log("Збережені дані:", {
+    eventTitle: values.eventTitle,
+    description: values.description,
+    eventDate: values.eventDate,
+    coordinates: coordinates.value,
+  });
+});
 </script>
-  
-  <style lang="scss" scoped>
-  body {
+
+<style lang="scss" scoped>
+body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
@@ -238,5 +198,4 @@ const submit = form.handleSubmit(async values => {
   .form-actions .cancel:hover {
     background-color: #999;
   }
-  </style>
-  
+</style>

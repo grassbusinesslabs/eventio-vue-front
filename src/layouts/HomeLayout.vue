@@ -98,6 +98,7 @@ import { useAppI18n } from '@/i18n'
 import { formService, requestService } from '@/services'
 import { storeToRefs } from 'pinia'
 import { useUserStore } from '@/stores'
+import AppHeader from '@/components/AppHeader.vue'
 
 const request = requestService()
 const { handleError } = useHandleError()
@@ -146,7 +147,7 @@ const submit = form.handleSubmit(async (values) => {
          email: values.email || '',
       }
 
-      await request.updateUser(currentUser.id, body) 
+      //await request.updateUser(currentUser.id, body) 
 
     if (currentUser.value) {
       currentUser.value.user.firstName = values.firstName || '';

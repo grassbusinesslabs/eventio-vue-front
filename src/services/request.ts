@@ -1,5 +1,5 @@
 import {apiService} from '@/services/api'
-import type {AddPostBody, CurrentUser, UpdateUserBody, GetPostsResponse, LoginBody, Post} from '@/models'
+import type {AddEventBody, CurrentUser, UpdateUserBody, GetEventsResponse, LoginBody, Event} from '@/models'
 
 export const requestService = () => {
    const api = apiService()
@@ -7,15 +7,14 @@ export const requestService = () => {
    async function login(body: LoginBody): Promise<CurrentUser> {
       return api.post('/auth/login', body)
    }
-/*
-   async function getPosts(): Promise<GetPostsResponse> {
-      return api.get('/auth/posts')
-   }*/
-/*
-   async function addPost(body: AddPostBody): Promise<Post> {
-      // WARNING!!! This request only simulates adding a new post
-      return api.post('/auth/posts/add', body)
-   }*/
+
+   async function getEvents(): Promise<GetEventsResponse> {
+      return api.get('/events/findAll')
+   }
+
+   async function addEvent(body: AddEventBody): Promise<Event> {
+      return api.post('/events', body)
+   }
 
    async function getCurrentUser(): Promise<CurrentUser> {
       return api.get('/users/me')
@@ -33,10 +32,10 @@ export const requestService = () => {
 
    return {
       login,
-      //getPosts,
+      getEvents,
       getCurrentUser,
       logout,
-      //addPost,
+      addEvent,
       register,
       updateUser
    }

@@ -33,9 +33,9 @@
 </v-row>
        <v-row class='ma-0'>
           <app-post
-             v-for='post in filteredPosts'
-             :key='post.id'
-             :post='post'
+             v-for='event in filteredEvents'
+             :key='event.id'
+             :event='event'
           />
        </v-row>
     </home-layout>
@@ -47,8 +47,10 @@
  import {toTypedSchema} from '@vee-validate/yup'
  import {storeToRefs} from 'pinia'
  import * as yup from 'yup'
+ import { format } from 'date-fns'
+import { uk } from 'date-fns/locale'
  
- import type {AddPostBody, GetPostsResponse, Post} from '@/models'
+ import type {GetEventsResponse, Event} from '@/models'
  import {formService, requestService} from '@/services'
  import {useHandleError} from '@/composables'
  import {useAppI18n} from '@/i18n'
@@ -64,55 +66,53 @@
  const request = requestService()
  const {vuetifyConfig, eventTitleValidator, textValidator} = formService()
  
- const posts: Ref<Post[]> = ref<Post[]>([])
- const loadingPosts = ref<boolean>(false)
+ const events: Ref<Event[]> = ref<Event[]>([])
+ const loadingEvents = ref<boolean>(false)
  
- let lastPostId: number = 0
+ let lastEventId: number = 0
  
  const isSubmitting = ref<boolean>(false)
 
  const selectedDateValue = ref('all')
  const searchQuery = ref<string>('')
 
- /*const filteredPosts = computed(() => {
-   return posts.value.filter(post => {
-     const matchesSearch = post.title.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-                           post.body.toLowerCase().includes(searchQuery.value.toLowerCase());
-
-     if (selectedDateValue.value === 'past') {
-       return matchesSearch && new Date(post.date) < new Date();
-     } else if (selectedDateValue.value === 'future') {
-       return matchesSearch && new Date(post.date) >= new Date();
-     }
-
-     return matchesSearch; // 'all'
-   })
- })*/
-
-
- //const [title, titleAttrs] = form.defineField('title' as MaybeRefOrGetter, vuetifyConfig)
- //const [text, textAttrs] = form.defineField('text' as MaybeRefOrGetter, vuetifyConfig)
  
- /*onMounted(() => {
-    loadPosts()
- })*/
- 
- /*async function loadPosts(): Promise<void> {
-    try {
-       loadingPosts.value = true
- 
-       const response: GetPostsResponse = await request.getPosts()
-       posts.value = response.posts
-       lastPostId = response.total
- 
-       loadingPosts.value = false
-    } catch (e) {
-       console.error(e)
-       handleError(e)
-       posts.value = []
-       loadingPosts.value = false
+ onMounted(() => {
+    loadEvents()
+ })
+
+ const filteredEvents = computed(() => {
+  return events.value.filter(event => {
+    const eventDate = new Date(event.date); // Створюємо Date-об'єкт
+    const matchesSearch =
+      event.title?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      event.description?.toLowerCase().includes(searchQuery.value.toLowerCase());
+
+    if (selectedDateValue.value === 'past') {
+      return matchesSearch && eventDate < new Date();
+    } else if (selectedDateValue.value === 'future') {
+      return matchesSearch && eventDate >= new Date();
     }
- }*/
+
+    return matchesSearch; // Для 'all'
+  });
+});
+ async function loadEvents(): Promise<void> {
+   try {
+      loadingEvents.value = true;
+
+      const response: GetEventsResponse = await request.getEvents();
+      events.value = response.events || []; // Переконайтеся, що завжди повертається масив
+      lastEventId = response.total;
+
+   } catch (e) {
+      console.error(e);
+      handleError(e);
+      events.value = []; // Завжди ініціалізуйте як пустий масив
+   } finally {
+      loadingEvents.value = false;
+   }
+}
  </script>
  
  <style lang='scss' scoped>

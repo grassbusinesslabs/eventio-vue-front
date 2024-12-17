@@ -9,23 +9,18 @@ export interface Event {
     image: string  
     location: string  
     lat: number 
-    lon: number 
-    created_date: Date  
-    updated_date?: Date  
-    deleted_date?: Date | null    
+    lon: number    
  }  
  
  export type GetEventsResponse = Pagination<{events: Event[]}>  
  
- export interface AddPostBody {  
+ export interface AddEventBody {  
      userId: number  
      title: string  
-     description?: string  
+     description: string  
      date: Date | string   
      image?: string  
      location: string  
-     lat: number  
-     lon: number  
-     created_date?: Date  
-     updated_date?: Date 
+     lat: number 
+    lon: number   
  } 
