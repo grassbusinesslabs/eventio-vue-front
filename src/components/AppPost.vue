@@ -50,7 +50,6 @@ import { useAppI18n } from "@/i18n";
 import type { Event } from "@/models";
 
 import { format } from 'date-fns'
-import { uk } from 'date-fns/locale';
 
 const { translate } = useAppI18n()
 
@@ -112,7 +111,7 @@ const formatDate = (dateString: string | Date): string => {
 .text-content {
   flex-grow: 1;
   padding: 10px;
-  width: 470px;
+  width: 480px;
 }
 .button-join {
   margin-top: 15px;

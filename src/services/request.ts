@@ -26,8 +26,8 @@ export const requestService = () => {
    async function register(body: Record<string, string>): Promise<any> {
       return api.post('/auth/register', body)
    }
-   async function updateUser(id: string, body: UpdateUserBody): Promise<CurrentUser> {
-      return api.put(`/users/${id}`, body);
+   async function updateUser(body: UpdateUserBody): Promise<CurrentUser> {
+      return api.put(`/users`, body);
    }
 
    return {

@@ -28,7 +28,10 @@
     "MORE": "Read more",
     "JOIN": "Join event",
     "EDIT": "Edit",
-     "DELETE": "Delete account"
+     "DELETE": "Delete account",
+     "SAVE": "Save changes",
+     "SEARCH-BY-DATE": "Search by date",
+    "SEARCH-BY-MONTH": "Search by month"
   },
   "LANGUAGES": {
     "ENGLISH": "English",

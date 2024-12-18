@@ -7,18 +7,18 @@
             <v-row>
                <v-col cols="3" lg="2">
                   <v-card class="mx-auto" rounded="lg">
-                     <!-- Заголовок з іменем -->
                      <template v-slot:title>
                         <span v-if="!isEditing" class="card-title">
                            {{ firstName }}<br />{{ secondName }}
                         </span>
+                        
                      </template>
-
+                     <v-divider></v-divider>
                      <v-card-text>
-                        <!-- Кнопка редагування -->
                         <v-btn
                            v-if="!isEditing"
-                           class="mt-2"
+                             class="bml-auto"
+                              elevation="2"
                            :block="true"
                            type="button"
                            variant="text"
@@ -27,7 +27,6 @@
                            {{ translate('BTNS.EDIT') }}
                         </v-btn>
 
-                        <!-- Форма редагування -->
                         <v-form v-if="isEditing" @submit.prevent="submit">
                            <v-text-field
                               v-model="firstName"
@@ -51,20 +50,20 @@
                               :disabled="isSubmitting"
                            />
                            <v-btn
-                              class="mt-2"
+                           class="bml-auto"
+                         elevation="4"
                               :block="true"
                               type="submit"
-                              color="primary"
                               :disabled="isSubmitting"
                            >
                               {{ translate('BTNS.SAVE') }}
                            </v-btn>
                         </v-form>
 
-                        <!-- Кнопка виходу -->
                         <v-btn
                            v-if="!isEditing"
                            class="mt-2"
+                            elevation="2"
                            :block="true"
                            type="button"
                            variant="text"
@@ -147,7 +146,7 @@ const submit = form.handleSubmit(async (values) => {
          email: values.email || '',
       }
 
-      //await request.updateUser(currentUser.id, body) 
+      await request.updateUser(body) 
 
     if (currentUser.value) {
       currentUser.value.user.firstName = values.firstName || '';
@@ -168,5 +167,8 @@ const submit = form.handleSubmit(async (values) => {
 <style lang="scss" scoped>
 .card-title {
    font-size: 8;
+}
+.card-email {
+   font-size: 3;
 }
 </style>

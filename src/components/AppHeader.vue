@@ -1,5 +1,5 @@
 <template>
-    <v-app-bar color="primary" dark>
+    <v-app-bar color="#753737FF" dark>
       <v-app-bar-title>Event Management</v-app-bar-title>
   
       <!-- Меню навігації -->

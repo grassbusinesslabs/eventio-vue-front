@@ -1,5 +1,5 @@
 <template>
-   <v-app-bar color='primary'>
+   <v-app-bar color="#753737FF">
       <v-app-bar-title>Event management</v-app-bar-title>
 
       <template v-slot:append>
