@@ -44,10 +44,10 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps } from "vue";
-import { ref, computed } from "vue";
-import { useAppI18n } from "@/i18n";
-import type { Event } from "@/models";
+import { defineProps } from "vue"
+import { ref, computed } from "vue"
+import { useAppI18n } from "@/i18n"
+import type { Event } from "@/models"
 
 import { format } from 'date-fns'
 
@@ -62,7 +62,7 @@ const props = defineProps<{
 const event = props.event
 
 const truncatedBody = computed(() => {
-  const maxLength = 200;
+  const maxLength = 145;
   return event?.description && event.description.length > maxLength
     ? event.description.slice(0, maxLength) + "..."
     : event?.description || ""
@@ -75,7 +75,7 @@ const toggleExpand = () => {
 const formatDate = (dateString: string | Date): string => {
   const date = new Date(dateString);
   return format(date, 'dd.MM.yyyy HH:mm');
-};
+}
 </script>
 
 <style lang="scss" scoped>
@@ -111,7 +111,7 @@ const formatDate = (dateString: string | Date): string => {
 .text-content {
   flex-grow: 1;
   padding: 10px;
-  width: 480px;
+  width: 510px;
 }
 .button-join {
   margin-top: 15px;

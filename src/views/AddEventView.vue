@@ -155,7 +155,7 @@ const submit = form.handleSubmit((values) => {
     const body: Record<string, any> = {
       title: values.eventTitle || '',
       description: values.description || '',
-      date: values.eventDate ? values.eventDate.toISOString() : '',
+      date: values.eventDate ? Math.floor(values.eventDate.getTime() / 1000) : '',
       image: "image 221" ,//selectedFile.value || null,
       location: coordinates.value?.location || '',
       lat: coordinates.value?.lat ?? null,

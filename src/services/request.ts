@@ -9,7 +9,7 @@ export const requestService = () => {
    }
 
    async function getEvents(): Promise<GetEventsResponse> {
-      return api.get('/events/findAll')
+      return api.get('/events/findall')
    }
 
    async function addEvent(body: Record<string, any>): Promise<Event> {
@@ -30,6 +30,10 @@ export const requestService = () => {
       return api.put(`/users`, body);
    }
 
+   async function getMyEvents(): Promise<GetEventsResponse> {
+      return api.get<GetEventsResponse>('/events/findbyuser');
+    }
+
    return {
       login,
       getEvents,
@@ -37,6 +41,7 @@ export const requestService = () => {
       logout,
       addEvent,
       register,
-      updateUser
+      updateUser,
+      getMyEvents
    }
 }

@@ -11,21 +11,20 @@
        ></v-img>
 
        <v-card-text class="text-content">
-         <!--Мені потрібно це змінити при підключенні до api-->
-         <p class="card-date">
-            <v-icon left>mdi-calendar</v-icon>
-            12 Грудня 2024
-         </p>
-         <p class="card-date">
-            <v-icon left>mdi-map-marker</v-icon>
-            ОМЦ, вул. Міщенка 2, 3-й поверх, Полтава
-         </p>
+        <p class="card-date" v-if="event?.date">
+          <v-icon left>mdi-calendar</v-icon>
+          {{ formatDate(event.date) }}
+        </p>
+        <p class="card-date" v-if="event?.location">
+          <v-icon left>mdi-map-marker</v-icon>
+          {{ event.location }}
+        </p>
 
-         <h3 class="card-title">{{ post.title }}</h3>
+         <h3 class="card-title" v-if="event?.title">{{ event.title }}</h3>
 
          <p class="card-body">
           <span v-if="!isExpanded">{{ truncatedBody }}</span>
-          <span v-else>{{ post.body }}</span>
+          <span v-else>{{ event?.description }}</span>
         </p>
 
         <v-btn variant="plain"
@@ -35,7 +34,7 @@
           {{ isExpanded ? 'Згорнути' : 'Детальніше' }}
         </v-btn>
         <v-divider></v-divider>
-        <p class="card-members-number">Кількість учасників: 18</p>
+        <p class="card-members-number">Кількість учасників: 0</p>
        </v-card-text>
      </v-card>
    </v-col>
@@ -44,20 +43,22 @@
 import {defineProps} from 'vue'
 
 import { ref, computed } from 'vue';
-
-import type {Post} from '@/models'
+import { format } from 'date-fns'
+import type { Event } from "@/models"
 
 const isExpanded = ref(false)
 
 const props = defineProps<{
-  post: Post
+  event: Event | null
 }>()
 
-const post = props.post
+const event = props.event
 
 const truncatedBody = computed(() => {
   const maxLength = 200;
-  return post.body.length > maxLength ? post.body.slice(0, maxLength) + '...' : post.body;
+  return event?.description && event.description.length > maxLength
+    ? event.description.slice(0, maxLength) + "..."
+    : event?.description || ""
 })
 
 
@@ -65,6 +66,10 @@ const toggleExpand = () => {
   isExpanded.value = !isExpanded.value;
 }
 
+const formatDate = (dateString: string | Date): string => {
+  const date = new Date(dateString);
+  return format(date, 'dd.MM.yyyy HH:mm');
+}
 </script>
 
 <style lang='scss' scoped>
@@ -101,6 +106,7 @@ const toggleExpand = () => {
 .text-content {
   flex-grow: 1;
   padding: 10px; 
+  width: 510px;
 }
 .button-join {
    margin-top: 15px;

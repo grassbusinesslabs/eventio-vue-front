@@ -2,7 +2,7 @@
     <home-layout>
       <v-row 
       align="center" class="no-spacing">
-         <h2 class="header">N подій</h2>
+         <h2 class="header">{{ events.length }} подій</h2>
       <v-btn
         class="ma-3"
         text to="/addEvent"
@@ -16,21 +16,22 @@
    </v-row>
        <v-row class='ma-0'>
           <app-post
-             v-for='post in posts'
-             :key='post.id'
-             :post='post'
+            v-for='event in events'
+            :key='event.id'
+            :event='event'
           />
        </v-row>
     </home-layout>
  </template>
  <script lang='ts' setup>
  import type {MaybeRefOrGetter, Ref} from 'vue'
- import {onMounted, ref} from 'vue'
+ import {onMounted, ref, computed, watch} from 'vue'
+ import {useRoute, useRouter } from 'vue-router'
  import {useForm} from 'vee-validate'
  import {toTypedSchema} from '@vee-validate/yup'
  import {storeToRefs} from 'pinia'
  import * as yup from 'yup'
- 
+ import type {GetEventsResponse, Event} from '@/models'
  import type {AddPostBody, GetPostsResponse, Post} from '@/models'
  import {formService, requestService} from '@/services'
  import {useHandleError} from '@/composables'
@@ -43,12 +44,15 @@
  const {translate} = useAppI18n()
  const userStore = useUserStore()
  const {currentUser} = storeToRefs(userStore)
+
+ const events: Ref<Event[]> = ref<Event[]>([])
+ const loadingEvents = ref<boolean>(false)
  
+ let lastEventId: number = 0
+
  const request = requestService()
  const {vuetifyConfig, eventTitleValidator, textValidator} = formService()
- 
- const posts: Ref<Post[]> = ref<Post[]>([])
- const loadingPosts = ref<boolean>(false)
+
  
  let lastPostId: number = 0
  
@@ -69,55 +73,32 @@
  const [title, titleAttrs] = form.defineField('title' as MaybeRefOrGetter, vuetifyConfig)
  const [text, textAttrs] = form.defineField('text' as MaybeRefOrGetter, vuetifyConfig)
  
+ const route = useRoute()
+
  onMounted(() => {
-    loadPosts()
+   loadEvents()
  })
  
- async function loadPosts(): Promise<void> {
+ watch(route, () => {
+   loadEvents()
+ })
+ 
+ async function loadEvents(): Promise<void> {
     try {
-       loadingPosts.value = true
+      loadingEvents.value = true
  
-       const response: GetPostsResponse = await request.getPosts()
-       posts.value = response.posts
-       lastPostId = response.total
+     const response: GetEventsResponse = await request.getMyEvents()
+     events.value = response.events || [] 
+     lastEventId = response.total
  
-       loadingPosts.value = false
-    } catch (e) {
-       console.error(e)
-       handleError(e)
-       posts.value = []
-       loadingPosts.value = false
+   } catch (e) {
+     console.error(e)
+     handleError(e)
+     events.value = []
+   } finally {
+     loadingEvents.value = false
     }
  }
- 
- const submit = form.handleSubmit(async values => {
-    try {
-       if (isSubmitting.value) {
-          return
-       }
-       isSubmitting.value = true
- 
-       const body: AddPostBody = {
-          title: values.title,
-          body: values.text,
-          userId: currentUser.value.id
-       }
- 
-       const post: Post = await request.addPost(body)
-       post.id = lastPostId + 1
-       lastPostId = post.id
- 
-       posts.value.unshift(post)
- 
-       form.resetForm()
- 
-       isSubmitting.value = false
-    } catch (e) {
-       console.error(e)
-       handleError(e)
-       isSubmitting.value = false
-    }
- })
  </script>
  
  <style lang='scss' scoped>
