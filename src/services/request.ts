@@ -34,6 +34,15 @@ export const requestService = () => {
       return api.get<GetEventsResponse>('/events/findbyuser');
     }
 
+    async function getEventById(Id: string | number): Promise<Event> {
+      return api.get<Event>(`/events/${Id}`);
+    }
+    async function getEventsByDate(date: string | number): Promise<GetEventsResponse> {
+      const dateObj = typeof date === 'string' ? new Date(date) : new Date(date);
+      const unixTimestamp = Math.floor(dateObj.getTime() / 1000);
+      return api.get<GetEventsResponse>(`/events/findbydate?date=${unixTimestamp}`);
+    }
+
    return {
       login,
       getEvents,
@@ -42,6 +51,8 @@ export const requestService = () => {
       addEvent,
       register,
       updateUser,
-      getMyEvents
+      getMyEvents,
+      getEventById,
+      getEventsByDate
    }
 }

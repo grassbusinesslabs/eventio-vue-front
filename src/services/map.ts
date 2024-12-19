@@ -46,6 +46,7 @@ export interface CreateMarkerOptions {
    clickTolerance?: number
 }
 
+
 let map: Map | null = null
 let markers: { [key in string]: Marker } = {}
 
@@ -190,6 +191,7 @@ export const mapService = () => {
 
       return ttServices.services.fuzzySearch(combineOptions)
    }
+  
 
    async function searchAddresses(text: string, options?: Partial<FuzzySearchOptions>): Promise<AddressItem[]> {
       const response: FuzzySearchResponse = await fuzzySearch(text, {
@@ -203,17 +205,22 @@ export const mapService = () => {
       }))
    }
 
-   async function searchCities(text: string, options?: Partial<FuzzySearchOptions>): Promise<CityItem[]> {
-      const response: FuzzySearchResponse = await fuzzySearch(text, {
-         ...options,
-         entityTypeSet: 'MunicipalitySubdivision' // search only municipalities (cities)
-      })
-
-      return response.results.map((el: FuzzySearchResult) => ({
-         city: generateCityStr(el.address),
-         details: el
-      }))
+   
+async function searchCities(text: string, options?: Partial<FuzzySearchOptions>): Promise<CityItem[]> {
+   const response: FuzzySearchResponse = await fuzzySearch(text, {
+     ...options,
+     entityTypeSet: 'MunicipalitySubdivision'
+   })
+ 
+   if (!response.results) {
+     return [];
    }
+ 
+   return response.results.map((el: FuzzySearchResult) => ({
+     city: generateCityStr(el.address),
+     details: el
+   }))
+ }
 
    function generateAddressStr(searchResult: SearchAddress): string {
       const segments: string[] = []
@@ -239,22 +246,25 @@ export const mapService = () => {
       return segments.join(', ')
    }
 
-   function generateCityStr(searchResult: SearchAddress): string {
+   function generateCityStr(searchResult: SearchAddress | undefined): string {
+      if (!searchResult) {
+         return ''; // Return an empty string if the search result is undefined
+      }
+   
       const segments: string[] = []
-
+   
       if (searchResult?.municipalitySubdivision) {
          segments.push(searchResult.municipalitySubdivision)
       } else if (searchResult?.municipality) {
          segments.push(searchResult.municipality)
       }
-
+   
       if (searchResult?.countrySubdivision) {
          segments.push(searchResult.countrySubdivision)
       }
-
+   
       return segments.join(', ')
    }
-
    return {
       searchAddresses,
       searchCities,

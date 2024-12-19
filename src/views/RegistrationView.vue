@@ -58,7 +58,7 @@
                      :block='true'
                      :disabled='isSubmitting'
                      type='submit'
-                     color='primary'
+                     color="#753737FF"
                   >
                      {{ translate('BTNS.REGISTER') }}
                   </v-btn>

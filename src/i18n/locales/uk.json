@@ -34,8 +34,8 @@
     "SEARCH-BY-MONTH": "Шукати за місяцем"
   },
   "LANGUAGES": {
-    "ENGLISH": "Англійська",
-    "UKRAINIAN": "Українська"
+    "ENGLISH": "EN",
+    "UKRAINIAN": "UA"
   },
   "ERRORS": {
     "SESSION_IS_EXPIRED": "Сеанс закінчився!"

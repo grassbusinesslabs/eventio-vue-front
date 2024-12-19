@@ -33,6 +33,7 @@ const currentLang = ref<Lang>(locale.value as Lang)
 
 <style lang='scss' scoped>
 .select-lang {
-   min-width: 100px;
+   margin-left: 20px;
+   width: 60px;
 }
 </style>

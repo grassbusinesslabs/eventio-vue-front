@@ -28,7 +28,8 @@
            v-model="searchQuery"
            variant="plain"
            class="search-input"
-           density="comfortable">
+           density="comfortable"
+           clearable>
            <v-icon left>mdi-magnify</v-icon>
          </v-text-field>
        </v-col>
@@ -188,9 +189,30 @@
    showFilterWindow.value = !showFilterWindow.value
  }
  
- function applyFilters() {
-   showFilterWindow.value = false
- }
+ async function applyFilters() {
+  showFilterWindow.value = false
+  loadingEvents.value = true
+
+  try {
+    let response: GetEventsResponse
+
+    // If a specific date filter is applied, fetch events for that date
+    if (filterDate.value) {
+      response = await request.getEventsByDate(filterDate.value)
+    } else {
+      // If no date filter, fetch all events
+      response = await request.getEvents()
+    }
+
+    events.value = response.events || []
+    lastEventId = response.total
+  } catch (error) {
+    console.error('Error loading filtered events', error)
+    handleError(error)
+  } finally {
+    loadingEvents.value = false
+  }
+}
  
  function resetFilters() {
    filterMonth.value = null

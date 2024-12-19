@@ -19,6 +19,7 @@ import i18n from '@/i18n'
 import Toast from 'vue-toastification'
 import 'vue-toastification/dist/index.css'
 import {DEFAULT_TOAST_CONFIG} from '@/constants/app'
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 
 // Global styles
 import '@/styles.scss'
@@ -31,9 +32,12 @@ const vuetify = createVuetify({
    }
 })
 
+const pinia = createPinia()
+pinia.use(piniaPluginPersistedstate)
+
 const app = createApp(App)
    .use(vuetify)
-   .use(createPinia())
+   .use(pinia)
    .use(i18n as any)
    .use(Toast, DEFAULT_TOAST_CONFIG as any)
    .use(router)

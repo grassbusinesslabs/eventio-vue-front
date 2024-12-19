@@ -34,8 +34,8 @@
     "SEARCH-BY-MONTH": "Search by month"
   },
   "LANGUAGES": {
-    "ENGLISH": "English",
-    "UKRAINIAN": "Ukrainian"
+    "ENGLISH": "EN",
+    "UKRAINIAN": "UA"
   },
   "ERRORS": {
     "SESSION_IS_EXPIRED": "Session is expired!"
