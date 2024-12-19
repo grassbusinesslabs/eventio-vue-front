@@ -10,11 +10,7 @@
       ></v-img>
 
       <v-card-text class="text-content">
-        <p class="card-date" v-if="event?.date">
-          <v-icon left>mdi-calendar</v-icon>
-          {{ formatDate(event.date) }}
-        </p>
-        <p class="card-date" v-if="event?.location">
+        <p class="card-map" v-if="event?.location">
           <v-icon left>mdi-map-marker</v-icon>
           {{ event.location }}
         </p>
@@ -34,6 +30,9 @@
           {{ isExpanded ? translate("BTNS.ROLL-UP") : translate("BTNS.MORE") }}
         </v-btn>
         <v-divider></v-divider>
+        <p class="card-date" v-if="event?.date">
+          {{ formatDate(event.date) }}
+        </p>
         <v-btn
           class="button-join ml-auto"
           prepend-icon="mdi-check"
@@ -48,8 +47,8 @@ import { defineProps } from "vue"
 import { ref, computed } from "vue"
 import { useAppI18n } from "@/i18n"
 import type { Event } from "@/models"
-
-import { format } from 'date-fns'
+import { uk } from 'date-fns/locale'
+import { format, getMonth, getYear, getDate, getHours, getMinutes } from 'date-fns'
 
 const { translate } = useAppI18n()
 
@@ -74,15 +73,32 @@ const toggleExpand = () => {
 
 const formatDate = (dateString: string | Date): string => {
   const date = new Date(dateString);
-  return format(date, 'dd.MM.yyyy HH:mm');
-}
+
+  const day = getDate(date);
+  const month = [
+    'січня', 'лютого', 'березня', 'квітня', 'травня', 'червня',
+    'липня', 'серпня', 'вересня', 'жовтня', 'листопада', 'грудня'
+  ][getMonth(date)];
+  const year = getYear(date);
+  const hours = getHours(date).toString().padStart(2, '0');
+  const minutes = getMinutes(date).toString().padStart(2, '0');
+
+  return `${day} ${month} ${year} на ${hours}:${minutes}`;
+};
 </script>
 
 <style lang="scss" scoped>
-.card-date {
+.card-map {
   margin-left: 20px;
   font-size: 14px;
   padding: 5px;
+}
+.card-date {
+
+  margin-top: 10px;
+  font-size: 16px;
+  padding: 5px;
+  font-weight: bold;
 }
 .card-image {
   width: 240px;

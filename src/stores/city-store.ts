@@ -20,7 +20,9 @@ export const useCityStore = defineStore('city', {
         this.searchHistory = this.searchHistory.slice(0, 5);
       }
     },
-
+    getSelectedCity() {
+      return this.selectedCity;
+    },
     clearSelectedCity() {
       this.selectedCity = null;
     },

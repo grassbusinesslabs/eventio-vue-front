@@ -62,14 +62,14 @@
   }>();
   
   const cityStore = useCityStore()
-  const searchText = ref('Усі міста')
+  const searchText = ref('Всі міста')
   const searchResults = ref<CityItem[]>([])
   const showResults = ref(false)
   const highlightedIndex = ref(-1)
   const searchInput = ref<HTMLInputElement | null>(null)
   
   const searchHistory = computed(() => cityStore.searchHistory)
-  
+
   import { mapService } from "@/services/map"
   const { searchCities } = mapService()
   
@@ -142,7 +142,7 @@
 }
 
 .search-input {
-  width: 100%;
+  width: 110%;
   padding: 8px 10px;
   border: 0px solid #ddd;
   border-radius: 4px;
@@ -279,7 +279,7 @@
 }
 .clear-button {
   position: absolute;
-  right: 8px;
+  right: -25px;
   top: 50%;
   transform: translateY(-50%);
   background: transparent;

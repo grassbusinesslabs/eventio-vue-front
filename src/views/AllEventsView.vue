@@ -2,25 +2,11 @@
    <home-layout>
      <v-sheet class='mx-auto'>
        <v-row class='ma-0'>
-         <h2 class="element">Всі заходи</h2>
        </v-row>
      </v-sheet>
      
      <v-row class="d-flex align-center ma-0">
-       <v-col cols="auto">
-         <v-btn-toggle v-model="selectedDateValue"
-                       @change="handleToggleChange">
-           <v-btn value="all" variant="outlined">
-             {{ translate('INPUTS.ALL') }}
-           </v-btn>
-           <v-btn value="past" variant="outlined">
-             {{ translate('INPUTS.PAST') }}
-           </v-btn>
-           <v-btn value="future" variant="outlined">
-             {{ translate('INPUTS.FUTURE') }}
-           </v-btn>
-         </v-btn-toggle>
-       </v-col>
+       
        
        <v-col cols="auto" class="d-flex align-center">
          <v-text-field  
@@ -33,56 +19,40 @@
            <v-icon left>mdi-magnify</v-icon>
          </v-text-field>
        </v-col>
-       
-       <v-col cols="auto">
-         <v-btn 
-            @click="toggleFilterWindow"
-            icon="mdi-filter"
-            variant="outlined"
-            class="ml-2"
-            style="border-color: #ccc;"
-         />
-      </v-col>
-     </v-row>
- 
-     <v-bottom-sheet v-model="showFilterWindow" persistent>
-       <v-card>
-         <v-card-title>Фільтрувати всі івенти</v-card-title>
-         <v-card-text>
-           <v-row>
-             <v-col cols="12" md="6">
+       <v-icon color="#3E3B3BFF">mdi-calendar</v-icon>
+       <v-col  cols="auto" class="d-flex align-center">
+               <v-select
+                 v-model="filterDay"
+                 :items="dayOptions"
+                 class="day-input"
+                 label="День"
+                 density="compact"
+                 width="10px"
+                 clearable
+               />
+             </v-col>
+       <v-col  cols="auto" class="d-flex align-center">
                <v-select
                  v-model="filterMonth"
                  :items="monthOptions"
-                 label="За місяцем проведення"
+                 class="month-input"
+                 label="Місяць"
+                 density="compact"
                  clearable
                  @update:model-value="onMonthSelected"
                />
              </v-col>
-             <v-col cols="12" md="6">
-               <v-text-field
-                 v-model="filterDate"
-                 label="За датою проведення"
-                 type="date"
-                 @update:model-value="onDateSelected"
+        <v-col  cols="auto" class="d-flex align-center">
+               <v-select
+                 v-model="filterYear"
+                 :items="yearOptions"
+                 class="year-input"
+                 label="Рік"
+                 density="compact"
+                 clearable
                />
              </v-col>
-           </v-row>
-         </v-card-text>
-         
-         <v-card-actions>
-           <v-btn @click="applyFilters" color="primary">
-             Застосувати
-           </v-btn>
-           <v-btn @click="resetFilters" variant="text">
-             Скинути
-           </v-btn>
-           <v-btn @click="showFilterWindow = false" variant="text">
-             Закрити
-           </v-btn>
-         </v-card-actions>
-       </v-card>
-     </v-bottom-sheet>
+     </v-row>
  
      <v-row class='ma-0'>
        <app-post
@@ -138,7 +108,9 @@
    'Травень', 'Червень', 'Липень', 'Серпень', 
    'Вересень', 'Жовтень', 'Листопад', 'Грудень'
  ]
- 
+ const dayOptions = Array.from({ length: 31 }, (_, i) => i + 1)
+const yearOptions = [2024, 2025, 2026]
+
  const route = useRoute()
  const router = useRouter()
  
@@ -196,11 +168,10 @@
   try {
     let response: GetEventsResponse
 
-    // If a specific date filter is applied, fetch events for that date
     if (filterDate.value) {
       response = await request.getEventsByDate(filterDate.value)
     } else {
-      // If no date filter, fetch all events
+
       response = await request.getEvents()
     }
 
@@ -249,5 +220,35 @@
    width: 380px;
    height: 50px;
    margin-left: 0px;
+   margin-right: 65px;
+ }
+ .month-input {
+   padding: 5px 5px;
+   font-size: 14px;
+   border: 1px solid #ccc;
+   border-radius: 4px;
+   height: 50px;
+   width: 180px;
+   margin-left: 0px;
+   margin-left: -15px;
+
+ }
+ .day-input{
+  padding: 5px 5px;
+   font-size: 14px;
+   border: 1px solid #ccc;
+   border-radius: 4px;
+   height: 50px;
+   width: 115px;
+   margin-left: 0px;
+ }
+ .year-input{
+  padding: 5px 5px;
+   font-size: 14px;
+   border: 1px solid #ccc;
+   border-radius: 4px;
+   height: 50px;
+   width: 130px;
+   margin-left: -15px;
  }
  </style>
