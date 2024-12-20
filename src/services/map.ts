@@ -53,13 +53,14 @@ let markers: { [key in string]: Marker } = {}
 export const mapService = () => {
  const mapKey: string = 'drm2YOnCEjo2NZYyED481bHiiZSPaZyG'
  
+ 
 
    const defaultFuzzySearchOptions: FuzzySearchOptions = {
       key: mapKey,
       limit: 5,
       typeahead: true,
-      language: 'uk-UA', // return search results mainly in Ukrainian
-      countrySet: 'UA' // search only in Ukraine
+      language: 'uk-UA', 
+      countrySet: 'UA' 
    }
 
    const defaultMapOptions: MapOptions = {
