@@ -22,16 +22,18 @@
     "ADD_POST": "Add post",
     "REGISTER": "Register",
     "OVERVIEW": "Event overview",
-    "MY_EVENTS": "My events",
+    "MY_EVENTS": "My created events",
     "ADD_EVENT": "Add",
     "ROLL-UP": "Roll up",
     "MORE": "Read more",
     "JOIN": "Join event",
     "EDIT": "Edit",
      "DELETE": "Delete account",
+     "DELETEEV": "Delete event",
      "SAVE": "Save changes",
      "SEARCH-BY-DATE": "Search by date",
-    "SEARCH-BY-MONTH": "Search by month"
+    "SEARCH-BY-MONTH": "Search by month",
+    "GO_BACK": "Go back"
   },
   "LANGUAGES": {
     "ENGLISH": "EN",
@@ -41,6 +43,17 @@
     "SESSION_IS_EXPIRED": "Session is expired!"
   },
   "TEXT": {
-    "PAGE_NOT_FOUND": "404 Page not found"
+    "PAGE_NOT_FOUND": "404 Page not found",
+  "EVENTS": "created events"
+  },
+  "MENU":{
+    "ACCOUNT_SETTINGS": "Account settings"
+  },
+  "TITLES":{
+    "EDIT_PROFILE": "Edit profile"
+  },
+  "DIALOGS":{
+    "DELETE_ACCOUNT_TITLE": "Delete account?",
+    "DELETE_ACCOUNT_CONFIRM": "Are you sure you want to permanently delete your account? This action cannot be undone and will remove all your data associated with this account"
   }
 }

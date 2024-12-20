@@ -1,15 +1,13 @@
 <template>
-  <v-app-bar color="#753737FF" dark>
+  <v-app-bar color="#753737FF" dark class="app-bar">
     <v-app-bar-title>Event Management</v-app-bar-title>
     <v-icon left>mdi-map-marker</v-icon>
-    <app-select-city />
+    <app-select-city/>
     <v-spacer />
-    <v-btn class="mr-4" text to="/events">{{translate("BTNS.OVERVIEW")}}</v-btn>
-    <v-btn class="mr-4" text to="/myEvents">{{translate("BTNS.MY_EVENTS")}}</v-btn>
     
     <template v-slot:append>
       <app-select-lang />
-      
+
       <v-menu
         v-model="showProfileMenu"
         :close-on-content-click="false"
@@ -39,18 +37,8 @@
           <v-divider></v-divider>
           
           <v-card-text>
-            <v-btn
-              v-if="!isEditing"
-              class="bml-auto"
-              elevation="2"
-              :block="true"
-              type="button"
-              variant="text"
-              @click="toggleEditMode"
-            >
-              {{ translate('BTNS.EDIT') }}
-            </v-btn>
-
+            <v-btn class="mt-2" text to="/profile"
+            variant="text" :block="true">Особистий кабінет</v-btn>
             <v-form v-if="isEditing" @submit.prevent="submit">
               <v-text-field
                 v-model="firstName"
@@ -87,7 +75,6 @@
             <v-btn
               v-if="!isEditing"
               class="mt-2"
-              elevation="2"
               :block="true"
               type="button"
               variant="text"
@@ -181,6 +168,9 @@ const submit = form.handleSubmit(async (values) => {
 </script>
 
 <style lang="scss" scoped>
+.app-bar{
+  border-radius: 0%;
+}
 .account-button {
  border-radius: 50%;
  height: 60px;

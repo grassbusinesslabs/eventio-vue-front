@@ -36,6 +36,22 @@ const routes: RouteRecordRaw[] = [
       meta: {auth: true}
    },
    {
+      path: '/profile',
+      component: () => import('@/views/ProfilePage.vue'),
+      children: [
+        {
+          path: '/myEvents',
+          name: 'MyEvents',
+          meta: {auth: true}
+        },
+        {
+          path: 'account',
+          name: 'account',
+          meta: {auth: true}
+        }
+      ]
+    },
+   {
       path: '/:all(.*)*',
       name: 'all',
       component: ErrorView

@@ -10,10 +10,7 @@
       ></v-img>
 
       <v-card-text class="text-content">
-        <p class="card-map" v-if="event?.location">
-          <v-icon left>mdi-map-marker</v-icon>
-          {{ event.location }}
-        </p>
+        
 
         <h3 class="card-title" v-if="event?.title">{{ event.title }}</h3>
 
@@ -22,21 +19,20 @@
           <span v-else>{{ event?.description }}</span>
         </p>
 
-        <v-btn
-          variant="plain"
-          @click="toggleExpand"
-          text
-        >
-          {{ isExpanded ? translate("BTNS.ROLL-UP") : translate("BTNS.MORE") }}
-        </v-btn>
+        <p class="card-map" v-if="event?.location">
+          <v-icon left>mdi-map-marker</v-icon>
+          {{ event.location }}
+        </p>
         <v-divider></v-divider>
+        <v-row class="d-flex align-end ma-1">
         <p class="card-date" v-if="event?.date">
           {{ formatDate(event.date) }}
         </p>
         <v-btn
           class="button-join ml-auto"
-          prepend-icon="mdi-check"
+          append-icon="mdi-arrow-right"
         >{{ translate("BTNS.JOIN") }}</v-btn>
+      </v-row>
       </v-card-text>
     </v-card>
   </v-col>
@@ -61,7 +57,7 @@ const props = defineProps<{
 const event = props.event
 
 const truncatedBody = computed(() => {
-  const maxLength = 145;
+  const maxLength = 155;
   return event?.description && event.description.length > maxLength
     ? event.description.slice(0, maxLength) + "..."
     : event?.description || ""
@@ -89,21 +85,22 @@ const formatDate = (dateString: string | Date): string => {
 
 <style lang="scss" scoped>
 .card-map {
-  margin-left: 20px;
   font-size: 14px;
   padding: 5px;
+  margin-left: -10px;
 }
 .card-date {
 
-  margin-top: 10px;
+  margin-top: 20px;
   font-size: 16px;
   padding: 5px;
+  margin-left: -10px;
   font-weight: bold;
 }
 .card-image {
   width: 240px;
   height: 240px;
-  border-radius: 4px;
+ 
   margin-right: 10px;
   margin-left: 10px;
   overflow: hidden;
@@ -112,7 +109,7 @@ const formatDate = (dateString: string | Date): string => {
 .card-title {
   margin-top: 15px;
   margin-bottom: 10px;
-  font-size: 18px;
+  font-size: 19px;
   font-weight: bold;
 }
 
@@ -127,10 +124,10 @@ const formatDate = (dateString: string | Date): string => {
 .text-content {
   flex-grow: 1;
   padding: 10px;
-  width: 510px;
+  width: 520px;
 }
 .button-join {
-  margin-top: 15px;
+  margin-top: 0px;
   width: fit-content;
   align-content: right;
   display: flex;

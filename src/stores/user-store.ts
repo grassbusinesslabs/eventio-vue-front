@@ -39,21 +39,24 @@ export const useUserStore = defineStore('user', () => {
    async function populate(): Promise<void> {
       try {
          const token: string | null = await authToken.get()
-
+         console.log('Retrieved token:', token) // Додано логування
+   
          if (!token) {
+            console.log('No token found, logging out...')
             return
          }
-
+   
          const userData: CurrentUser | null = await getUserData()
          if (!userData) {
+            console.log('User data not found, logging out...')
             await logout()
          }
       } catch (e) {
-         console.error(e)
+         console.error('Error in populate:', e)
          handleError(e)
       }
    }
-
+   
    async function logout(): Promise<void> {
       try {
          await request.logout()
