@@ -25,9 +25,10 @@
     "vee-validate": "^4.12.2",
     "vue": "^3.3.8",
     "vue-i18n": "^9.8.0",
+    "vue-month-picker": "^1.7.2",
     "vue-router": "^4.2.5",
     "vue-toastification": "^2.0.0-rc.5",
-    "vuetify": "^3.4.4"
+    "vuetify": "^3.7.6"
   },
   "devDependencies": {
     "@mdi/font": "^7.3.67",

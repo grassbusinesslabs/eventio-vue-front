@@ -51,8 +51,8 @@ let map: Map | null = null
 let markers: { [key in string]: Marker } = {}
 
 export const mapService = () => {
-
-   const mapKey: string = 'drm2YOnCEjo2NZYyED481bHiiZSPaZyG'
+ const mapKey: string = 'drm2YOnCEjo2NZYyED481bHiiZSPaZyG'
+ 
 
    const defaultFuzzySearchOptions: FuzzySearchOptions = {
       key: mapKey,

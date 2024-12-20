@@ -1,254 +1,237 @@
 <template>
-   <home-layout>
-     <v-sheet class='mx-auto'>
-       <v-row class='ma-0'>
-       </v-row>
-     </v-sheet>
-     
-     <v-row class="d-flex align-center ma-0">
-       
-       
-       <v-col cols="auto" class="d-flex align-center">
-         <v-text-field  
-           :placeholder="translate('INPUTS.SEARCH')"
-           v-model="searchQuery"
-           variant="plain"
-           class="search-input"
-           density="comfortable"
-           clearable>
-           <v-icon left>mdi-magnify</v-icon>
-         </v-text-field>
-       </v-col>
-       <v-icon color="#3E3B3BFF">mdi-calendar</v-icon>
-       <v-col  cols="auto" class="d-flex align-center">
-               <v-select
-                 v-model="filterDay"
-                 :items="dayOptions"
-                 class="day-input"
-                 label="День"
-                 density="compact"
-                 width="10px"
-                 clearable
-               />
-             </v-col>
-       <v-col  cols="auto" class="d-flex align-center">
-               <v-select
-                 v-model="filterMonth"
-                 :items="monthOptions"
-                 class="month-input"
-                 label="Місяць"
-                 density="compact"
-                 clearable
-                 @update:model-value="onMonthSelected"
-               />
-             </v-col>
-        <v-col  cols="auto" class="d-flex align-center">
-               <v-select
-                 v-model="filterYear"
-                 :items="yearOptions"
-                 class="year-input"
-                 label="Рік"
-                 density="compact"
-                 clearable
-               />
-             </v-col>
-     </v-row>
+  <home-layout>
+    <v-sheet class='mx-auto'>
+      <v-row class='ma-0'>
+      </v-row>
+    </v-sheet>
+    
+    <v-row class="d-flex align-center ma-0">
+      <v-col cols="auto" class="d-flex align-center">
+        <v-text-field  
+          :placeholder="translate('INPUTS.SEARCH')"
+          v-model="searchQuery"
+          variant="plain"
+          class="search-input"
+          density="comfortable"
+          clearable
+          @update:model-value="debouncedSearch">
+          <v-icon left>mdi-magnify</v-icon>
+        </v-text-field>
+      </v-col>
+      <v-col cols="auto" class="d-flex align-center">
+      <button class="bookmark-button">
+        <v-icon color="#3E3B3BFF">mdi-bookmark</v-icon>
+      </button>
+      </v-col>
+      <v-col cols="auto" class="d-flex align-center">
+        <input type="date"
+          v-model="filterDay"
+          class="day-input"
+          density="compact"
+          width="10px"
+          clearable
+          @update:model-value="handleDayChange"
+        />
+      </v-col>
+      <v-col cols="auto" class="d-flex align-center">
+        <input type="month"
+          v-model="filterMonth"
+          class="month-input"
+          label="Місяць"
+          density="compact"
+          clearable
+          @update:model-value="handleMonthChange"
+        />
+      </v-col>
+      <v-col cols="auto" class="d-flex align-center">
+        <v-select
+          v-model="filterYear"
+          :items="yearOptions"
+          class="year-input"
+          label="Рік"
+          density="compact"
+           variant="outlined"
+           base-color="#FFFFFFFF"
+           item-color="#ccc"
+          @update:model-value="handleYearChange"
+        />
+      </v-col>
+      
+        <button
+         v-if="isClearButtonVisible"
+        @click="clearInput"
+        class="clear-button"
+        type="button"
+      >
+      <v-icon color="#3E3B3BFF">mdi-close-circle</v-icon>
+      </button>
  
-     <v-row class='ma-0'>
-       <app-post
-         v-for='event in filteredEvents'
-         :key='event.id'
-         :event='event'
-       />
-     </v-row>
-   </home-layout>
- </template>
- 
- <script lang='ts' setup>
- import type {MaybeRefOrGetter, Ref} from 'vue'
- import {onMounted, ref, computed, watch} from 'vue'
- import { useRoute, useRouter } from 'vue-router'
- import {storeToRefs} from 'pinia'
- import { format, parseISO } from 'date-fns'
- import { uk } from 'date-fns/locale'
- 
- import type {GetEventsResponse, Event} from '@/models'
- import {formService, requestService} from '@/services'
- import {useHandleError} from '@/composables'
- import {useAppI18n} from '@/i18n'
- import {useUserStore} from '@/stores'
- import HomeLayout from '@/layouts/HomeLayout.vue'
- import AppPost from '@/components/AppPost.vue'
- 
- const {handleError} = useHandleError()
- const {translate} = useAppI18n()
- const userStore = useUserStore()
- const {currentUser} = storeToRefs(userStore)
- 
- const request = requestService()
- const {vuetifyConfig, eventTitleValidator, textValidator} = formService()
- 
- const events: Ref<Event[]> = ref<Event[]>([])
- const loadingEvents = ref<boolean>(false)
- 
- let lastEventId: number = 0
- 
- const isSubmitting = ref<boolean>(false)
- 
- const selectedDateValue = ref('all')
- const searchQuery = ref<string>('')
- 
- // New filter-related refs
- const showFilterWindow = ref(false)
- const filterMonth = ref(null)
- const filterDate = ref(null)
- 
- const monthOptions = [
-   'Січень', 'Лютий', 'Березень', 'Квітень', 
-   'Травень', 'Червень', 'Липень', 'Серпень', 
-   'Вересень', 'Жовтень', 'Листопад', 'Грудень'
- ]
- const dayOptions = Array.from({ length: 31 }, (_, i) => i + 1)
+    </v-row>
+
+    <v-row class='ma-0'>
+      <app-post
+        v-for='event in events'
+        :key='event.id'
+        :event='event'
+      />
+    </v-row>
+  </home-layout>
+</template>
+
+<script lang='ts' setup>
+import { onMounted, ref, computed } from 'vue'
+import { storeToRefs } from 'pinia'
+
+import type { Event, GetEventsResponse } from '@/models'
+import { requestService } from '@/services'
+import { useHandleError } from '@/composables'
+import { useAppI18n } from '@/i18n'
+import { useUserStore } from '@/stores'
+import HomeLayout from '@/layouts/HomeLayout.vue'
+import AppPost from '@/components/AppPost.vue'
+
+const { handleError } = useHandleError()
+const { translate } = useAppI18n()
+const userStore = useUserStore()
+const { currentUser } = storeToRefs(userStore)
+
+const request = requestService()
+
+const events = ref<Event[]>([])
+const loadingEvents = ref<boolean>(false)
+const searchQuery = ref<string>('')
+const filterDay = ref<string>('')
+const filterMonth = ref<string>('')
+const filterYear = ref<number | null>(null)
+
 const yearOptions = [2024, 2025, 2026]
 
- const route = useRoute()
- const router = useRouter()
- 
- onMounted(() => {
-   loadEvents()
- })
- 
- watch(route, () => {
-   loadEvents()
- })
- 
- function onMonthSelected() {
-   filterDate.value = null
- }
- 
- function onDateSelected() {
-   filterMonth.value = null
- }
- 
- const filteredEvents = computed(() => {
-   return events.value.filter(event => {
-     const eventDate = new Date(event.date)
-     const matchesSearch =
-       event.title?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-       event.description?.toLowerCase().includes(searchQuery.value.toLowerCase())
- 
-     const matchesExactDate = 
-       !filterDate.value || 
-       format(eventDate, 'yyyy-MM-dd') === filterDate.value
- 
-     const matchesMonth = 
-       !filterMonth.value || 
-       monthOptions[eventDate.getMonth()] === filterMonth.value
- 
-     const matchesDateToggle = 
-       selectedDateValue.value === 'all' ||
-       (selectedDateValue.value === 'past' && eventDate < new Date()) ||
-       (selectedDateValue.value === 'future' && eventDate >= new Date())
- 
-     return matchesSearch && 
-            matchesExactDate && 
-            matchesMonth && 
-            matchesDateToggle
-   })
- })
- 
- function toggleFilterWindow() {
-   showFilterWindow.value = !showFilterWindow.value
- }
- 
- async function applyFilters() {
-  showFilterWindow.value = false
-  loadingEvents.value = true
+function debounce<T extends (...args: any[]) => any>(
+  fn: T,
+  delay: number
+): (...args: Parameters<T>) => void {
+  let timeoutId: ReturnType<typeof setTimeout>
+  
+  return (...args: Parameters<T>) => {
+    clearTimeout(timeoutId)
+    timeoutId = setTimeout(() => fn(...args), delay)
+  }
+}
 
+const handleDayChange = () => {
+  filterMonth.value = ''
+  filterYear.value = null
+  loadEvents()
+}
+
+const handleMonthChange = () => {
+  filterDay.value = ''
+  filterYear.value = null
+  loadEvents()
+}
+
+const handleYearChange = () => {
+  filterDay.value = ''
+  filterMonth.value = ''
+  loadEvents()
+}
+
+const getUnixTimestamp = (date: string): number | undefined => {
+  if (!date) return undefined
+  return Math.floor(new Date(date).getTime() / 1000)
+}
+
+async function loadEvents(): Promise<void> {
   try {
-    let response: GetEventsResponse
+    loadingEvents.value = true
 
-    if (filterDate.value) {
-      response = await request.getEventsByDate(filterDate.value)
-    } else {
-
-      response = await request.getEvents()
+    const params = {
+      day: filterDay.value ? getUnixTimestamp(filterDay.value) : undefined,
+      month: filterMonth.value ? getUnixTimestamp(filterMonth.value) : undefined,
+      year: filterYear.value ? getUnixTimestamp(`${filterYear.value}-01-01`) : undefined,
+      title: searchQuery.value || undefined
     }
 
+    const response = await request.findEvents(params)
     events.value = response.events || []
-    lastEventId = response.total
+
   } catch (error) {
-    console.error('Error loading filtered events', error)
+    console.error('Error loading events:', error)
     handleError(error)
+    events.value = []
   } finally {
     loadingEvents.value = false
   }
 }
- 
- function resetFilters() {
-   filterMonth.value = null
-   filterDate.value = null
- }
- 
- async function loadEvents(): Promise<void> {
-   try {
-     loadingEvents.value = true
- 
-     const response: GetEventsResponse = await request.getEvents()
-     events.value = response.events || [] 
-     lastEventId = response.total
- 
-   } catch (e) {
-     console.error(e)
-     handleError(e)
-     events.value = []
-   } finally {
-     loadingEvents.value = false
-   }
- }
- </script>
- 
- <style lang='scss' scoped>
- .element {  
-   margin: 10px 20px 0px 15px;
- }  
- .search-input {
-   padding: 0px 10px;
-   font-size: 14px;
-   border: 1px solid #ccc;
-   border-radius: 4px;
-   width: 380px;
-   height: 50px;
-   margin-left: 0px;
-   margin-right: 65px;
- }
- .month-input {
-   padding: 5px 5px;
-   font-size: 14px;
-   border: 1px solid #ccc;
-   border-radius: 4px;
-   height: 50px;
-   width: 180px;
-   margin-left: 0px;
-   margin-left: -15px;
 
- }
- .day-input{
+const debouncedSearch = debounce(() => {
+  loadEvents()
+}, 300)
+
+onMounted(() => {
+  loadEvents()
+})
+
+const clearInput = () => {
+  filterDay.value = ''
+  filterMonth.value = ''
+  filterYear.value = null
+  loadEvents()
+}
+const isClearButtonVisible = computed(() => {
+  return filterDay.value || filterMonth.value || filterYear.value || searchQuery.value;
+});
+</script>
+
+<style lang='scss' scoped>
+.search-input {
+  padding: 0px 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 380px;
+  height: 50px;
+  margin-left: 0px;
+
+}
+.bookmark-button{
+  border: 1px solid #ccc;
+  height: 50px;
+  width: 55px;
+  border-radius: 4px;
+}
+.month-input {
   padding: 5px 5px;
-   font-size: 14px;
-   border: 1px solid #ccc;
-   border-radius: 4px;
-   height: 50px;
-   width: 115px;
-   margin-left: 0px;
- }
- .year-input{
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  height: 50px;
+  width: 145px;
+  margin-left: -20px;
+  color: #ccc;
+}
+
+.day-input {
   padding: 5px 5px;
-   font-size: 14px;
-   border: 1px solid #ccc;
-   border-radius: 4px;
-   height: 50px;
-   width: 130px;
-   margin-left: -15px;
- }
- </style>
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  height: 50px;
+  width: 115px;
+  margin-left: 0px;
+  color: #ccc;
+}
+
+.year-input {
+  padding: 5px 5px;
+  font-size: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  height: 50px;
+  width: 145px;
+  margin-left: -20px;
+}
+.clear-button{
+  width: 25px;
+}
+</style>

@@ -1,5 +1,5 @@
 import {apiService} from '@/services/api'
-import type {AddEventBody, CurrentUser, UpdateUserBody, GetEventsResponse, LoginBody, Event} from '@/models'
+import type {AddEventBody, CurrentUser, UpdateUserBody, GetEventsResponse, LoginBody, Event, FindListParams} from '@/models'
 
 export const requestService = () => {
    const api = apiService()
@@ -11,6 +11,22 @@ export const requestService = () => {
    async function getEvents(): Promise<GetEventsResponse> {
       return api.get('/events/findall')
    }
+   
+   async function findEvents(params: FindListParams): Promise<GetEventsResponse> {
+      try {
+        const searchParams = new URLSearchParams()
+        
+        if (params.day) searchParams.append('day', params.day.toString())
+        if (params.month) searchParams.append('month', params.month.toString())
+        if (params.title) searchParams.append('title', params.title)
+  
+        return api.get(`/events/findlist?${searchParams.toString()}`)
+      } catch (error) {
+        console.error('Error fetching events:', error)
+        throw error
+      }
+    }
+  
 
    async function addEvent(body: Record<string, any>): Promise<Event> {
       return api.post('/events', body)
@@ -53,6 +69,7 @@ export const requestService = () => {
       updateUser,
       getMyEvents,
       getEventById,
-      getEventsByDate
+      getEventsByDate,
+      findEvents
    }
 }
