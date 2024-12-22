@@ -55,9 +55,11 @@ export const apiService = () => {
    return {
       apiUrl,
       instance,
+      apiClient: instance,
       get,
       post,
       put,
       del
    }
 }
+export const apiClient = apiService().apiClient;

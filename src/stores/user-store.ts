@@ -7,21 +7,37 @@ import {authTokenService, requestService} from '@/services'
 import {useHandleError, useRouting} from '@/composables'
 
 export const useUserStore = defineStore('user', () => {
-   const {handleError} = useHandleError()
+   const { handleError } = useHandleError()
    const routing = useRouting()
-
+ 
    const request = requestService()
    const authToken = authTokenService()
-
+ 
    const currentUser: Ref<CurrentUser | null> = ref<CurrentUser | null>(null)
-
+ 
    function setCurrentUser(value: CurrentUser | null): void {
-      currentUser.value = value
+     if (currentUser.value === null && value === null) {
+       return
+     }
+     
+     if (value === null) {
+       currentUser.value = null
+       return
+     }
+ 
+     if (currentUser.value === null) {
+       currentUser.value = value
+       return
+     }
+ 
+     currentUser.value = {
+       ...currentUser.value,
+     }
    }
 
    async function getUserData(): Promise<CurrentUser | null> {
       try {
-         if (currentUser.value?.user.id) {
+         if (currentUser.value?.id) {
             return currentUser.value
          }
 
@@ -39,12 +55,15 @@ export const useUserStore = defineStore('user', () => {
    async function populate(): Promise<void> {
       try {
          const token: string | null = await authToken.get()
-         console.log('Retrieved token:', token) // Додано логування
+         console.log('Retrieved token:', token)
    
          if (!token) {
             console.log('No token found, logging out...')
-            return
+            await logout()
+            return;
          }
+
+         requestService().setAuthHeader(token);
    
          const userData: CurrentUser | null = await getUserData()
          if (!userData) {
@@ -59,7 +78,12 @@ export const useUserStore = defineStore('user', () => {
    
    async function logout(): Promise<void> {
       try {
-         await request.logout()
+         const token = await authToken.get()
+         if (!token) {
+            console.log('No token found, logging out...')
+            return
+         }
+         await requestService().logout()
       } catch (e) {
          console.error(e)
       } finally {

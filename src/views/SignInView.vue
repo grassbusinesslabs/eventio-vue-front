@@ -116,7 +116,7 @@ const submit = form.handleSubmit(async values => {
       }
       const currentUser: CurrentUser = await request.login(body)
       setCurrentUser(currentUser)
-      await authToken.set(currentUser.token)
+      //await authToken.set(currentUser.token)
        routing.toAllEvents()
 
       isSubmitting.value = false

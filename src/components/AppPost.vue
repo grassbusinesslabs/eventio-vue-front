@@ -102,7 +102,7 @@ const formatDate = (dateString: string | Date): string => {
   height: 240px;
  
   margin-right: 10px;
-  margin-left: 10px;
+  margin-left: 0px;
   overflow: hidden;
 }
 

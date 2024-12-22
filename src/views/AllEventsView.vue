@@ -19,54 +19,89 @@
         </v-text-field>
       </v-col>
       <v-col cols="auto" class="d-flex align-center">
-      <button class="bookmark-button">
-        <v-icon color="#3E3B3BFF">mdi-bookmark</v-icon>
-      </button>
+        <v-btn class="bookmark-button" 
+              variant="outlined"
+              height="50px"
+              width="90px">
+          <v-icon color="#3E3B3BFF" size="x-large">mdi-bookmark</v-icon>
+        </v-btn>
       </v-col>
       <v-col cols="auto" class="d-flex align-center">
-        <input type="date"
-          v-model="filterDay"
-          class="day-input"
-          density="compact"
-          width="10px"
-          clearable
-          @update:model-value="handleDayChange"
-        />
+        <v-btn
+          class="filter-button"
+          variant="outlined"
+          height="50px"
+          width="90px"
+          @click="toggleFilterDrawer"
+        >
+          <v-icon color="#3E3B3BFF" size="x-large">mdi-filter-multiple</v-icon>
+        </v-btn>
       </v-col>
-      <v-col cols="auto" class="d-flex align-center">
-        <input type="month"
-          v-model="filterMonth"
-          class="month-input"
-          label="Місяць"
-          density="compact"
-          clearable
-          @update:model-value="handleMonthChange"
-        />
-      </v-col>
-      <v-col cols="auto" class="d-flex align-center">
-        <v-select
-          v-model="filterYear"
-          :items="yearOptions"
-          class="year-input"
-          label="Рік"
-          density="compact"
-           variant="outlined"
-           base-color="#FFFFFFFF"
-           item-color="#ccc"
-          @update:model-value="handleYearChange"
-        />
-      </v-col>
-      
-        <button
-         v-if="isClearButtonVisible"
-        @click="clearInput"
-        class="clear-button"
-        type="button"
-      >
-      <v-icon color="#3E3B3BFF">mdi-close-circle</v-icon>
-      </button>
- 
     </v-row>
+
+    <v-navigation-drawer
+      v-model="showFilterDrawer"
+      location="right"
+      temporary
+      class="filter-drawer"
+      :width="275"
+    >
+      <v-list>
+        <v-list-item class="justify-center pa-4">
+          <v-list-item-title class="filter-title text-center">
+            Фільтрування івентів
+          </v-list-item-title>
+        </v-list-item>
+      </v-list>
+
+      <v-divider></v-divider>
+
+      <v-list class="pa-4">
+        <v-list-item>
+          <v-list-item-title class="filter-subtitle mb-2">За конкретною датою</v-list-item-title>
+          <input 
+            type="date"
+            v-model="filterDay"
+            class="filter-input mb-4"
+            @update:model-value="handleDayChange"
+          />
+        </v-list-item>
+
+        <v-list-item>
+          <v-list-item-title class="filter-subtitle mb-2">За місяцем та роком</v-list-item-title>
+          <input 
+            type="month"
+            v-model="filterMonth"
+            class="filter-input mb-4"
+            @update:model-value="handleMonthChange"
+          />
+        </v-list-item>
+
+        <v-list-item>
+          <v-list-item-title class="filter-subtitle mb-2">За роком</v-list-item-title>
+          <v-select
+            v-model="filterYear"
+            :items="yearOptions"
+            class="filter-year-input"
+            density="comfortable"
+            variant="outlined"
+            @update:model-value="handleYearChange"
+          />
+        </v-list-item>
+
+        <v-list-item v-if="isClearButtonVisible">
+          <v-btn
+            block
+            color="error"
+            class="mt-4"
+            @click="clearInput"
+          >
+            Очистити фільтри
+            <v-icon right>mdi-close-circle</v-icon>
+          </v-btn>
+        </v-list-item>
+      </v-list>
+    </v-navigation-drawer>
 
     <v-row class='ma-0'>
       <app-post
@@ -105,6 +140,12 @@ const filterMonth = ref<string>('')
 const filterYear = ref<number | null>(null)
 
 const yearOptions = [2024, 2025, 2026]
+
+const showFilterDrawer = ref(false)
+
+const toggleFilterDrawer = () => {
+  showFilterDrawer.value = !showFilterDrawer.value
+}
 
 function debounce<T extends (...args: any[]) => any>(
   fn: T,
@@ -169,6 +210,7 @@ const debouncedSearch = debounce(() => {
 }, 300)
 
 onMounted(() => {
+  userStore.populate();
   loadEvents()
 })
 
@@ -189,9 +231,8 @@ const isClearButtonVisible = computed(() => {
   font-size: 14px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  width: 380px;
+  width:709px;
   height: 50px;
-  margin-left: 0px;
 
 }
 .bookmark-button{
@@ -233,5 +274,50 @@ const isClearButtonVisible = computed(() => {
 }
 .clear-button{
   width: 25px;
+}
+.filter-button {
+  height: 50px;
+  width: 55px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.filter-drawer {
+  .filter-title {
+    font-size: 22px;
+    color: #753737;
+  }
+
+  .filter-subtitle {
+    font-size: 16px;
+    color: #666;
+  }
+
+  .filter-input {
+    width: 100%;
+    height: 50px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    
+    &:focus {
+      border-color: #753737;
+      outline: none;
+    }
+  }
+  .filter-year-input {
+    width: 100%;
+    height: 60px;
+    padding: 0px;
+    border: 1px solid #ffffff;
+    border-radius: 4px;
+    font-size: 14px;
+    
+    &:focus {
+      border-color: #753737;
+      outline: none;
+    }
+  }
 }
 </style>

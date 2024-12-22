@@ -1,11 +1,22 @@
-import {apiService} from '@/services/api'
+import {apiService, apiClient} from '@/services/api'
 import type {AddEventBody, CurrentUser, UpdateUserBody, GetEventsResponse, LoginBody, Event, FindListParams} from '@/models'
+import { authTokenService } from './auth-token'
 
 export const requestService = () => {
    const api = apiService()
 
    async function login(body: LoginBody): Promise<CurrentUser> {
-      return api.post('/auth/login', body)
+      const response = await api.post('/auth/login', body)
+      const { token, user } = response
+      if (token) {
+       
+         await authTokenService().set(token)
+         setAuthHeader(token)
+         console.log(token)
+      } else {
+         console.log("Token not received during registration");
+      }
+      return user;
    }
 
    async function getEvents(): Promise<GetEventsResponse> {
@@ -33,32 +44,48 @@ export const requestService = () => {
    }
 
    async function getCurrentUser(): Promise<CurrentUser> {
-      return api.get('/users/me')
+      return api.get('/users')
    }
 
    async function logout(): Promise<void> {
-      return api.post('/auth/logout')
+      await api.post('/auth/logout')
+      setAuthHeader(null)
    }
    async function register(body: Record<string, string>): Promise<any> {
-      return api.post('/auth/register', body)
+      const response = await api.post('/auth/register', body);
+      const { token, user } = response
+      if (token) {
+         
+         await authTokenService().set(token)
+         setAuthHeader(token)
+      } else {
+         console.log("Token not received during registration");
+      }
+      return user
    }
    async function updateUser(body: UpdateUserBody): Promise<CurrentUser> {
-      return api.put(`/users`, body);
+      return api.put(`/users`, body)
    }
 
    async function getMyEvents(): Promise<GetEventsResponse> {
-      return api.get<GetEventsResponse>('/events/findbyuser');
+      return api.get<GetEventsResponse>('/events/findbyuser')
     }
 
     async function getEventById(Id: string | number): Promise<Event> {
-      return api.get<Event>(`/events/${Id}`);
+      return api.get<Event>(`/events/${Id}`)
     }
     async function getEventsByDate(date: string | number): Promise<GetEventsResponse> {
-      const dateObj = typeof date === 'string' ? new Date(date) : new Date(date);
-      const unixTimestamp = Math.floor(dateObj.getTime() / 1000);
-      return api.get<GetEventsResponse>(`/events/findbydate?date=${unixTimestamp}`);
+      const dateObj = typeof date === 'string' ? new Date(date) : new Date(date)
+      const unixTimestamp = Math.floor(dateObj.getTime() / 1000)
+      return api.get<GetEventsResponse>(`/events/findbydate?date=${unixTimestamp}`)
     }
-
+     function setAuthHeader(token: string | null): void {
+      if (token) {
+         apiClient.defaults.headers.common['Authorization'] = `Bearer ${token}`
+      } else {
+         delete apiClient.defaults.headers.common['Authorization'];
+      }
+   }
    return {
       login,
       getEvents,
@@ -70,6 +97,7 @@ export const requestService = () => {
       getMyEvents,
       getEventById,
       getEventsByDate,
-      findEvents
+      findEvents,
+      setAuthHeader
    }
 }

@@ -178,9 +178,9 @@
       })
     ),
     initialValues: {
-      firstName: currentUser.value?.user.firstName || '',
-      secondName: currentUser.value?.user.secondName || '',
-      email: currentUser.value?.user.email || '',
+      firstName: currentUser.value?.firstName || '',
+      secondName: currentUser.value?.secondName || '',
+      email: currentUser.value?.email || '',
     },
   })
   
@@ -206,8 +206,8 @@
       await request.updateUser(body)
   
       if (currentUser.value) {
-        currentUser.value.user = {
-          ...currentUser.value.user,
+        currentUser.value= {
+          ...currentUser.value,
           ...body
         }
         setCurrentUser(currentUser.value)
@@ -249,12 +249,14 @@
   
   onMounted(() => {
     if (currentSection.value === 'my-events') {
+      userStore.populate();
       loadEvents()
     }
   })
   
   watch(currentSection, (newValue) => {
     if (newValue === 'my-events') {
+      userStore.populate();
       loadEvents()
     }
   })
