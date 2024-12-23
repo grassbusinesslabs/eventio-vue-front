@@ -1,5 +1,5 @@
 <template>
-    <v-layout class="rounded rounded-md">
+    <v-layout>
        <app-header class="app-header"/>
  
        <v-main class="bg-grey-lighten-3">

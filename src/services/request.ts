@@ -26,7 +26,8 @@ export const requestService = () => {
    async function findEvents(params: FindListParams): Promise<GetEventsResponse> {
       try {
         const searchParams = new URLSearchParams()
-        
+
+        if(params.city) searchParams.append('city', params.city.toString())
         if (params.day) searchParams.append('day', params.day.toString())
         if (params.month) searchParams.append('month', params.month.toString())
         if (params.title) searchParams.append('title', params.title)
@@ -71,9 +72,10 @@ export const requestService = () => {
       return api.get<GetEventsResponse>('/events/findbyuser')
     }
 
-    async function getEventById(Id: string | number): Promise<Event> {
-      return api.get<Event>(`/events/${Id}`)
+    async function getEventById(Id: number | string): Promise<Event> {
+      return api.get(`/events/?Id=${Id}`)
     }
+
     async function getEventsByDate(date: string | number): Promise<GetEventsResponse> {
       const dateObj = typeof date === 'string' ? new Date(date) : new Date(date)
       const unixTimestamp = Math.floor(dateObj.getTime() / 1000)

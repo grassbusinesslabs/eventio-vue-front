@@ -1,5 +1,5 @@
 <template>
-   <v-layout class='rounded rounded-md'>
+   <v-layout>
       <app-header />
 
       <v-main class='d-flex align-center justify-center'>

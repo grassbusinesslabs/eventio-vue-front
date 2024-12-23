@@ -29,11 +29,12 @@
     "JOIN": "Join event",
     "EDIT": "Edit",
      "DELETE": "Delete account",
-     "DELETEEV": "Delete event",
+     "DELETEEV": "Delete",
      "SAVE": "Save changes",
      "SEARCH-BY-DATE": "Search by date",
     "SEARCH-BY-MONTH": "Search by month",
-    "GO_BACK": "Go back"
+    "GO_BACK": "Go back",
+    "CANCEL": "Cancel"
   },
   "LANGUAGES": {
     "ENGLISH": "EN",

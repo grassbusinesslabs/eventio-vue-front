@@ -1,6 +1,5 @@
 <template>
   <div class="search-container">
-    <!-- Show label when no city selected and not in edit mode -->
     <div 
       v-if="!isEditing && !selectedCity" 
       @click="startEditing"
@@ -8,8 +7,6 @@
     >
       <span>Всі міста</span>
     </div>
-
-    <!-- Show selected city as label when not editing -->
     <div 
       v-else-if="!isEditing && selectedCity" 
       @click="startEditing"
@@ -24,8 +21,6 @@
         ✕
       </button>
     </div>
-
-    <!-- Show input only when editing -->
     <div v-else class="input-wrapper">
       <input
         v-model="searchText"
@@ -84,9 +79,10 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, nextTick } from 'vue'
+import { ref, computed, nextTick, onMounted, watch } from 'vue'
 import type { CityItem } from '@/services/map'
 import { useCityStore } from '@/stores/city-store'
+import { mapService } from "@/services/map"
 
 const props = defineProps<{
   placeholder?: string
@@ -102,9 +98,25 @@ const isEditing = ref(false)
 const selectedCity = ref('')
 
 const searchHistory = computed(() => cityStore.searchHistory)
-
-import { mapService } from "@/services/map"
 const { searchCities } = mapService()
+
+onMounted(() => {
+  const storedCity = cityStore.getSelectedCity()
+  if (storedCity) {
+    selectedCity.value = storedCity.city
+  }
+})
+
+watch(
+  () => cityStore.selectedCity,
+  (newCity) => {
+    if (newCity) {
+      selectedCity.value = newCity.city
+    } else {
+      selectedCity.value = ''
+    }
+  }
+)
 
 const startEditing = () => {
   isEditing.value = true
@@ -122,7 +134,7 @@ const cancelEdit = () => {
 
 const clearSelection = () => {
   selectedCity.value = ''
-  cityStore.setSelectedCity(null)
+  cityStore.clearSelectedCity()
 }
 
 const onSearch = async () => {

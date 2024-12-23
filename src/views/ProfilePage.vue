@@ -87,7 +87,7 @@
         <div v-if="currentSection === 'my-events'" class="content-section">
           <v-row align="center" class="mb-6">
             <v-col>
-              <h2 class="text-h5">
+              <h2 class="text-h5" >
                 {{ events.length }} {{ translate("TEXT.EVENTS") }}
               </h2>
             </v-col>
@@ -103,7 +103,7 @@
             </v-col>
           </v-row>
 
-          <v-row>
+          <v-row >
             <app-post v-for="event in events" :key="event.id" :event="event" />
           </v-row>
         </div>
@@ -289,7 +289,7 @@
 }
 
 .content-section {
-  max-width: 600px;
+  max-width: 670px;
   margin: 0 auto;
 }
 .tool-bar{

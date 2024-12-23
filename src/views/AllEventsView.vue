@@ -1,51 +1,7 @@
 <template>
   <home-layout>
-    <v-sheet class='mx-auto'>
-      <v-row class='ma-0'>
-      </v-row>
-    </v-sheet>
-    
-    <v-row class="d-flex align-center ma-0">
-      <v-col cols="auto" class="d-flex align-center">
-        <v-text-field  
-          :placeholder="translate('INPUTS.SEARCH')"
-          v-model="searchQuery"
-          variant="plain"
-          class="search-input"
-          density="comfortable"
-          clearable
-          @update:model-value="debouncedSearch">
-          <v-icon left>mdi-magnify</v-icon>
-        </v-text-field>
-      </v-col>
-      <v-col cols="auto" class="d-flex align-center">
-        <v-btn class="bookmark-button" 
-              variant="outlined"
-              height="50px"
-              width="90px">
-          <v-icon color="#3E3B3BFF" size="x-large">mdi-bookmark</v-icon>
-        </v-btn>
-      </v-col>
-      <v-col cols="auto" class="d-flex align-center">
-        <v-btn
-          class="filter-button"
-          variant="outlined"
-          height="50px"
-          width="90px"
-          @click="toggleFilterDrawer"
-        >
-          <v-icon color="#3E3B3BFF" size="x-large">mdi-filter-multiple</v-icon>
-        </v-btn>
-      </v-col>
-    </v-row>
-
-    <v-navigation-drawer
-      v-model="showFilterDrawer"
-      location="right"
-      temporary
-      class="filter-drawer"
-      :width="275"
-    >
+    <!-- Filter content that will be displayed in the drawer -->
+    <template #filter-content>
       <v-list>
         <v-list-item class="justify-center pa-4">
           <v-list-item-title class="filter-title text-center">
@@ -101,7 +57,32 @@
           </v-btn>
         </v-list-item>
       </v-list>
-    </v-navigation-drawer>
+    </template>
+
+    <v-sheet class='mx-auto'>
+      <v-row class='ma-0'>
+        <v-col cols="auto" class="d-flex align-center">
+          <v-text-field  
+            :placeholder="translate('INPUTS.SEARCH')"
+            v-model="searchQuery"
+            variant="plain"
+            class="search-input"
+            density="comfortable"
+            clearable
+            @update:model-value="debouncedSearch">
+            <v-icon left>mdi-magnify</v-icon>
+          </v-text-field>
+        </v-col>
+        <v-col cols="auto" class="d-flex align-center">
+          <v-btn class="bookmark-button" 
+                variant="outlined"
+                height="50px"
+                width="90px">
+            <v-icon color="#3E3B3BFF" size="x-large">mdi-bookmark</v-icon>
+          </v-btn>
+        </v-col>
+      </v-row>
+    </v-sheet>
 
     <v-row class='ma-0'>
       <app-post
@@ -187,6 +168,7 @@ async function loadEvents(): Promise<void> {
     loadingEvents.value = true
 
     const params = {
+      city: "",
       day: filterDay.value ? getUnixTimestamp(filterDay.value) : undefined,
       month: filterMonth.value ? getUnixTimestamp(filterMonth.value) : undefined,
       year: filterYear.value ? getUnixTimestamp(`${filterYear.value}-01-01`) : undefined,

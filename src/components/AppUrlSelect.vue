@@ -1,0 +1,33 @@
+<template>
+    <v-select
+      v-model="selectedUrl"
+      :items="apiUrls"
+      item-title="title"
+      item-value="value"
+      label="API URL"
+      variant="outlined"
+      density="comfortable"
+      class="url-select"
+      @update:model-value="handleUrlChange"
+    />
+  </template>
+  
+  <script lang="ts" setup>
+  import { ref } from 'vue'
+  import { apiService } from '@/services/api'
+  
+  const { apiUrls, currentApiUrl, setApiUrl } = apiService()
+  
+  const selectedUrl = ref(currentApiUrl.value)
+  
+  const handleUrlChange = (url: string) => {
+    setApiUrl(url)
+  }
+  </script>
+  
+  <style lang="scss" scoped>
+  .url-select {
+    min-width: 200px;
+    margin-right: 16px;
+  }
+  </style>

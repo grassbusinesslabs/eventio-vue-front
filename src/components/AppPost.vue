@@ -14,23 +14,25 @@
 
         <h3 class="card-title" v-if="event?.title">{{ event.title }}</h3>
 
+        <p class="card-map" v-if="event?.location">
+          <v-icon left>mdi-map-marker</v-icon>
+          {{ event.location }}
+        </p>
+
         <p class="card-body">
           <span v-if="!isExpanded">{{ truncatedBody }}</span>
           <span v-else>{{ event?.description }}</span>
         </p>
 
-        <p class="card-map" v-if="event?.location">
-          <v-icon left>mdi-map-marker</v-icon>
-          {{ event.location }}
-        </p>
         <v-divider></v-divider>
         <v-row class="d-flex align-end ma-1">
         <p class="card-date" v-if="event?.date">
           {{ formatDate(event.date) }}
         </p>
-        <v-btn
+        <v-btn 
           class="button-join ml-auto"
           append-icon="mdi-arrow-right"
+          @click="navigateToEventDetails"
         >{{ translate("BTNS.JOIN") }}</v-btn>
       </v-row>
       </v-card-text>
@@ -45,6 +47,7 @@ import { useAppI18n } from "@/i18n"
 import type { Event } from "@/models"
 import { uk } from 'date-fns/locale'
 import { format, getMonth, getYear, getDate, getHours, getMinutes } from 'date-fns'
+import router from "@/router"
 
 const { translate } = useAppI18n()
 
@@ -80,7 +83,15 @@ const formatDate = (dateString: string | Date): string => {
   const minutes = getMinutes(date).toString().padStart(2, '0');
 
   return `${day} ${month} ${year} на ${hours}:${minutes}`;
-};
+}
+const navigateToEventDetails = () => {
+  if (props.event?.id) {
+    router.push({
+      name: 'EventDetails',
+      params: { id: props.event.id }
+    })
+  }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -88,6 +99,7 @@ const formatDate = (dateString: string | Date): string => {
   font-size: 14px;
   padding: 5px;
   margin-left: -10px;
+  padding-bottom: 20px;
 }
 .card-date {
 

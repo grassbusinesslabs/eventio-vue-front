@@ -1,14 +1,21 @@
 <template>
   <v-app-bar color="#753737FF" dark class="app-bar">
     <v-app-bar-title>Event Management</v-app-bar-title>
-    <v-icon left>mdi-map-marker</v-icon>
+    <v-icon left class="location-icon">mdi-map-marker</v-icon>
     <div class="search-wrapper">
       <app-select-city/>
     </div>
     <v-spacer />
     
     <template v-slot:append>
-      <app-select-lang />
+      <v-btn
+        class="filter-button ml-4"
+        variant="outlined"
+        style="border-color: #ccc;"
+        @click="toggleFilterDrawer"
+      >
+        <v-icon color="#FFFFFF" size="x-large">mdi-filter-multiple</v-icon>
+      </v-btn>
       
       <v-btn
         class="account-button ml-4"
@@ -29,27 +36,39 @@ import AppSelectLang from "@/components/AppSelectLang.vue"
 import AppSelectCity from "@/components/AppSelectCity.vue"
 
 const props = defineProps<{
-  drawer: boolean
+  drawer: boolean,
+  filterDrawer: boolean
 }>()
 
 const emit = defineEmits<{
   'update:drawer': [value: boolean]
+  'update:filterDrawer': [value: boolean]
 }>()
 
 const toggleDrawer = () => {
   emit('update:drawer', !props.drawer)
 }
+
+const toggleFilterDrawer = () => {
+  emit('update:filterDrawer', !props.filterDrawer)
+}
 </script>
 
 <style lang="scss" scoped>
 .app-bar {
-  border-radius: 0%;
-  position: relative;
+  border-radius: 0;
+  position: fixed;
   z-index: 100;
 }
 
+.location-icon {
+  position: fixed;
+  margin-left: 18%;
+}
+
 .search-wrapper {
-  position: relative;
+  margin-left: 20%;
+  position: fixed;
   z-index: 1001;
   min-width: 200px;
 }
@@ -61,6 +80,16 @@ const toggleDrawer = () => {
   align-content: center;
   padding: 0;
   border: 0px;
+  z-index: 100;
+}
+
+.filter-button {
+  border-radius: 50%;
+  height: 60px;
+width: 60px;
+  align-content: center;
+  padding: 0;
+  border: 1px solid #FFFFFF;
   z-index: 100;
 }
 

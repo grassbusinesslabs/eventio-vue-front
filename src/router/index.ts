@@ -11,6 +11,7 @@ import MyEvents from '@/views/MyEventsView.vue'
 import AllEventsView from '@/views/AllEventsView.vue'
 import MyEventsView from '@/views/MyEventsView.vue'
 import AddEventView from '@/views/AddEventView.vue'
+import EventPageView from '@/views/EventPageView.vue'
 
 const toastDialog = useToastDialog()
 const authToken = authTokenService()
@@ -29,6 +30,13 @@ const routes: RouteRecordRaw[] = [
       component: AllEventsView,
       meta: {auth: true}
    },
+   {
+      path: '/event/:id',
+      name: 'EventDetails',
+      component: () => import('@/views/EventPageView.vue'),
+      props: true,
+      meta: {auth: true}
+    },
    {
       path: '/myEvents',
       name: 'MyEvents',

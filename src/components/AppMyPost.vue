@@ -1,71 +1,69 @@
 <template>
   <v-col cols="12">
-    <v-card class="d-flex align-center">
-      <v-img
-        src="https://marketing-cdn.tickettailor.com/ZgP1j7LRO5ile62O_HowdoyouhostasmallcommunityeventA10-stepguide%2CMiniflagsattheevent.jpg?auto=format%2Ccompress&fit=max&w=3840"
-        alt="Image"
-        class="card-image"
-        aspect-ratio="1"
-        cover
-      ></v-img>
+    <v-card>
+      <div class="card-container">
+        <div class="upper-section">
+          <v-img
+            src="https://marketing-cdn.tickettailor.com/ZgP1j7LRO5ile62O_HowdoyouhostasmallcommunityeventA10-stepguide%2CMiniflagsattheevent.jpg?auto=format%2Ccompress&fit=max&w=3840"
+            alt="Image"
+            class="card-image"
+            aspect-ratio="1"
+            cover
+          ></v-img>
 
-      <v-card-text class="text-content">
-        
+          <div class="info-section">
+            <h3 class="card-title" v-if="event?.title">{{ event.title }}</h3>
+            
+            <p class="card-map" v-if="event?.location">
+              <v-icon left>mdi-map-marker</v-icon>
+              {{ event.location }}
+            </p>
+            
+            <p class="card-date" v-if="event?.date">
+              {{ formatDate(event.date) }}
+            </p>
+            
+            <p class="card-members-number">
+              Кількість учасників: 0
+            </p>
+          </div>
+        </div>
+        <div class="lower-section">
+          <p class="card-body">
+            <span>{{ event?.description }}</span>
+          </p>
 
-        <h3 class="card-title" v-if="event?.title">{{ event.title }}</h3>
-
-        <p class="card-body">
-          <span v-if="!isExpanded">{{ truncatedBody }}</span>
-          <span v-else>{{ event?.description }}</span>
-        </p>
-
-        <p class="card-map" v-if="event?.location">
-          <v-icon left>mdi-map-marker</v-icon>
-          {{ event.location }}
-        </p>
-        <v-divider></v-divider>
-        <p class="card-members-number">Кількість учасників: 0</p>
-        <v-row class="d-flex align-end ma-1">
-        <p class="card-date" v-if="event?.date">
-          {{ formatDate(event.date) }}
-        </p>
-        <v-btn
-          class="button-join ml-auto"
-        >{{ translate("BTNS.DELETEEV") }}</v-btn>
-      </v-row>
-      </v-card-text>
+          <v-divider></v-divider>
+          
+          <v-row class="button-row">
+            <v-btn class="button-edit">
+              {{ translate("BTNS.EDIT") }}
+            </v-btn>
+            <v-btn class="button-delete">
+              {{ translate("BTNS.DELETEEV") }}
+            </v-btn>
+          </v-row>
+        </div>
+      </div>
     </v-card>
   </v-col>
 </template>
 
+
 <script lang="ts" setup>
 import { defineProps } from "vue"
-import { ref, computed } from "vue"
 import { useAppI18n } from "@/i18n"
 import type { Event } from "@/models"
-import { uk } from 'date-fns/locale'
-import { format, getMonth, getYear, getDate, getHours, getMinutes } from 'date-fns'
+import { getMonth, getYear, getDate, getHours, getMinutes } from 'date-fns'
 
 const { translate } = useAppI18n()
 
-const isExpanded = ref(false)
 
 const props = defineProps<{
   event: Event | null
 }>()
 
 const event = props.event
-
-const truncatedBody = computed(() => {
-  const maxLength = 155;
-  return event?.description && event.description.length > maxLength
-    ? event.description.slice(0, maxLength) + "..."
-    : event?.description || ""
-})
-
-const toggleExpand = () => {
-  isExpanded.value = !isExpanded.value
-}
 
 const formatDate = (dateString: string | Date): string => {
   const date = new Date(dateString);
@@ -84,53 +82,84 @@ const formatDate = (dateString: string | Date): string => {
 </script>
 
 <style lang="scss" scoped>
-.card-map {
-  font-size: 14px;
-  padding: 5px;
-  margin-left: -10px;
+.card-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 }
-.card-date {
 
-  margin-top: 20px;
-  font-size: 16px;
-  padding: 5px;
-  margin-left: -10px;
-  font-weight: bold;
+.upper-section {
+  display: flex;
+  padding: 16px;
+  gap: 20px;
 }
+
 .card-image {
-  width: 240px;
-  height: 240px;
- 
-  margin-right: 10px;
-  margin-left: 10px;
+  width: 180px;
+  height: 140px;
+  flex-shrink: 0;
+  border-radius: 4px;
+  align-self: end;
   overflow: hidden;
 }
 
+.info-section {
+  display: flex;
+  flex-direction: column;
+  width: 380px;
+  flex-grow: 1;
+}
+
 .card-title {
-  margin-top: 15px;
-  margin-bottom: 10px;
+  margin: 20px 0 16px 0;
   font-size: 19px;
   font-weight: bold;
 }
 
-.card-body {
-  margin: 0;
-  margin-bottom: 10px;
-  margin-right: 10px;
+.card-map {
+  display: flex;
+  align-items: center;
   font-size: 14px;
-  color: #555;
+  margin: 0 0 8px 0;
+  gap: 4px;
 }
 
-.text-content {
-  flex-grow: 1;
-  padding: 10px;
-  width: 520px;
+.card-date {
+  font-size: 14px;
+  margin: 0 0 8px 0;
 }
-.button-join {
-  margin-top: 0px;
-  width: fit-content;
-  align-content: right;
+
+.card-members-number {
+  font-size: 14px;
+  margin: 0;
+}
+
+.lower-section {
+  padding: 0 16px 16px 16px;
+  text-align: justify;
+}
+
+.card-body {
+  margin: 0 0 16px 0;
+  font-size: 14px;
+  color: #555;
+  width: 100%;
+}
+
+.button-row {
   display: flex;
   justify-content: flex-end;
+  margin-top: 10px;
+  margin-right: 3px;
+  margin-bottom: 5px;
+}
+
+.button-delete {
+  width: fit-content;
+  color: darkred;
+}
+.button-edit {
+  width: fit-content;
+  margin-right: 10px;
 }
 </style>
