@@ -84,10 +84,6 @@ import type { CityItem } from '@/services/map'
 import { useCityStore } from '@/stores/city-store'
 import { mapService } from "@/services/map"
 
-const props = defineProps<{
-  placeholder?: string
-}>();
-
 const cityStore = useCityStore()
 const searchText = ref('')
 const searchResults = ref<CityItem[]>([])
@@ -135,6 +131,7 @@ const cancelEdit = () => {
 const clearSelection = () => {
   selectedCity.value = ''
   cityStore.clearSelectedCity()
+  emit('cityChanged')
 }
 
 const onSearch = async () => {
@@ -153,12 +150,14 @@ const onSearch = async () => {
     showResults.value = true
   }
 }
+const emit = defineEmits(['cityChanged'])
 
 const onAddressSelect = (address: CityItem) => {
   selectedCity.value = address.city
   cityStore.setSelectedCity(address)
   isEditing.value = false
   clearResults()
+  emit('cityChanged')
 }
 
 const clearResults = () => {

@@ -4,6 +4,7 @@
       class="app-header"
       v-model:drawer="drawer"
       v-model:filterDrawer="filterDrawer"
+      @city-changed="() => emit('cityChanged')"
     />
     
     <v-navigation-drawer
@@ -33,6 +34,14 @@
             Особистий кабінет
           </v-list-item-title>
         </v-list-item>
+        <v-list-item
+          to="/myEvents"
+          class="drawer-item"
+        >
+          <v-list-item-title class="drawer-item-text">
+            Мої події
+          </v-list-item-title>
+        </v-list-item>
 
         <v-list-item
           v-if="!isEditing"
@@ -44,6 +53,7 @@
           </v-list-item-title>
         </v-list-item>
       </v-list>
+      <v-spacer></v-spacer>
       <v-list>
         <v-list-item class="justify-end pa-4" >
           <v-list-item-title class="drawer-item-text">
@@ -108,6 +118,7 @@ const userFullName = computed(() => {
   }
   return ''
 })
+const emit = defineEmits(['cityChanged'])
 </script>
  
  <style lang="scss" scoped>

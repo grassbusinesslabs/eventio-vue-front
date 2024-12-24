@@ -30,9 +30,10 @@ export const requestService = () => {
         if(params.city) searchParams.append('city', params.city.toString())
         if (params.day) searchParams.append('day', params.day.toString())
         if (params.month) searchParams.append('month', params.month.toString())
-        if (params.title) searchParams.append('title', params.title)
-  
-        return api.get(`/events/findlist?${searchParams.toString()}`)
+         if(params.year) searchParams.append('year', params.year.toString())
+        if (params.search) searchParams.append('title', params.search)
+         if (params.location) searchParams.append('location', params.location)  
+        return api.get(`/events/findlistby?${searchParams.toString()}`)
       } catch (error) {
         console.error('Error fetching events:', error)
         throw error

@@ -12,6 +12,7 @@ import AllEventsView from '@/views/AllEventsView.vue'
 import MyEventsView from '@/views/MyEventsView.vue'
 import AddEventView from '@/views/AddEventView.vue'
 import EventPageView from '@/views/EventPageView.vue'
+import ProfilePage from '@/views/ProfilePage.vue'
 
 const toastDialog = useToastDialog()
 const authToken = authTokenService()
@@ -45,19 +46,9 @@ const routes: RouteRecordRaw[] = [
    },
    {
       path: '/profile',
-      component: () => import('@/views/ProfilePage.vue'),
-      children: [
-        {
-          path: '/myEvents',
-          name: 'MyEvents',
-          meta: {auth: true}
-        },
-        {
-          path: 'account',
-          name: 'account',
-          meta: {auth: true}
-        }
-      ]
+      name: 'Profile',
+      component: ProfilePage,
+      meta: {auth: true}
     },
    {
       path: '/:all(.*)*',

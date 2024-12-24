@@ -10,10 +10,8 @@ import type {
  import { authTokenService } from '@/services/auth-token'
  
  const apiUrls = [
-   { title: 'Production URL', value: 'https://eventio.grassbusinesslabs.uk/api/v1' },
-   { title: 'Development URL', value: 'https://eventio-alusium.grassbusinesslabs.uk/api/v1' },
-   { title: 'Staging URL', value: 'https://staging-eventio.grassbusinesslabs.uk/api/v1' },
-   // Add more URLs as needed
+   { title: 'Сервер 1', value: 'https://eventio.grassbusinesslabs.uk/api/v1' },
+   { title: 'Сервер 2', value: 'https://eventio-alusium.grassbusinesslabs.uk/api/v1' }
  ]
  
  const currentApiUrl = ref(apiUrls[0].value)

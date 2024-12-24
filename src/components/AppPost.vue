@@ -45,8 +45,7 @@ import { defineProps } from "vue"
 import { ref, computed } from "vue"
 import { useAppI18n } from "@/i18n"
 import type { Event } from "@/models"
-import { uk } from 'date-fns/locale'
-import { format, getMonth, getYear, getDate, getHours, getMinutes } from 'date-fns'
+import { getMonth, getYear, getDate, getHours, getMinutes } from 'date-fns'
 import router from "@/router"
 
 const { translate } = useAppI18n()
@@ -65,10 +64,6 @@ const truncatedBody = computed(() => {
     ? event.description.slice(0, maxLength) + "..."
     : event?.description || ""
 })
-
-const toggleExpand = () => {
-  isExpanded.value = !isExpanded.value
-}
 
 const formatDate = (dateString: string | Date): string => {
   const date = new Date(dateString);

@@ -1,6 +1,5 @@
 <template>
-  <home-layout>
-    <!-- Filter content that will be displayed in the drawer -->
+  <home-layout @city-changed="loadEvents">
     <template #filter-content>
       <v-list>
         <v-list-item class="justify-center pa-4">
@@ -95,21 +94,22 @@
 </template>
 
 <script lang='ts' setup>
-import { onMounted, ref, computed } from 'vue'
-import { storeToRefs } from 'pinia'
-
-import type { Event, GetEventsResponse } from '@/models'
+import { onMounted, ref, computed, watch } from 'vue'
+import type { Event} from '@/models'
 import { requestService } from '@/services'
 import { useHandleError } from '@/composables'
 import { useAppI18n } from '@/i18n'
 import { useUserStore } from '@/stores'
 import HomeLayout from '@/layouts/HomeLayout.vue'
 import AppPost from '@/components/AppPost.vue'
+import { useCityStore } from '@/stores/city-store'
+
+const cityStore = useCityStore()
 
 const { handleError } = useHandleError()
 const { translate } = useAppI18n()
 const userStore = useUserStore()
-const { currentUser } = storeToRefs(userStore)
+const selectedCity = cityStore.formattedCity
 
 const request = requestService()
 
@@ -121,12 +121,6 @@ const filterMonth = ref<string>('')
 const filterYear = ref<number | null>(null)
 
 const yearOptions = [2024, 2025, 2026]
-
-const showFilterDrawer = ref(false)
-
-const toggleFilterDrawer = () => {
-  showFilterDrawer.value = !showFilterDrawer.value
-}
 
 function debounce<T extends (...args: any[]) => any>(
   fn: T,
@@ -168,11 +162,12 @@ async function loadEvents(): Promise<void> {
     loadingEvents.value = true
 
     const params = {
-      city: "",
+      city: selectedCity || undefined,
       day: filterDay.value ? getUnixTimestamp(filterDay.value) : undefined,
       month: filterMonth.value ? getUnixTimestamp(filterMonth.value) : undefined,
       year: filterYear.value ? getUnixTimestamp(`${filterYear.value}-01-01`) : undefined,
-      title: searchQuery.value || undefined
+      serch: searchQuery.value || undefined,
+      location: undefined
     }
 
     const response = await request.findEvents(params)
@@ -204,7 +199,15 @@ const clearInput = () => {
 }
 const isClearButtonVisible = computed(() => {
   return filterDay.value || filterMonth.value || filterYear.value || searchQuery.value;
-});
+})
+
+watch(
+  () => cityStore.formattedCity, 
+  () => {
+    loadEvents() 
+  }
+)
+
 </script>
 
 <style lang='scss' scoped>
@@ -213,7 +216,7 @@ const isClearButtonVisible = computed(() => {
   font-size: 14px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  width:709px;
+  width:823px;
   height: 50px;
 
 }

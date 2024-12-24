@@ -3,7 +3,7 @@
     <v-app-bar-title>Event Management</v-app-bar-title>
     <v-icon left class="location-icon">mdi-map-marker</v-icon>
     <div class="search-wrapper">
-      <app-select-city/>
+      <app-select-city @city-changed="() => emit('cityChanged')" />
     </div>
     <v-spacer />
     
@@ -32,7 +32,6 @@
 </template>
 
 <script lang="ts" setup>
-import AppSelectLang from "@/components/AppSelectLang.vue"
 import AppSelectCity from "@/components/AppSelectCity.vue"
 
 const props = defineProps<{
@@ -43,6 +42,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   'update:drawer': [value: boolean]
   'update:filterDrawer': [value: boolean]
+  'cityChanged': [] 
 }>()
 
 const toggleDrawer = () => {
@@ -86,10 +86,10 @@ const toggleFilterDrawer = () => {
 .filter-button {
   border-radius: 50%;
   height: 60px;
-width: 60px;
+width: 30px;
   align-content: center;
   padding: 0;
-  border: 1px solid #FFFFFF;
+  border: 0px;
   z-index: 100;
 }
 

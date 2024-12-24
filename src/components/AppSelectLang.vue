@@ -4,10 +4,11 @@
       v-model='currentLang'
       :items='langs'
       variant='underlined'
+      density="compact"
       item-value='lang'
       @update:modelValue='changeLang($event)'
    >
-      <template v-slot:selection='{ item, index }'>
+      <template v-slot:selection='{ item}'>
          <span class='v-select__selection-text'>
             {{ translate(item.props.title.localizeKey) }}
          </span>
@@ -33,7 +34,7 @@ const currentLang = ref<Lang>(locale.value as Lang)
 
 <style lang='scss' scoped>
 .select-lang {
-   margin-left: 20px;
+   
    width: 60px;
 }
 </style>

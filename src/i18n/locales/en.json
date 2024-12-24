@@ -34,7 +34,8 @@
      "SEARCH-BY-DATE": "Search by date",
     "SEARCH-BY-MONTH": "Search by month",
     "GO_BACK": "Go back",
-    "CANCEL": "Cancel"
+    "CANCEL": "Cancel",
+    "RETURN": "Return to all events"
   },
   "LANGUAGES": {
     "ENGLISH": "EN",

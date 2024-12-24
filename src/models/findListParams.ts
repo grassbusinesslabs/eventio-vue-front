@@ -2,5 +2,7 @@ export interface FindListParams {
     city?: string;
     day?: string | number;
     month?: string | number;
-    title?: string;
+    year?: string | number;
+    search?: string;
+    location?: string;
   }

@@ -11,7 +11,15 @@ export const useCityStore = defineStore('city', {
     selectedCity: null,
     searchHistory: []
   }),
-
+  getters: {
+    city: (state) => state.selectedCity,
+    formattedCity: (state) => {
+      if (state.selectedCity) {
+        return state.selectedCity.city.split(',')[0].trim(); 
+      }
+      return null;
+    }
+  },
   actions: {
     setSelectedCity(city: CityItem) {
       this.selectedCity = city;
@@ -31,4 +39,4 @@ export const useCityStore = defineStore('city', {
       this.searchHistory = [];
     }
   }
-});
+})

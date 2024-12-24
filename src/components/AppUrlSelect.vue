@@ -5,8 +5,8 @@
       item-title="title"
       item-value="value"
       label="API URL"
-      variant="outlined"
-      density="comfortable"
+      variant="underlined"
+      density="compact"
       class="url-select"
       @update:model-value="handleUrlChange"
     />

@@ -1,109 +1,73 @@
 <template>
-    <home-layout>
-      <v-row 
-      align="center" class="no-spacing">
-         <h2 class="header">{{ events.length }} подій</h2>
-      <v-btn
-        class="ma-3"
-        text to="/addEvent"
-      >
-        <v-icon
-          icon="mdi-plus-circle"
-          start
-        ></v-icon>
-        {{translate("BTNS.ADD_EVENT")}}
-      </v-btn>
-   </v-row>
-       <v-row class='ma-0'>
-          <app-post
-            v-for='event in events'
-            :key='event.id'
-            :event='event'
-          />
-       </v-row>
-    </home-layout>
- </template>
- <script lang='ts' setup>
- import type {MaybeRefOrGetter, Ref} from 'vue'
- import {onMounted, ref, computed, watch} from 'vue'
- import {useRoute, useRouter } from 'vue-router'
- import {useForm} from 'vee-validate'
- import {toTypedSchema} from '@vee-validate/yup'
- import {storeToRefs} from 'pinia'
- import * as yup from 'yup'
- import type {GetEventsResponse, Event} from '@/models'
- import type {AddPostBody, GetPostsResponse, Post} from '@/models'
- import {formService, requestService} from '@/services'
- import {useHandleError} from '@/composables'
- import {useAppI18n} from '@/i18n'
- import {useUserStore} from '@/stores'
- import HomeLayout from '@/layouts/HomeLayout.vue'
- import AppPost from '@/components/AppMyPost.vue'
- 
- const {handleError} = useHandleError()
- const {translate} = useAppI18n()
- const userStore = useUserStore()
- const {currentUser} = storeToRefs(userStore)
+  <home-layout>
+    <div class="content-section">
+      <v-row align="center" class="mb-6">
+        <v-col>
+          <h2 class="text-h5">
+            {{ events.length }} {{ translate("TEXT.EVENTS") }}
+          </h2>
+        </v-col>
+        <v-col cols="auto">
+          <v-btn
+            class="ml-auto"
+            to="/addEvent"
+            size="large"
+            prepend-icon="mdi-plus-circle"
+          >
+            {{ translate("BTNS.ADD_EVENT") }}
+          </v-btn>
+        </v-col>
+      </v-row>
 
- const events: Ref<Event[]> = ref<Event[]>([])
- const loadingEvents = ref<boolean>(false)
- 
- let lastEventId: number = 0
+      <v-row>
+        <app-post v-for="event in events" :key="event.id" :event="event" />
+      </v-row>
+    </div>
+  </home-layout>
+</template>
 
- const request = requestService()
- const {vuetifyConfig, eventTitleValidator, textValidator} = formService()
+<script lang="ts" setup>
+import { ref, onMounted } from 'vue'
+import type { Event } from '@/models'
+import { requestService } from '@/services'
+import { useHandleError } from '@/composables'
+import { useAppI18n } from '@/i18n'
+import { useUserStore } from '@/stores'
+import HomeLayout from '@/layouts/ProfileLayout.vue'
+import AppPost from '@/components/AppMyPost.vue'
 
- 
- let lastPostId: number = 0
- 
- const form = useForm({
-    validationSchema: toTypedSchema(
-       yup.object({
-          title: eventTitleValidator(),
-          text: textValidator()
-       })
-    ),
-    initialValues: {
-       title: '',
-       text: ''
-    }
- })
- 
- const isSubmitting = ref<boolean>(false)
- const [title, titleAttrs] = form.defineField('title' as MaybeRefOrGetter, vuetifyConfig)
- const [text, textAttrs] = form.defineField('text' as MaybeRefOrGetter, vuetifyConfig)
- 
- const route = useRoute()
+const request = requestService()
+const { handleError } = useHandleError()
+const { translate } = useAppI18n()
+const userStore = useUserStore()
 
- onMounted(() => {
-   loadEvents()
- })
- 
- watch(route, () => {
-   loadEvents()
- })
- 
- async function loadEvents(): Promise<void> {
-    try {
-      loadingEvents.value = true
- 
-     const response: GetEventsResponse = await request.getMyEvents()
-     events.value = response.events || [] 
-     lastEventId = response.total
- 
-   } catch (e) {
-     console.error(e)
-     handleError(e)
-     events.value = []
-   } finally {
-     loadingEvents.value = false
-    }
- }
- </script>
- 
- <style lang='scss' scoped>
- .header{
-   margin-left: 40px;
-   font-weight: normal;}
- </style>
- 
+const events = ref<Event[]>([])
+const loadingEvents = ref(false)
+
+async function loadEvents(): Promise<void> {
+  try {
+    loadingEvents.value = true
+    const response = await request.getMyEvents()
+    events.value = response.events || []
+  } catch (error) {
+    console.error(error)
+    handleError(error)
+    events.value = []
+  } finally {
+    loadingEvents.value = false
+  }
+}
+
+onMounted(() => {
+  userStore.populate()
+  loadEvents()
+})
+</script>
+
+<style lang="scss" scoped>
+.content-section {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 24px;
+}
+</style>
