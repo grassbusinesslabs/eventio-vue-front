@@ -48,6 +48,7 @@
       <v-btn
         color="error"
         variant="outlined"
+        size="large"
         @click="showDeleteConfirm = true"
       >
         {{ translate('BTNS.DELETE') }}

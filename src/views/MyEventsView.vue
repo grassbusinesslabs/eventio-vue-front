@@ -20,7 +20,7 @@
       </v-row>
 
       <v-row>
-        <app-post v-for="event in events" :key="event.id" :event="event" />
+        <app-post v-for="event in events" :key="event.id" :event="event" @event-deleted="loadEvents"/>
       </v-row>
     </div>
   </home-layout>
@@ -44,7 +44,7 @@ const userStore = useUserStore()
 const events = ref<Event[]>([])
 const loadingEvents = ref(false)
 
-async function loadEvents(): Promise<void> {
+ async function loadEvents(): Promise<void> {
   try {
     loadingEvents.value = true
     const response = await request.getMyEvents()

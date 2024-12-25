@@ -39,35 +39,87 @@
             <v-btn class="button-edit">
               {{ translate("BTNS.EDIT") }}
             </v-btn>
-            <v-btn class="button-delete">
-              {{ translate("BTNS.DELETEEV") }}
-            </v-btn>
+            <v-btn 
+            class="button-delete" 
+            @click="showDeleteDialog = true"
+            :loading="isDeleting"
+          >
+            {{ translate("BTNS.DELETEEV") }}
+          </v-btn>
           </v-row>
         </div>
       </div>
     </v-card>
+    <v-dialog v-model="showDeleteDialog" max-width="400">
+      <v-card>
+        <v-card-title class="text-center">
+          {{ translate('DIALOGS.DELETE_EVENT_TITLE') }}
+        </v-card-title>
+        <v-card-text>
+          {{ translate('DIALOGS.DELETE_EVENT_CONFIRM') }}
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn 
+            color="grey" 
+            variant="text" 
+            @click="showDeleteDialog = false"
+          >
+            {{ translate('BTNS.CANCEL') }}
+          </v-btn>
+          <v-btn
+            color="error"
+            @click="deleteEvent"
+            :loading="isDeleting"
+          >
+            {{ translate('BTNS.DELETE') }}
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-col>
 </template>
 
 
+
 <script lang="ts" setup>
-import { defineProps } from "vue"
+import { defineProps, ref } from "vue"
 import { useAppI18n } from "@/i18n"
 import type { Event } from "@/models"
 import { getMonth, getYear, getDate, getHours, getMinutes } from 'date-fns'
+import { requestService } from '@/services'
+import { useHandleError } from '@/composables'
 
+const request = requestService()
+const { handleError } = useHandleError()
 const { translate } = useAppI18n()
-
 
 const props = defineProps<{
   event: Event | null
 }>()
 
-const event = props.event
+const emit = defineEmits(['eventDeleted'])
+
+const showDeleteDialog = ref(false)
+const isDeleting = ref(false)
+
+const deleteEvent = async () => {
+  if (!props.event?.id) return
+
+  try {
+    isDeleting.value = true
+    await request.deleteEvent(props.event.id)
+    showDeleteDialog.value = false
+    emit('eventDeleted')
+  } catch (error) {
+    handleError(error)
+  } finally {
+    isDeleting.value = false
+  }
+}
 
 const formatDate = (dateString: string | Date): string => {
   const date = new Date(dateString);
-
   const day = getDate(date);
   const month = [
     'січня', 'лютого', 'березня', 'квітня', 'травня', 'червня',

@@ -2,7 +2,7 @@
     <v-container>
       <v-card class="event-details-card">
         <v-img
-          :src="event?.image || defaultImage"
+          src="event?.image || defaultImage"
           alt="Event Image"
           aspect-ratio="1.7"
           cover
@@ -31,7 +31,7 @@
           <v-btn variant="outlined" color="primary" @click="goBack">
             <v-icon left>mdi-arrow-left</v-icon> Назад
           </v-btn>
-          <v-btn variant="contained" color="success">
+          <v-btn variant="outlined" color="success">
             <v-icon left>mdi-check-circle"></v-icon> Підтвердити участь
           </v-btn>
         </v-card-actions>

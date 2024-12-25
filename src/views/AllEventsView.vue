@@ -166,10 +166,9 @@ async function loadEvents(): Promise<void> {
       day: filterDay.value ? getUnixTimestamp(filterDay.value) : undefined,
       month: filterMonth.value ? getUnixTimestamp(filterMonth.value) : undefined,
       year: filterYear.value ? getUnixTimestamp(`${filterYear.value}-01-01`) : undefined,
-      serch: searchQuery.value || undefined,
+      search: searchQuery.value || undefined, 
       location: undefined
     }
-
     const response = await request.findEvents(params)
     events.value = response.events || []
 

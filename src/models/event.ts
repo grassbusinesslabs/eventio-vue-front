@@ -1,12 +1,13 @@
 import type {Pagination} from '@/models/pagination'
 
 export interface Event {  
-    id: number  
+    id: string
     userId: number  
     title: string  
     description: string  
     date: Date | string   
     image: File | string
+    city: string
     location: string  
     lat: number 
     lon: number    

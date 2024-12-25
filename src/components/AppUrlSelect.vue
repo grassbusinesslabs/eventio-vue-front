@@ -4,7 +4,6 @@
       :items="apiUrls"
       item-title="title"
       item-value="value"
-      label="API URL"
       variant="underlined"
       density="compact"
       class="url-select"
@@ -27,7 +26,7 @@
   
   <style lang="scss" scoped>
   .url-select {
-    min-width: 200px;
+    width: 140px;
     margin-right: 16px;
   }
   </style>

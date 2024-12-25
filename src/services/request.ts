@@ -31,7 +31,7 @@ export const requestService = () => {
         if (params.day) searchParams.append('day', params.day.toString())
         if (params.month) searchParams.append('month', params.month.toString())
          if(params.year) searchParams.append('year', params.year.toString())
-        if (params.search) searchParams.append('title', params.search)
+        if (params.search) searchParams.append('search', params.search)
          if (params.location) searchParams.append('location', params.location)  
         return api.get(`/events/findlistby?${searchParams.toString()}`)
       } catch (error) {
@@ -41,10 +41,37 @@ export const requestService = () => {
     }
   
 
-   async function addEvent(body: Record<string, any>): Promise<Event> {
+   async function addEvent(body: Record<string, any>): Promise<{ id: string }> {
       return api.post('/events', body)
    }
 
+   async function uploadEventImage(Id: string | number, image: File): Promise<void> {
+      try {
+        const formData = new FormData();
+        formData.append('image', image);
+    
+        const response = await api.post(`/events/upload-image?Id=${Id}`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+          transformRequest: [(data) => data],
+        });
+    
+        return response.data;
+    
+      } catch (error: any) {
+        if (error.response) {
+          throw new Error(
+            `Failed to upload image: ${error.response.status} ${error.response.statusText}` +
+            (error.response.data ? ` - ${JSON.stringify(error.response.data)}` : '')
+          );
+        } else if (error.request) {
+          throw new Error('No response received from server');
+        } else {
+          throw new Error(`Error setting up request: ${error.message}`);
+        }
+      }
+    }
    async function getCurrentUser(): Promise<CurrentUser> {
       return api.get('/users')
    }
@@ -89,6 +116,10 @@ export const requestService = () => {
          delete apiClient.defaults.headers.common['Authorization'];
       }
    }
+   async function deleteEvent(Id: number | string): Promise<Event> {
+      return api.del<GetEventsResponse>(`/events/delete?Id=${Id}`)
+    }
+
    return {
       login,
       getEvents,
@@ -101,6 +132,8 @@ export const requestService = () => {
       getEventById,
       getEventsByDate,
       findEvents,
-      setAuthHeader
+      setAuthHeader,
+      deleteEvent,
+      uploadEventImage
    }
 }

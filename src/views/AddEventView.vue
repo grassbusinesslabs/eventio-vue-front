@@ -34,16 +34,17 @@
         </div>
 
         <div class="form-group">
-        <label>Місце проведення</label>
-        <app-address-autocomplete @select="onAddressSelect" />
-      </div>
+          <label>Місце проведення</label>
+          <app-address-autocomplete @select="onAddressSelect" />
+        </div>
 
-      <div v-if="coordinates" class="form-group">
-        <label>Координати обраного місця</label>
-        <p>Широта: {{ coordinates.lat }}</p>
-        <p>Довгота: {{ coordinates.lng }}</p>
-      </div>
-      <div class="form-group">
+        <div v-if="coordinates" class="form-group">
+          <label>Координати обраного місця</label>
+          <p>Широта: {{ coordinates.lat }}</p>
+          <p>Довгота: {{ coordinates.lng }}</p>
+        </div>
+
+        <div class="form-group">
           <label>Завантажити файл</label>
           <input
             type="file"
@@ -52,6 +53,7 @@
             ref="fileInput"
           />
         </div>
+
         <div class="form-actions">
           <v-btn type="submit" class="save">Зберегти</v-btn>
           <v-btn text to="/myEvents">Скасувати</v-btn>
@@ -60,18 +62,16 @@
     </div>
   </auth-layout>
 </template>
-
 <script lang="ts" setup>
 import { ref, computed } from "vue";
 import { useForm } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/yup";
 import * as yup from "yup";
-import { mapService } from "@/services/map";
 import AuthLayout from "@/layouts/AuthLayout.vue";
 import AppAddressAutocomplete from "@/components/AppAddressAutocomplete.vue";
 import type { AddressItem } from "@/services/map";
-import {formService, requestService} from '@/services'
-import {useHandleError, useRouting} from '@/composables'
+import {requestService} from '@/services'
+import {useRouting} from '@/composables'
 
 
 const { eventTitleValidator, descriptionValidator } = {
@@ -104,10 +104,6 @@ const [eventDate, eventDateAttrs] = form.defineField("eventDate");
 const request = requestService()
 const routing = useRouting()
 
-const dateTimeFormatter = (date: Date): string => {
-  return date.toISOString();
-};
-
 const minDateTime = computed(() => {
   const now = new Date();
   now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
@@ -136,6 +132,7 @@ const onAddressSelect = (address: AddressItem) => {
 };
 
 const selectedFile = ref<File | null>(null)
+  const imageSrc = ref<string | null>(null)
 const handleFileChange = (event: Event) => {
   const target = event.target as HTMLInputElement;
   const file = target?.files?.[0];
@@ -146,36 +143,58 @@ const handleFileChange = (event: Event) => {
       return;
     }
     selectedFile.value = file;
+    const reader = new FileReader();
+    reader.onload = () => {
+      imageSrc.value = reader.result as string;
+    };
+    reader.readAsDataURL(file);
   }
 };
 
-const submit = form.handleSubmit((values) => {
-
-  try{
-    const body: Record<string, any> = {
+const submit = form.handleSubmit(async (values) => {
+  try {
+    const body = {
       title: values.eventTitle || '',
       description: values.description || '',
       date: values.eventDate ? Math.floor(values.eventDate.getTime() / 1000) : '',
-      image: "image 221" ,//selectedFile.value || null,
+      image: "",
+      city: coordinates.value?.location?.split(',').pop()?.trim() || '',
       location: coordinates.value?.location || '',
       lat: coordinates.value?.lat ?? null,
       lon: coordinates.value?.lng ?? null
-        }
-         request.addEvent(body) 
-      console.log('Івент успішно доданий')
-      routing.toAllEvents()
-        }
-        catch (e: any) {
+    }
 
-if (e.response) {
-   alert('Помилка з боку сервера:' + JSON.stringify(e.response.data, null, 2))
-} else if (e.request) {
-   alert('Запит надіслано, але відповіді не отримано:'+ e.request)
-} else {
-   alert('Помилка під час налаштування запиту:' + e.message)
-}
-} 
-})
+    const response = await request.addEvent(body)
+    console.log('Event creation response:', response)
+
+    if (!response || !response.id) {
+      throw new Error('No event ID received from server')
+    }
+
+    const eventId = response.id;
+    console.log('Event created with ID:', eventId);
+
+    if (selectedFile.value && response.id) {
+      await request.uploadEventImage(response.id, selectedFile.value);
+      console.log('Image uploaded successfully');
+    }
+
+    routing.toAllEvents();
+
+  } catch (e: any) {
+    console.error('Full error:', e);
+    if (e.response) {
+      console.error('Response error:', e.response.data);
+      alert('Помилка з боку сервера: ' + JSON.stringify(e.response.data, null, 2));
+    } else if (e.request) {
+      console.error('Request error:', e.request);
+      alert('Запит надіслано, але відповіді не отримано: ' + e.request);
+    } else {
+      console.error('Error:', e.message);
+      alert('Помилка під час налаштування запиту: ' + e.message);
+    }
+  }
+});
 </script>
 
 <style lang="scss" scoped>
