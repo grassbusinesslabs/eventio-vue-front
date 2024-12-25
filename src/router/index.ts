@@ -13,6 +13,7 @@ import MyEventsView from '@/views/MyEventsView.vue'
 import AddEventView from '@/views/AddEventView.vue'
 import EventPageView from '@/views/EventPageView.vue'
 import ProfilePage from '@/views/ProfilePage.vue'
+import AppMapExampleVue from '@/views/AppMapExample.vue'
 
 const toastDialog = useToastDialog()
 const authToken = authTokenService()
@@ -32,10 +33,15 @@ const routes: RouteRecordRaw[] = [
       meta: {auth: true}
    },
    {
-      path: '/event/:id',
+      path: '/map',
+      name: 'Map',
+      component: AppMapExampleVue,
+      meta: {auth: true}
+   },
+   {
+      path: '/event',
       name: 'EventDetails',
-      component: () => import('@/views/EventPageView.vue'),
-      props: true,
+      component: EventPageView,
       meta: {auth: true}
     },
    {

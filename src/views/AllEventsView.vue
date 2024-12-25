@@ -57,8 +57,7 @@
         </v-list-item>
       </v-list>
     </template>
-
-    <v-sheet class='mx-auto'>
+      <v-sheet class='mx-auto'>
       <v-row class='ma-0'>
         <v-col cols="auto" class="d-flex align-center">
           <v-text-field  
@@ -84,12 +83,12 @@
     </v-sheet>
 
     <v-row class='ma-0'>
-      <app-post
-        v-for='event in events'
-        :key='event.id'
-        :event='event'
-      />
-    </v-row>
+        <app-post
+          v-for='event in events'
+          :key='event.id'
+          :event='event'
+        />
+      </v-row>
   </home-layout>
 </template>
 
@@ -103,6 +102,7 @@ import { useUserStore } from '@/stores'
 import HomeLayout from '@/layouts/HomeLayout.vue'
 import AppPost from '@/components/AppPost.vue'
 import { useCityStore } from '@/stores/city-store'
+import EventPageView from '@/components/EventPageView.vue'
 
 const cityStore = useCityStore()
 
@@ -171,6 +171,7 @@ async function loadEvents(): Promise<void> {
     }
     const response = await request.findEvents(params)
     events.value = response.events || []
+    
 
   } catch (error) {
     console.error('Error loading events:', error)

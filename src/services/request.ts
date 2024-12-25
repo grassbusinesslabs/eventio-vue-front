@@ -100,8 +100,8 @@ export const requestService = () => {
       return api.get<GetEventsResponse>('/events/findbyuser')
     }
 
-    async function getEventById(Id: number | string): Promise<Event> {
-      return api.get(`/events/?Id=${Id}`)
+    async function getEventById(id: number | string): Promise<Event> {
+      return api.get<GetEventsResponse>(`/events/?Id=${id}`)
     }
 
     async function getEventsByDate(date: string | number): Promise<GetEventsResponse> {

@@ -1,17 +1,21 @@
 <template>
   <v-col cols="12">
-    <v-card class="d-flex align-center">
+    <v-card 
+      class="d-flex align-center"
+      :style="{ 
+        backgroundColor: isPastEvent ? '#f5f5f5' : 'white',
+        opacity: isPastEvent ? '0.8' : '1'
+      }"
+    >
       <v-img
-        src="https://marketing-cdn.tickettailor.com/ZgP1j7LRO5ile62O_HowdoyouhostasmallcommunityeventA10-stepguide%2CMiniflagsattheevent.jpg?auto=format%2Ccompress&fit=max&w=3840"
-        alt="Image"
+        :src="defaultImage"
+        alt="Event Image"
         class="card-image"
         aspect-ratio="1"
         cover
       ></v-img>
 
       <v-card-text class="text-content">
-        
-
         <h3 class="card-title" v-if="event?.title">{{ event.title }}</h3>
 
         <p class="card-map" v-if="event?.location">
@@ -26,15 +30,20 @@
 
         <v-divider></v-divider>
         <v-row class="d-flex align-end ma-1">
-        <p class="card-date" v-if="event?.date">
-          {{ formatDate(event.date) }}
-        </p>
-        <v-btn 
-          class="button-join ml-auto"
-          append-icon="mdi-arrow-right"
-          @click="navigateToEventDetails"
-        >{{ translate("BTNS.JOIN") }}</v-btn>
-      </v-row>
+          <p class="card-date" v-if="event?.date">
+            {{ formatDate(event.date) }}
+          </p>
+          <v-btn 
+            class="button-join ml-auto"
+            append-icon="mdi-arrow-right"
+            @click="navigateToEventDetails"
+            :style="{
+              backgroundColor: isPastEvent ? '#D7D7D7FF' : undefined
+            }"
+          >
+            {{ isPastEvent ? translate("BTNS.VIEW_DETAILS") : translate("BTNS.JOIN") }}
+          </v-btn>
+        </v-row>
       </v-card-text>
     </v-card>
   </v-col>
@@ -46,23 +55,28 @@ import { ref, computed } from "vue"
 import { useAppI18n } from "@/i18n"
 import type { Event } from "@/models"
 import { getMonth, getYear, getDate, getHours, getMinutes } from 'date-fns'
-import router from "@/router"
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const { translate } = useAppI18n()
 
-const isExpanded = ref(false)
-
 const props = defineProps<{
-  event: Event | null
+  event: Event
 }>()
 
-const event = props.event
+const isExpanded = ref(false)
+const defaultImage = "https://marketing-cdn.tickettailor.com/ZgP1j7LRO5ile62O_HowdoyouhostasmallcommunityeventA10-stepguide%2CMiniflagsattheevent.jpg"
+
+const isPastEvent = computed(() => {
+  if (!props.event?.date) return false;
+  return new Date(props.event.date) < new Date();
+});
 
 const truncatedBody = computed(() => {
-  const maxLength = 155;
-  return event?.description && event.description.length > maxLength
-    ? event.description.slice(0, maxLength) + "..."
-    : event?.description || ""
+  const maxLength = 150;
+  return props.event?.description && props.event.description.length > maxLength
+    ? props.event.description.slice(0, maxLength) + "..."
+    : props.event?.description || ""
 })
 
 const formatDate = (dateString: string | Date): string => {
@@ -79,15 +93,15 @@ const formatDate = (dateString: string | Date): string => {
 
   return `${day} ${month} ${year} на ${hours}:${minutes}`;
 }
+
 const navigateToEventDetails = () => {
   if (props.event?.id) {
-    router.push({
-      name: 'EventDetails',
-      params: { id: props.event.id }
-    })
+    localStorage.setItem('eventId', props.event.id)
+    router.push({ name: 'EventDetails' })
   }
 }
 </script>
+
 
 <style lang="scss" scoped>
 .card-map {
