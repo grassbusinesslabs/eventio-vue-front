@@ -1,49 +1,57 @@
 <template>
-   <div class='map-container'>
-      <div class='map-container__map' ref='mapContainer'></div>
-   </div>
+  <div class="map-container">
+    <div class="map-container__map" ref="mapContainer"></div>
+  </div>
 </template>
 
-<script lang='ts' setup>
-import {onMounted, onUnmounted, ref} from 'vue'
-import {LngLatLike} from '@tomtom-international/web-sdk-maps'
+<script lang="ts" setup>
+import { onMounted, onUnmounted, ref } from 'vue'
+import { mapService } from '@/services/map'
 
-import {mapService} from '@/services/map'
-
-const map = mapService()
+const props = defineProps({
+  lat: {
+    type: Number,
+    required: true
+  },
+  lon: {
+    type: Number,
+    required: true
+  }
+})
 
 const mapContainer = ref<HTMLElement | null>(null)
-
-const startingCoords: LngLatLike = {
-   lat: 48.8622029334991,
-   lng: 32.62480605898742
-}
+const map = mapService()
 
 onMounted(() => {
-   if (mapContainer.value) {
-      map.createMap(mapContainer.value as HTMLElement, {center: startingCoords})
-   }
+  if (mapContainer.value && props.lat && props.lon) {
+    const coords = { lat: props.lat, lng: props.lon }
+    
+    map.createMap(mapContainer.value, {
+      center: coords,
+      zoom: 15
+    })
+    
+    const marker = map.createMarker('eventMarker', coords)
+    if (marker) {
+      map.addMarkerToMap(marker)
+    }
+  }
 })
 
 onUnmounted(() => {
-   map.destroyMap()
+  map.destroyMap()
 })
 </script>
-
-<style lang='scss'>
-.map-container {
+ 
+ <style scoped>
+ .map-container {
+   width: 100%;
    height: 400px;
-
-   &__map {
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-   }
-}
-
-.map-marker {
-   width: 50px;
-   height: 50px;
-   background-size: cover;
-}
-</style>
+ }
+ 
+ .map-container__map {
+   width: 100%;
+   height: 100%;
+ }
+ </style>
+ 

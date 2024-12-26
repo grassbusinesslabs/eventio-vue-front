@@ -1,7 +1,7 @@
 <template>
   <auth-layout>
     <div class="container">
-      <h1>Створення заходу</h1>
+      <h1>{{ isEditMode ? 'Редагування заходу' : 'Створення заходу' }}</h1>
       <form @submit.prevent="submit">
         <div class="form-group">
           <label>Назва заходу</label>
@@ -19,6 +19,7 @@
             v-model="description"
             v-bind="descriptionAttrs"
             placeholder="Введіть опис"
+            height="200px"
           ></textarea>
         </div>
 
@@ -35,7 +36,10 @@
 
         <div class="form-group">
           <label>Місце проведення</label>
-          <app-address-autocomplete @select="onAddressSelect" />
+          <app-address-autocomplete 
+            @select="onAddressSelect"
+            :initial-value="coordinates?.location"
+          />
         </div>
 
         <div v-if="coordinates" class="form-group">
@@ -49,30 +53,38 @@
           <input
             type="file"
             accept="image/*"
-            @change="handleFileChange"
-            ref="fileInput"
+            @change="(e: Event) => handleFileChange(e)"
           />
         </div>
 
         <div class="form-actions">
-          <v-btn type="submit" class="save">Зберегти</v-btn>
-          <v-btn text to="/myEvents">Скасувати</v-btn>
+          <v-btn type="submit" class="save">{{ isEditMode ? 'Оновити' : 'Зберегти' }}</v-btn>
+          <v-btn text to="/myEvents" @click="cancel">Скасувати</v-btn>
         </div>
       </form>
     </div>
   </auth-layout>
 </template>
-<script lang="ts" setup>
-import { ref, computed } from "vue";
-import { useForm } from "vee-validate";
-import { toTypedSchema } from "@vee-validate/yup";
-import * as yup from "yup";
-import AuthLayout from "@/layouts/AuthLayout.vue";
-import AppAddressAutocomplete from "@/components/AppAddressAutocomplete.vue";
-import type { AddressItem } from "@/services/map";
-import {requestService} from '@/services'
-import {useRouting} from '@/composables'
 
+<script lang="ts" setup>
+import { ref, computed, onMounted } from "vue"
+import { useForm } from "vee-validate"
+import { toTypedSchema } from "@vee-validate/yup"
+import * as yup from "yup"
+import AuthLayout from "@/layouts/AuthLayout.vue"
+import AppAddressAutocomplete from "@/components/AppAddressAutocomplete.vue"
+import type { AddressItem } from "@/services/map"
+import { requestService } from '@/services'
+import { useRouting } from '@/composables'
+import type { Event } from "@/models"
+import { useRoute } from 'vue-router'
+
+const route = useRoute()
+const eventId = localStorage.getItem('eventId')
+const isEditMode = computed(() => Boolean(eventId))
+
+const event = ref<Event | null>(null)
+console.log('Found event with coordinates:', eventId)
 
 const { eventTitleValidator, descriptionValidator } = {
   eventTitleValidator: () => yup.string().required("Назва є обов'язковою"),
@@ -97,26 +109,114 @@ const form = useForm({
   },
 });
 
-const [eventTitle, eventTitleAttrs] = form.defineField("eventTitle");
-const [description, descriptionAttrs] = form.defineField("description");
-const [eventDate, eventDateAttrs] = form.defineField("eventDate");
+const [eventTitle, eventTitleAttrs] = form.defineField("eventTitle")
+const [description, descriptionAttrs] = form.defineField("description")
+const [eventDate, eventDateAttrs] = form.defineField("eventDate")
 
 const request = requestService()
 const routing = useRouting()
 
+interface Coordinates {
+  location: string
+  lat: number
+  lng: number
+}
+
+const coordinates = ref<Coordinates | null>(null)
+const selectedFile = ref<File | null>(null)
+const imageSrc = ref<string | null>(null)
+  const eventDateString = ref<string | null>(null)
+
+const loadEventData = async () => {
+  console.log('Starting loadEventData')
+  console.log('isEditMode:', isEditMode.value)
+  console.log('eventId:', eventId)
+
+  if (!isEditMode.value) {
+    console.log('Not in edit mode, returning')
+    return
+  }
+  
+  const currentEventId = eventId
+  if (!currentEventId) {
+    console.log('No eventId found, returning')
+    return;
+  }
+
+  try {
+    console.log('Fetching events...')
+    const response = await request.findEvents({})
+    console.log('All events:', response.events)
+    
+    if (response.events) {
+      const foundEvent = response.events.find((e) => String(e.id) === String(currentEventId))
+      console.log('Found event:', foundEvent)
+      
+      if (foundEvent) {
+        console.log('Setting form values...')
+        eventTitle.value = foundEvent.title
+        console.log('Set title:', eventTitle.value)
+        
+        description.value = foundEvent.description
+        console.log('Set description:', description.value)
+        
+        const dateValue = new Date(foundEvent.date)
+        eventDate.value = dateValue
+        
+        const year = dateValue.getFullYear()
+        const month = String(dateValue.getMonth() + 1).padStart(2, '0')
+        const day = String(dateValue.getDate()).padStart(2, '0')
+        const hours = String(dateValue.getHours()).padStart(2, '0')
+        const minutes = String(dateValue.getMinutes()).padStart(2, '0')
+        
+        eventDateString.value = `${year}-${month}-${day}T${hours}:${minutes}`
+        console.log('Set date string:', eventDateString.value)
+        
+        if (foundEvent.lat && foundEvent.lon) {
+          coordinates.value = {
+            location: foundEvent.location,
+            lat: foundEvent.lat,
+            lng: foundEvent.lon
+          };
+          console.log('Set coordinates:', coordinates.value);
+        }
+        
+        if (foundEvent.image) {
+          image.value = foundEvent.image;
+          console.log('Set image:', imageSrc.value);
+        }
+      } else {
+        console.log('Event not found in response')
+      }
+    } else {
+      console.log('No events in response')
+    }
+  } catch (error) {
+    console.error('Error in loadEventData:', error)
+  }
+}
+onMounted(async () => {
+  await loadEventData();
+  console.log('Form values after load:', {
+    eventTitle: eventTitle.value,
+    description: description.value,
+    eventDateString: eventDateString.value,
+    location: coordinates.value?.location,
+  })
+})
+
 const minDateTime = computed(() => {
-  const now = new Date();
-  now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-  return now.toISOString().slice(0, 16);
-});
-const maxDateTime = computed(() => {
-  const nextYear = new Date();
-  nextYear.setFullYear(nextYear.getFullYear() + 1);
-  nextYear.setMinutes(nextYear.getMinutes() - nextYear.getTimezoneOffset());
-  return nextYear.toISOString().slice(0, 16);
+  const now = new Date()
+  now.setMinutes(now.getMinutes() - now.getTimezoneOffset())
+  return now.toISOString().slice(0, 16)
 });
 
-const coordinates = ref<{ location: string; lat: number; lng: number } | null>(null);
+const maxDateTime = computed(() => {
+  const nextYear = new Date()
+  nextYear.setFullYear(nextYear.getFullYear() + 1)
+  nextYear.setMinutes(nextYear.getMinutes() - nextYear.getTimezoneOffset())
+  return nextYear.toISOString().slice(0, 16)
+});
 
 const onAddressSelect = (address: AddressItem) => {
   if (address.details.position) {
@@ -124,32 +224,32 @@ const onAddressSelect = (address: AddressItem) => {
       location: address.address,
       lat: address.details.position.lat as number,
       lng: address.details.position.lng as number
-    };
+    }
   } else {
-    console.error('No position data found for the selected address', address);
-    coordinates.value = null;
+    console.error('No position data found for the selected address', address)
+    coordinates.value = null
   }
 };
 
-const selectedFile = ref<File | null>(null)
-  const imageSrc = ref<string | null>(null)
 const handleFileChange = (event: Event) => {
-  const target = event.target as HTMLInputElement;
-  const file = target?.files?.[0];
-  if (file) {
+  const target = event.target as HTMLInputElement
+  const files = target.files
+  
+  if (files && files.length > 0) {
+    const file = files[0]
     if (!file.type.startsWith('image/')) {
-      alert('Будь ласка, виберіть лише зображення.');
-      target.value = '';
-      return;
+      alert('Будь ласка, виберіть лише зображення.')
+      target.value = ''
+      return
     }
-    selectedFile.value = file;
-    const reader = new FileReader();
-    reader.onload = () => {
-      imageSrc.value = reader.result as string;
-    };
+    selectedFile.value = file
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      imageSrc.value = e.target?.result as string || null
+    }
     reader.readAsDataURL(file);
   }
-};
+}
 
 const submit = form.handleSubmit(async (values) => {
   try {
@@ -164,37 +264,35 @@ const submit = form.handleSubmit(async (values) => {
       lon: coordinates.value?.lng ?? null
     }
 
-    const response = await request.addEvent(body)
-    console.log('Event creation response:', response)
-
-    if (!response || !response.id) {
-      throw new Error('No event ID received from server')
+    let response;
+    if (isEditMode.value && eventId) {
+      response = await request.updateEvent(eventId, body)
+    } else {
+      response = await request.addEvent(body)
     }
 
-    const eventId = response.id;
-    console.log('Event created with ID:', eventId);
+    if (!response || !response.id) {
+      throw new Error('Не отримано id івенту')
+    }
 
-    if (selectedFile.value && response.id) {
-      await request.uploadEventImage(response.id, selectedFile.value);
-      console.log('Image uploaded successfully');
+    if (selectedFile.value) {
+      await request.uploadEventImage(response.id, selectedFile.value)
     }
 
     routing.toAllEvents();
-
   } catch (e: any) {
-    console.error('Full error:', e);
+    console.error('Full error:', e)
     if (e.response) {
-      console.error('Response error:', e.response.data);
-      alert('Помилка з боку сервера: ' + JSON.stringify(e.response.data, null, 2));
+      alert('Помилка з боку сервера: ' + JSON.stringify(e.response.data, null, 2))
     } else if (e.request) {
-      console.error('Request error:', e.request);
-      alert('Запит надіслано, але відповіді не отримано: ' + e.request);
+      alert('Запит надіслано, але відповіді не отримано: ' + e.request)
     } else {
-      console.error('Error:', e.message);
-      alert('Помилка під час налаштування запиту: ' + e.message);
+      alert('Помилка під час налаштування запиту: ' + e.message)
     }
   }
-});
+})
+const cancel = () => {
+  localStorage.setItem('eventId', "")}
 </script>
 
 <style lang="scss" scoped>

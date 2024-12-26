@@ -119,6 +119,9 @@ export const requestService = () => {
    async function deleteEvent(Id: number | string): Promise<Event> {
       return api.del<GetEventsResponse>(`/events/delete?Id=${Id}`)
     }
+    async function updateEvent(id: number | string, body: Record<string, any>): Promise<Event>  {
+      return api.put(`/events/update?Id=${id}`, body)
+    }
 
    return {
       login,
@@ -134,6 +137,7 @@ export const requestService = () => {
       findEvents,
       setAuthHeader,
       deleteEvent,
-      uploadEventImage
+      uploadEventImage,
+      updateEvent
    }
 }
