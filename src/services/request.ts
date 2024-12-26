@@ -1,6 +1,7 @@
 import {apiService, apiClient} from '@/services/api'
 import type {AddEventBody, CurrentUser, UpdateUserBody, GetEventsResponse, LoginBody, Event, FindListParams} from '@/models'
 import { authTokenService } from './auth-token'
+import axios from 'axios'
 
 export const requestService = () => {
    const api = apiService()
@@ -122,7 +123,6 @@ export const requestService = () => {
     async function updateEvent(id: number | string, body: Record<string, any>): Promise<Event>  {
       return api.put(`/events/update?Id=${id}`, body)
     }
-
    return {
       login,
       getEvents,

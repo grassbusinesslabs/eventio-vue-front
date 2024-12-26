@@ -89,6 +89,9 @@
           :event='event'
         />
       </v-row>
+      <v-row>
+        <img v-if="imgUrl" :src="imgUrl" alt="Event Image" />
+      </v-row>
   </home-layout>
 </template>
 
@@ -102,7 +105,9 @@ import { useUserStore } from '@/stores'
 import HomeLayout from '@/layouts/HomeLayout.vue'
 import AppPost from '@/components/AppPost.vue'
 import { useCityStore } from '@/stores/city-store'
-import EventPageView from '@/components/EventPageView.vue'
+
+import { authTokenService } from '@/services/auth-token'
+import axios from 'axios'
 
 const cityStore = useCityStore()
 
@@ -119,6 +124,7 @@ const searchQuery = ref<string>('')
 const filterDay = ref<string>('')
 const filterMonth = ref<string>('')
 const filterYear = ref<number | null>(null)
+  const imgUrl = ref<string | null>(null)
 
 const yearOptions = [2024, 2025, 2026]
 
@@ -189,6 +195,7 @@ const debouncedSearch = debounce(() => {
 onMounted(() => {
   userStore.populate();
   loadEvents()
+  getImage('28.png') 
 })
 
 const clearInput = () => {
@@ -207,6 +214,33 @@ watch(
     loadEvents() 
   }
 )
+async function getImage(imageName: string) {
+  try {
+    const token = await authTokenService().get();
+    if (token) {
+      const response = await axios.get(`/static/${imageName}`, {
+        responseType: 'blob',
+      })
+
+      console.log('Fetching image from:', `/static/${imageName}`)
+      console.log('Fetched image blob:', response.data)
+      console.log('MIME type of blob:', response.data.type)
+
+      if (response.data.type.startsWith('image/')) {
+        const imageUrl = URL.createObjectURL(response.data)
+        imgUrl.value = imageUrl
+        console.log('Generated image URL:', imageUrl)
+      } else {
+        console.error('Fetched data is not an image:', response.data.type)
+        
+      }
+    } else {
+      console.error('Token is missing')
+    }
+  } catch (error) {
+    console.error('Error fetching image:', error)
+  }
+}
 
 </script>
 
