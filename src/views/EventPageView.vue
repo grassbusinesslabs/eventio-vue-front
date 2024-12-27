@@ -32,7 +32,7 @@
   />
       </v-card-text>
       <v-card-actions>
-        <v-btn class="accept-button ml-auto" size="large" elevation="2">
+        <v-btn class="accept-button ml-auto" size="large" elevation="2" @click="acceptSubscription">
           <v-icon left>mdi-check-circle</v-icon>Підтвердити участь
         </v-btn>
       </v-card-actions>
@@ -51,9 +51,11 @@
 import { onMounted, ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { requestService } from '@/services'
-import type { Event } from '@/models'
+import type { Event, GetSubscriptionResponse } from '@/models'
 import ProfileLayout from '@/layouts/ProfileLayout.vue'
 import AppMap from '@/components/AppMap.vue'
+import { subscribe } from 'diagnostics_channel'
+import axios from 'axios'
 
 const router = useRouter()
 const event = ref<Event | null>(null)
@@ -101,6 +103,26 @@ onMounted(loadEventDetails)
 const goBack = () => {
   router.back()
   localStorage.setItem('eventId', "")}
+
+  const acceptSubscription = async () => {
+    if (!eventId) {
+        throw new Error('ID події не вказано');
+    }
+
+    const numericEventId = parseInt(eventId, 10);
+    
+    try {
+        const response = await request.subscribe(numericEventId);
+        if (!response?.user_id) {
+            throw new Error('Ви вже підписані на цю подію');
+        }
+        
+        router.push('/events');
+    } catch (error) {
+        console.error('Помилка під час підписки:', error);
+        throw new Error('Сталася помилка під час підписки. Спробуйте ще раз.');
+    }
+};
 </script>
 
   <style scoped>

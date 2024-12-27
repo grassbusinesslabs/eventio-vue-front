@@ -23,9 +23,13 @@
         style="border-color: #ccc;"
         @click="toggleDrawer"
       >
-        <v-icon style="font-size: 55px;" class="account-icon">
-          mdi-account-circle
-        </v-icon>
+      <v-avatar size="56px">
+        <img
+           :src="getImageUrl"
+            :error-src="defaultImage"
+          alt="User Avatar"
+        />
+      </v-avatar>
       </v-btn>
     </template>
   </v-app-bar>
@@ -33,7 +37,15 @@
 
 <script lang="ts" setup>
 import AppSelectCity from "@/components/AppSelectCity.vue"
+import { useUserStore } from '@/stores'
+import { storeToRefs } from 'pinia'
+import { computed } from "vue"
 
+const userStore = useUserStore()
+const { currentUser } = storeToRefs(userStore)
+
+const defaultImage = "https://t4.ftcdn.net/jpg/02/29/75/83/360_F_229758328_7x8jwCwjtBMmC6rgFzLFhZoEpLobB6L8.jpg"
+  
 const props = defineProps<{
   drawer: boolean,
   filterDrawer: boolean
@@ -52,6 +64,9 @@ const toggleDrawer = () => {
 const toggleFilterDrawer = () => {
   emit('update:filterDrawer', !props.filterDrawer)
 }
+const getImageUrl = computed(() => {
+  return `https://eventio.grassbusinesslabs.uk/static/user_image/${currentUser.value?.id}.png`;
+})
 </script>
 
 <style lang="scss" scoped>
@@ -75,12 +90,17 @@ const toggleFilterDrawer = () => {
 
 .account-button {
   border-radius: 50%;
-  height: 90px;
+  height: 60px;
   width: 60px;
   align-content: center;
   padding: 0;
   border: 0px;
   z-index: 100;
+}
+.account-button img {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
 }
 
 .filter-button {

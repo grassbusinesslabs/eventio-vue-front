@@ -8,13 +8,13 @@
       }"
     >
     <v-img
-  :src="getImageUrl"
-  :error-src="defaultImage"
-  alt="Event Image"
-  class="card-image"
-  aspect-ratio="1"
-  cover
-/>
+          :src="getImageUrl"
+          :error-src="defaultImage"
+          alt="Event Image"
+          class="card-image"
+          aspect-ratio="1"
+          cover
+        />
 
       <v-card-text class="text-content">
         <h3 class="card-title" v-if="event?.title">{{ event.title }}</h3>

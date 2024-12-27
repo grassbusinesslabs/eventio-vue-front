@@ -178,12 +178,10 @@ const loadEventData = async () => {
             lat: foundEvent.lat,
             lng: foundEvent.lon
           };
-          console.log('Set coordinates:', coordinates.value);
         }
         
         if (foundEvent.image) {
           image.value = foundEvent.image;
-          console.log('Set image:', imageSrc.value);
         }
       } else {
         console.log('Event not found in response')

@@ -69,11 +69,11 @@ export const formService = () => {
    function nameValidator(required: boolean = true) {
       const validator = yup
          .string()
-         .min(2, 'Name must be at least 2 characters long')
-         .max(30, 'Name must not exceed 30 characters')
-         .matches(/^[a-zA-Zа-яА-Я\s]+$/, 'Name can only contain letters and spaces')
+         .min(2, 'Ім’я має містити щонайменше 2 символи')
+         .max(30, 'Ім’я не повинно перевищувати 30 символів')
+         .matches(/^[a-zA-Zа-яА-ЯєЄїЇґҐіІёЁ\s]+$/, 'Ім’я може містити лише літери та пробіли')
    
-      return required ? validator.required('Name is required') : validator
+      return required ? validator.required('Ім’я є обов’язковим') : validator
    }
    return {
       vuetifyConfig,
