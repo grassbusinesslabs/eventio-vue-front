@@ -7,13 +7,14 @@
         opacity: isPastEvent ? '0.8' : '1'
       }"
     >
-      <v-img
-        :src="defaultImage"
-        alt="Event Image"
-        class="card-image"
-        aspect-ratio="1"
-        cover
-      ></v-img>
+    <v-img
+  :src="getImageUrl"
+  :error-src="defaultImage"
+  alt="Event Image"
+  class="card-image"
+  aspect-ratio="1"
+  cover
+/>
 
       <v-card-text class="text-content">
         <h3 class="card-title" v-if="event?.title">{{ event.title }}</h3>
@@ -100,6 +101,10 @@ const navigateToEventDetails = () => {
     router.push({ name: 'EventDetails' })
   }
 }
+const getImageUrl = computed(() => {
+  if (!props.event?.image) return defaultImage;
+  return `https://eventio.grassbusinesslabs.uk/static/${props.event.image}`;
+});
 </script>
 
 

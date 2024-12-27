@@ -4,13 +4,9 @@
     "EMAIL": "Email",
     "FIRST_NAME": "First name",
     "LAST_NAME": "Last name",
-    "GENDER": "Gender",
     "PASSWORD": "Password",
     "TITLE": "Title",
     "TEXT": "Text",
-    "MALE": "Male",
-    "FEMALE": "Female",
-    "OTHER": "Other",
     "PAST": "Past",
     "FUTURE": "Future",
     "ALL": "All",
@@ -36,7 +32,8 @@
     "GO_BACK": "Go back",
     "CANCEL": "Cancel",
     "RETURN": "Return to all events",
-    "VIEW_DETAILS": "View details"
+    "VIEW_DETAILS": "View details",
+    "ACCOUNT_SETTINGS": "Account settings"
   },
   "LANGUAGES": {
     "ENGLISH": "EN",
@@ -47,7 +44,13 @@
   },
   "TEXT": {
     "PAGE_NOT_FOUND": "404 Page not found",
-  "EVENTS": "created events"
+  "EVENTS": "created events",
+  "CREATION": "Event creation",
+  "EVENT_TITLE": "Event title",
+  "ENTER_TITLE": "Enter title",
+  "EVENT_DESCRIPTION": "Event description",
+  "ENTER_DESCRIPTION": "Enter description",
+  "EVENT_DATE": "Date and time of the event"
   },
   "MENU":{
     "ACCOUNT_SETTINGS": "Account settings"

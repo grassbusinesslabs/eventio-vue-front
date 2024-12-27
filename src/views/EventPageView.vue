@@ -4,7 +4,12 @@
       <v-progress-circular indeterminate></v-progress-circular>
     </v-card>
     <v-card class="event-details-card" v-else-if="event">
-      <v-img :src="defaultImage" alt="Event Image" aspect-ratio="1.7" cover></v-img>
+      <v-img 
+        :src="getEventImage" 
+        :alt="event.title || 'Event Image'" 
+        aspect-ratio="1.7" 
+        cover
+      ></v-img>
       <v-card-title
         class="event-title"
         style="white-space: normal; word-break: break-word;"
@@ -19,16 +24,15 @@
           <v-icon left>mdi-calendar</v-icon>{{ formatDate(event.date) }}
         </p>
         <p class="event-description">{{ event?.description }}</p>
-        <v-divider></v-divider>
 
-        <app-map 
+        <app-map  class="map"
     v-if="event?.lat && event?.lon"
     :lat="Number(event.lat)" 
     :lon="Number(event.lon)" 
   />
       </v-card-text>
       <v-card-actions>
-        <v-btn variant="outlined" color="success">
+        <v-btn class="accept-button ml-auto" size="large" elevation="2">
           <v-icon left>mdi-check-circle</v-icon>Підтвердити участь
         </v-btn>
       </v-card-actions>
@@ -44,7 +48,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { requestService } from '@/services'
 import type { Event } from '@/models'
@@ -83,7 +87,16 @@ const loadEventDetails = async () => {
   }
 }
 
+const getEventImage = computed(() => {
+  if (!event.value) return defaultImage
+  return event.value.image 
+    ? `https://eventio.grassbusinesslabs.uk/static/${event.value.image}`
+    : defaultImage
+})
+
 onMounted(loadEventDetails)
+
+
 
 const goBack = () => {
   router.back()
@@ -113,9 +126,10 @@ const goBack = () => {
 
   .event-description{
     text-align: justify;
-   
+    font-size: 16px;
     margin-left: 20px;
     margin-right: 20px;
+    margin-bottom: 20px;
   }
   .event-location{
     margin-bottom: 5px;
@@ -123,7 +137,7 @@ const goBack = () => {
     margin-left: 20px;
   }
   .event-date {
-    margin-bottom: 15px;
+    margin-bottom: 40px;
     font-size: 16px;
     width: 100%;
     margin-left: 20px;
@@ -132,6 +146,14 @@ const goBack = () => {
   .event-location v-icon,
   .event-date v-icon {
     margin-right: 5px;
+  }
+  .map{
+    width: 680px;
+    margin-left: 20px;
+  }
+  .accept-button{
+    margin-right: 20px;
+    margin-bottom: 20px;
   }
   </style>
   

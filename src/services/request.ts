@@ -51,7 +51,7 @@ export const requestService = () => {
         const formData = new FormData();
         formData.append('image', image);
     
-        const response = await api.post(`/events/upload-image?Id=${Id}`, formData, {
+        const response = await api.post(`/events/uploadimage?Id=${Id}`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },

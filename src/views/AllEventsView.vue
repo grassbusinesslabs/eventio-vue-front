@@ -90,7 +90,6 @@
         />
       </v-row>
       <v-row>
-        <img v-if="imgUrl" :src="imgUrl" alt="Event Image" />
       </v-row>
   </home-layout>
 </template>
@@ -114,7 +113,7 @@ const cityStore = useCityStore()
 const { handleError } = useHandleError()
 const { translate } = useAppI18n()
 const userStore = useUserStore()
-const selectedCity = cityStore.formattedCity
+const selectedCity = computed(() => cityStore.formattedCity)
 
 const request = requestService()
 
@@ -127,6 +126,7 @@ const filterYear = ref<number | null>(null)
   const imgUrl = ref<string | null>(null)
 
 const yearOptions = [2024, 2025, 2026]
+const imageName = "28.png"
 
 function debounce<T extends (...args: any[]) => any>(
   fn: T,
@@ -168,7 +168,7 @@ async function loadEvents(): Promise<void> {
     loadingEvents.value = true
 
     const params = {
-      city: selectedCity || undefined,
+      city: selectedCity.value || undefined,
       day: filterDay.value ? getUnixTimestamp(filterDay.value) : undefined,
       month: filterMonth.value ? getUnixTimestamp(filterMonth.value) : undefined,
       year: filterYear.value ? getUnixTimestamp(`${filterYear.value}-01-01`) : undefined,
@@ -177,7 +177,7 @@ async function loadEvents(): Promise<void> {
     }
     const response = await request.findEvents(params)
     events.value = response.events || []
-    
+    console.log(selectedCity.value)
 
   } catch (error) {
     console.error('Error loading events:', error)
@@ -193,9 +193,8 @@ const debouncedSearch = debounce(() => {
 }, 300)
 
 onMounted(() => {
-  userStore.populate();
+  userStore.populate()
   loadEvents()
-  getImage('28.png') 
 })
 
 const clearInput = () => {
@@ -208,39 +207,10 @@ const isClearButtonVisible = computed(() => {
   return filterDay.value || filterMonth.value || filterYear.value || searchQuery.value;
 })
 
-watch(
-  () => cityStore.formattedCity, 
-  () => {
-    loadEvents() 
-  }
-)
-async function getImage(imageName: string) {
-  try {
-    const token = await authTokenService().get();
-    if (token) {
-      const response = await axios.get(`/static/${imageName}`, {
-        responseType: 'blob',
-      })
+watch(selectedCity, () => {
+  loadEvents()
+})
 
-      console.log('Fetching image from:', `/static/${imageName}`)
-      console.log('Fetched image blob:', response.data)
-      console.log('MIME type of blob:', response.data.type)
-
-      if (response.data.type.startsWith('image/')) {
-        const imageUrl = URL.createObjectURL(response.data)
-        imgUrl.value = imageUrl
-        console.log('Generated image URL:', imageUrl)
-      } else {
-        console.error('Fetched data is not an image:', response.data.type)
-        
-      }
-    } else {
-      console.error('Token is missing')
-    }
-  } catch (error) {
-    console.error('Error fetching image:', error)
-  }
-}
 
 </script>
 

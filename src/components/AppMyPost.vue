@@ -4,12 +4,13 @@
       <div class="card-container">
         <div class="upper-section">
           <v-img
-            src="https://marketing-cdn.tickettailor.com/ZgP1j7LRO5ile62O_HowdoyouhostasmallcommunityeventA10-stepguide%2CMiniflagsattheevent.jpg?auto=format%2Ccompress&fit=max&w=3840"
-            alt="Image"
-            class="card-image"
-            aspect-ratio="1"
-            cover
-          ></v-img>
+                :src="getImageUrl"
+                :error-src="defaultImage"
+                alt="Event Image"
+                class="card-image"
+                aspect-ratio="1"
+                cover
+              />
 
           <div class="info-section">
             <h3 class="card-title" v-if="event?.title">{{ event.title }}</h3>
@@ -83,7 +84,7 @@
 
 
 <script lang="ts" setup>
-import { defineProps, ref } from "vue"
+import { computed, defineProps, ref } from "vue"
 import { useAppI18n } from "@/i18n"
 import type { Event } from "@/models"
 import { getMonth, getYear, getDate, getHours, getMinutes } from 'date-fns'
@@ -103,6 +104,8 @@ const emit = defineEmits(['eventDeleted'])
 
 const showDeleteDialog = ref(false)
 const isDeleting = ref(false)
+
+const defaultImage = "https://marketing-cdn.tickettailor.com/ZgP1j7LRO5ile62O_HowdoyouhostasmallcommunityeventA10-stepguide%2CMiniflagsattheevent.jpg"
 
 const deleteEvent = async () => {
   if (!props.event?.id) return
@@ -139,6 +142,10 @@ const navigateToEditing = () => {
     router.push({ name: 'AddEvent' })
   }
 }
+const getImageUrl = computed(() => {
+  if (!props.event?.image) return defaultImage;
+  return `https://eventio.grassbusinesslabs.uk/static/${props.event.image}`;
+});
 </script>
 
 <style lang="scss" scoped>

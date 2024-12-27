@@ -31,7 +31,7 @@
           class="drawer-item"
         >
           <v-list-item-title class="drawer-item-text">
-            Особистий кабінет
+            {{ translate('BTNS.ACCOUNT_SETTINGS') }}
           </v-list-item-title>
         </v-list-item>
         <v-list-item
@@ -39,7 +39,7 @@
           class="drawer-item"
         >
           <v-list-item-title class="drawer-item-text">
-            Мої події
+            {{ translate('BTNS.MY_EVENTS') }}
           </v-list-item-title>
         </v-list-item>
 
@@ -89,6 +89,7 @@
           </v-col>
         </v-row>
       </v-container>
+      <p class="authors">Розробники: Доровских Дмитро та Жаботинська Софія</p>
     </v-main>
   </v-layout>
 </template>
@@ -169,4 +170,12 @@ const emit = defineEmits(['cityChanged'])
    width: 100%;
    text-align: center;
  }
+ 
+  .authors {
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    height: 35px; 
+    color: #5C5C5CFF;
+  }
  </style>
