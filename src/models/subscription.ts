@@ -1,4 +1,4 @@
-import type {Pagination} from '@/models/pagination'
+
 
 export interface Subscription {
    user_id: number

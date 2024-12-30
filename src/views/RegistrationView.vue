@@ -100,7 +100,7 @@
                <v-col cols="12" class="text-center">
                   <v-btn
                      :block='true'
-                     text
+                   
                      color="#d8dce3"
                      @click="navigateToLogin"
                   >
@@ -120,14 +120,13 @@ import * as yup from 'yup'
 import type {MaybeRefOrGetter} from 'vue'
 import {ref} from 'vue'
 
-import {useHandleError, useRouting} from '@/composables'
+import { useRouting} from '@/composables'
 import {useAppI18n} from '@/i18n'
-import {formService, requestService, utilsService} from '@/services'
+import {formService, requestService} from '@/services'
 import AuthLayout from '@/layouts/AuthLayout.vue'
 
 const request = requestService()
 
-const {handleError} = useHandleError()
 const {translate} = useAppI18n()
 const routing = useRouting()
 const {vuetifyConfig, emailValidator, passwordValidator, nameValidator} = formService()
@@ -162,7 +161,6 @@ const showPassword = ref<boolean>(false)
 const fileInput = ref<HTMLInputElement | null>(null)
    const showError = ref(false)
    const errorMessage = ref('')
-   const utils = utilsService()
 
 const submit = form.handleSubmit(async values => {
    try {

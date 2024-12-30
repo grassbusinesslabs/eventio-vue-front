@@ -64,9 +64,10 @@ export const useAppI18n = () => {
    }
 
    function getLangInfo(lang: Lang): LangInfo | null {
-      return getLangsInfo().find((el: LangInfo) => el.lang === lang) || null
+      return getLangsInfo().find((el) => el.lang === lang) ?? null;
    }
-
+   
+   
    async function init(): Promise<void> {
       try {
          const currentLang: Lang = await getCurrentLang()

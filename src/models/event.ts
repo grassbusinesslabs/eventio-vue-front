@@ -1,6 +1,6 @@
 import type {Pagination} from '@/models/pagination'
 
-export interface Event {  
+export interface Event {
     id: string
     userId: number  
     title: string  
@@ -12,6 +12,7 @@ export interface Event {
     lat: number 
     lon: number    
     count: number
+    target: HTMLInputElement
  }  
  
  export type GetEventsResponse = Pagination<{events: Event[]}>  

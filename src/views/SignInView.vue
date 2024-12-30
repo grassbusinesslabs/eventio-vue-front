@@ -54,7 +54,6 @@
                <v-col cols="12" class="text-center">
                   <v-btn
                      :block='true'
-                     text
                      color="#d8dce3"
                      @click="navigateToRegistration"
                   >
@@ -75,14 +74,12 @@ import type {MaybeRefOrGetter} from 'vue'
 import {ref} from 'vue'
 
 import type {CurrentUser, LoginBody} from '@/models'
-import {useHandleError, useRouting} from '@/composables'
+import { useRouting} from '@/composables'
 import {useAppI18n} from '@/i18n'
-import {authTokenService, formService, requestService} from '@/services'
+import {formService, requestService} from '@/services'
 import {useUserStore} from '@/stores'
 import AuthLayout from '@/layouts/AuthLayout.vue'
-import { utilsService } from '@/services'
 
-const {handleError} = useHandleError()
 const {translate} = useAppI18n()
 const routing = useRouting()
 const userStore = useUserStore()
@@ -90,10 +87,8 @@ const {setCurrentUser} = userStore
 
 const {vuetifyConfig, emailValidator, passwordValidator} = formService()
 const request = requestService()
-const authToken = authTokenService()
 const showError = ref(false)
 const errorMessage = ref('')
-const utils = utilsService()
 
 
 const form = useForm({
@@ -133,7 +128,6 @@ const submit = form.handleSubmit(async values => {
 
       isSubmitting.value = false
    } catch (e) {
-      const errorMsg = utils.getErrorMessage(e)
       errorMessage.value = "Неправильні пошта або пароль"
       showError.value = true
       console.error(e)

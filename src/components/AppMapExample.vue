@@ -1,8 +1,7 @@
 <template>
    <v-col cols='12'>
-      <app-map />
+      <app-map :lat="0" :lon="0" />
    </v-col>
-
    <v-col cols='12'>
       <app-address-autocomplete @select='selectAddress' />
    </v-col>
@@ -25,7 +24,7 @@ async function selectAddress(address: AddressItem): Promise<void> {
 
    map.removeAllMarkers()
 
-   const marker: Marker | null = map.createMarker(address.details.id, address.details.position as LngLatLike)
+   const marker: Marker | null = map.createMarker(String(address.details.id), address.details.position as LngLatLike)
 
    if (marker) {
       map.addMarkerToMap(marker)

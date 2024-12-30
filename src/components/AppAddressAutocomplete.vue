@@ -31,7 +31,7 @@
  
  const loading = ref<boolean>(false)
  const addressModel = ref<AddressItem | null>(null)
- const searchModel = ref<string | null>(null)
+  const searchModel = ref<string>('')
  const items = ref<AddressItem[]>([])
  
  const debounceSearch = debounce(search, 300) 

@@ -3,8 +3,7 @@ import tt, {
    LngLatLike,
    Map,
    MapOptions,
-   Marker,
-   NavigationControl
+   Marker
 } from '@tomtom-international/web-sdk-maps'
 
 import ttServices, {
@@ -17,8 +16,6 @@ import ttServices, {
 } from '@tomtom-international/web-sdk-services'
 
 import mapMarker from '@/assets/map-marker.svg'
-
-import axios from "axios";
 
 export type SearchAddress = Address & AddressCountrySubdivisionCodeMixin & AddressPostalNameMixin
 
@@ -78,18 +75,17 @@ export const mapService = () => {
    async function createMap(container: HTMLElement, options?: Partial<MapOptions>): Promise<Map> {
       const combineOptions: MapOptions = {
          ...defaultMapOptions,
-         ...options
+         ...options,
+         container
       }
 
-      combineOptions.container = container
-
-      map = tt.map(combineOptions)
+      const map = tt.map(combineOptions)
 
       map.addControl(new tt.FullscreenControl({
          container
       }))
 
-      const navControl: NavigationControl = new tt.NavigationControl({
+      const navControl = new tt.NavigationControl({
          showZoom: true,
          showPitch: true,
          showExtendedPitchControls: true,
@@ -98,7 +94,9 @@ export const mapService = () => {
       })
 
       map.addControl(navControl, 'top-left')
-   }
+      
+      return map
+}
 
    function getMap(): Map | null {
       return map
@@ -117,14 +115,14 @@ export const mapService = () => {
       map!.panTo(coords, animationOptions)
    }
 
-   function setZoom(zoom: number = defaultMapOptions.zoom, options?: Partial<AnimationOptions>): void {
+   function setZoom(zoom: number = defaultMapOptions.zoom || 4, options?: Partial<AnimationOptions>): void {
       const animationOptions: AnimationOptions = {
-         duration: 500,
-         ...options
+        duration: 500,
+        ...options
       }
-
+    
       map!.zoomTo(zoom, animationOptions)
-   }
+    }
 
    function getMapZoom(): number {
       return map!.getZoom()
@@ -196,32 +194,28 @@ export const mapService = () => {
 
    async function searchAddresses(text: string, options?: Partial<FuzzySearchOptions>): Promise<AddressItem[]> {
       const response: FuzzySearchResponse = await fuzzySearch(text, {
-         ...options,
-         idxSet: 'PAD,Addr' // search addresses only
+        ...options,
+        idxSet: 'PAD,Addr'
       })
-
-      return response.results.map((el: FuzzySearchResult) => ({
-         address: generateAddressStr(el.address),
-         details: el
+     
+      return (response.results || []).map((el: FuzzySearchResult) => ({
+        address: generateAddressStr(el.address as SearchAddress), 
+        details: el
       }))
-   }
+     }
 
    
-async function searchCities(text: string, options?: Partial<FuzzySearchOptions>): Promise<CityItem[]> {
-   const response: FuzzySearchResponse = await fuzzySearch(text, {
-     ...options,
-     entityTypeSet: 'MunicipalitySubdivision'
-   })
- 
-   if (!response.results) {
-     return [];
+   async function searchCities(text: string, options?: Partial<FuzzySearchOptions>): Promise<CityItem[]> {
+      const response: FuzzySearchResponse = await fuzzySearch(text, {
+        ...options,
+        entityTypeSet: 'MunicipalitySubdivision'
+      })
+    
+      return (response.results || []).map((el: FuzzySearchResult) => ({
+        city: generateCityStr(el.address),
+        details: el
+      }))
    }
- 
-   return response.results.map((el: FuzzySearchResult) => ({
-     city: generateCityStr(el.address),
-     details: el
-   }))
- }
 
    function generateAddressStr(searchResult: SearchAddress): string {
       const segments: string[] = []
@@ -249,23 +243,23 @@ async function searchCities(text: string, options?: Partial<FuzzySearchOptions>)
 
    function generateCityStr(searchResult: SearchAddress | undefined): string {
       if (!searchResult) {
-         return ''; // Return an empty string if the search result is undefined
+        return ''
       }
-   
+    
       const segments: string[] = []
-   
-      if (searchResult?.municipalitySubdivision) {
-         segments.push(searchResult.municipalitySubdivision)
-      } else if (searchResult?.municipality) {
-         segments.push(searchResult.municipality)
+    
+      if (searchResult.municipalitySubdivision) {
+        segments.push(searchResult.municipalitySubdivision)
+      } else if (searchResult.municipality) {
+        segments.push(searchResult.municipality)
       }
-   
-      if (searchResult?.countrySubdivision) {
-         segments.push(searchResult.countrySubdivision)
+    
+      if (searchResult.countrySubdivision) {
+        segments.push(searchResult.countrySubdivision)
       }
-   
+    
       return segments.join(', ')
-   }
+    }
    return {
       searchAddresses,
       searchCities,

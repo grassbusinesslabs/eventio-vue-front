@@ -50,16 +50,16 @@
 
         <div class="form-group">
           <label>Завантажити файл</label>
-          <input
+          <v-input
             type="file"
             accept="image/*"
-            @change="(e: Event) => handleFileChange(e)"
+             @change="handleFileChange"
           />
         </div>
 
         <div class="form-actions">
           <v-btn type="submit" class="save">{{ isEditMode ? 'Оновити' : 'Зберегти' }}</v-btn>
-          <v-btn text to="/myEvents" @click="cancel">Скасувати</v-btn>
+          <v-btn to="/myEvents" @click="cancel">Скасувати</v-btn>
         </div>
       </form>
     </div>
@@ -77,13 +77,10 @@ import type { AddressItem } from "@/services/map"
 import { requestService } from '@/services'
 import { useRouting } from '@/composables'
 import type { Event } from "@/models"
-import { useRoute } from 'vue-router'
 
-const route = useRoute()
 const eventId = localStorage.getItem('eventId')
 const isEditMode = computed(() => Boolean(eventId))
 
-const event = ref<Event | null>(null)
 console.log('Found event with coordinates:', eventId)
 
 const { eventTitleValidator, descriptionValidator } = {
@@ -181,7 +178,7 @@ const loadEventData = async () => {
         }
         
         if (foundEvent.image) {
-          image.value = foundEvent.image;
+          //image.value = foundEvent.image;
         }
       } else {
         console.log('Event not found in response')

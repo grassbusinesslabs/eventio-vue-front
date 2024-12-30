@@ -105,9 +105,6 @@ import HomeLayout from '@/layouts/HomeLayout.vue'
 import AppPost from '@/components/AppPost.vue'
 import { useCityStore } from '@/stores/city-store'
 
-import { authTokenService } from '@/services/auth-token'
-import axios from 'axios'
-
 const cityStore = useCityStore()
 
 const { handleError } = useHandleError()
@@ -123,10 +120,8 @@ const searchQuery = ref<string>('')
 const filterDay = ref<string>('')
 const filterMonth = ref<string>('')
 const filterYear = ref<number | null>(null)
-  const imgUrl = ref<string | null>(null)
 
 const yearOptions = [2024, 2025, 2026]
-const imageName = "28.png"
 
 function debounce<T extends (...args: any[]) => any>(
   fn: T,

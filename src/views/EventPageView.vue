@@ -51,11 +51,10 @@
 import { onMounted, ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { requestService } from '@/services'
-import type { Event, GetSubscriptionResponse } from '@/models'
+import type { Event} from '@/models'
 import ProfileLayout from '@/layouts/ProfileLayout.vue'
 import AppMap from '@/components/AppMap.vue'
-import { subscribe } from 'diagnostics_channel'
-import axios from 'axios'
+
 
 const router = useRouter()
 const event = ref<Event | null>(null)

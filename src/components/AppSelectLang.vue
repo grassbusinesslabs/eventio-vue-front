@@ -10,7 +10,7 @@
    >
       <template v-slot:selection='{ item}'>
          <span class='v-select__selection-text'>
-            {{ translate(item.props.title.localizeKey) }}
+            {{ translate(item.props.localizeKey) }}
          </span>
       </template>
 

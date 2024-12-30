@@ -3,7 +3,6 @@
       <v-card>
         <v-card-title>Account</v-card-title>
         <v-card-text>
-          <!-- Add your account-related content here -->
           <Fedir />
           <Bytkor />
           <РЕДАГУВАТИ />
@@ -18,7 +17,4 @@
   
   const isAccountWindowOpen = ref(false)
   
-  function toggleAccountWindow() {
-    isAccountWindowOpen.value = !isAccountWindowOpen.value
-  }
   </script>

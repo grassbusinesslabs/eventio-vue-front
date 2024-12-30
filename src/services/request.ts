@@ -1,5 +1,5 @@
 import {apiService, apiClient} from '@/services/api'
-import type {AddEventBody, CurrentUser, UpdateUserBody, GetEventsResponse, LoginBody, Event, FindListParams, GetSubscriptionResponse} from '@/models'
+import type {CurrentUser, UpdateUserBody, GetEventsResponse, LoginBody, Event, FindListParams, GetSubscriptionResponse} from '@/models'
 import { authTokenService } from './auth-token'
 import axios from 'axios'
 
