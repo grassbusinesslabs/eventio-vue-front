@@ -1,6 +1,13 @@
 <template>
    <auth-layout>
       <v-sheet class='mx-auto' width='320'>
+         <v-snackbar
+            v-model="showError"
+            color="error"
+            timeout="5000"
+         >
+            {{ errorMessage }}
+         </v-snackbar>
          <v-form @submit.prevent='submit'>
             <v-row dense class="gap-4">
                <v-row justify="center" class="mb-4">
@@ -115,7 +122,7 @@ import {ref} from 'vue'
 
 import {useHandleError, useRouting} from '@/composables'
 import {useAppI18n} from '@/i18n'
-import {formService, requestService} from '@/services'
+import {formService, requestService, utilsService} from '@/services'
 import AuthLayout from '@/layouts/AuthLayout.vue'
 
 const request = requestService()
@@ -153,6 +160,9 @@ const selectedFile = ref<File | null>(null)
 const imageSrc = ref<string | null>(defaultImage) 
 const showPassword = ref<boolean>(false)
 const fileInput = ref<HTMLInputElement | null>(null)
+   const showError = ref(false)
+   const errorMessage = ref('')
+   const utils = utilsService()
 
 const submit = form.handleSubmit(async values => {
    try {
@@ -174,17 +184,13 @@ const submit = form.handleSubmit(async values => {
       console.log('Реєстрація успішна')
       routing.toSignIn()
 
-   } catch (e: any) {
+   } catch (e) {
 
-   if (e.response) {
-      alert('Помилка з боку сервера:' + JSON.stringify(e.response.data, null, 2))
-   } else if (e.request) {
-      alert('Запит надіслано, але відповіді не отримано:'+ e.request)
-   } else {
-      alert('Помилка під час налаштування запиту:' + e.message)
-   }
-
-   handleError(e)
+      errorMessage.value = "Користувач з такою поштою вже існує"
+      showError.value = true
+      console.error(e)
+      isSubmitting.value = false
+   //handleError(e)
    } finally {
       isSubmitting.value = false
    }
@@ -231,7 +237,7 @@ const handleFileChange = (event: Event) => {
   border-radius: 50%;
   align-self: center;
   overflow: hidden;
-  margin-bottom: 8px; /* Відступ між фото і кнопкою */
+  margin-bottom: 8px; 
 }
 
 .hidden-input {
@@ -246,6 +252,6 @@ const handleFileChange = (event: Event) => {
 
 .photo-button {
   font-size: small;
-  margin-top: 8px; /* Додає простір між фото і кнопкою */
+  margin-top: 8px; 
 }
 </style>

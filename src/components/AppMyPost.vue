@@ -25,7 +25,7 @@
             </p>
             
             <p class="card-members-number">
-              Кількість учасників: 0
+              Кількість учасників: {{event?.count}}
             </p>
           </div>
         </div>
@@ -199,6 +199,7 @@ const getImageUrl = computed(() => {
 .card-members-number {
   font-size: 14px;
   margin: 0;
+  font-weight: bold;
 }
 
 .lower-section {

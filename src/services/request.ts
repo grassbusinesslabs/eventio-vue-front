@@ -101,9 +101,40 @@ export const requestService = () => {
       }
     }
 
+    async function updateUserImage(image: File): Promise<void> {
+      try {
+        const formData = new FormData();
+        formData.append('image', image);
+    
+        const response = await api.put(`/users/updateuserimage`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+          transformRequest: [(data) => data],
+        });
+    
+        return response.data;
+    
+      } catch (error: any) {
+        if (error.response) {
+          throw new Error(
+            `Failed to upload image: ${error.response.status} ${error.response.statusText}` +
+            (error.response.data ? ` - ${JSON.stringify(error.response.data)}` : '')
+          );
+        } else if (error.request) {
+          throw new Error('No response received from server');
+        } else {
+          throw new Error(`Error setting up request: ${error.message}`);
+        }
+      }
+    }
+
    async function getCurrentUser(): Promise<CurrentUser> {
       return api.get('/users')
    }
+   async function deleteUserImage() {
+    return api.del(`/users/deleteuserimage`)
+ }
 
    async function logout(): Promise<void> {
       await api.post('/auth/logout')
@@ -191,6 +222,8 @@ export const requestService = () => {
       uploadEventImage,
       updateEvent,
       subscribe,
-      uploadUserImage
+      uploadUserImage,
+      updateUserImage,
+      deleteUserImage
    }
 }

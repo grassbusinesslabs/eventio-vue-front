@@ -6,3 +6,5 @@ export * from './event'
 export * from './user'
 export * from './findListParams'
 export * from './subscription'
+export * from './apiError'
+

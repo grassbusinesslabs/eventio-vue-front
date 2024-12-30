@@ -4,7 +4,43 @@
       <h2 class="text-h5 mb-6 text-center">
         {{ translate("TITLES.EDIT_PROFILE") }}
       </h2>
-
+      <v-col cols="12" class="d-flex flex-column align-center">
+                     <v-img
+                        :src="getImageUrl"
+                        :error-src="defaultImage"
+                        alt="User Image"
+                        class="card-image"
+                        aspect-ratio="1"
+                        cover
+                     />
+                     <div class="file-upload-wrapper d-flex flex-column align-center">
+                        <v-btn
+                           class="photo-button"
+                           @click="triggerFileInput"
+                           density="compact"
+                           elevation="0"
+                        >
+                           змінити фото профілю
+                        </v-btn>
+                        <v-btn
+                            class="photo-button"
+                            color="error"
+                            @click="deleteAvatar"
+                            density="compact"
+                            elevation="0"
+                            variant="text"
+                          >
+                            видалити фото
+                          </v-btn>
+                        <input
+                           ref="fileInput"
+                           type="file"
+                           accept="image/*"
+                           @change="handleFileChange"
+                           class="hidden-input"
+                        />
+                     </div>
+                  </v-col>
       <v-form @submit.prevent="submit" class="form-container">
         <v-text-field
           v-model="firstName"
@@ -82,7 +118,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/yup'
@@ -103,10 +139,14 @@ const { vuetifyConfig, emailValidator, nameValidator } = formService()
 const userStore = useUserStore()
 const { logout, setCurrentUser } = userStore
 const { currentUser } = storeToRefs(userStore)
-
 const isSubmitting = ref(false)
 const isDeletingAccount = ref(false)
 const showDeleteConfirm = ref(false)
+
+const selectedFile = ref<File | null>(null)
+const fileInput = ref<HTMLInputElement | null>(null)
+const defaultImage = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSq8T0hZUoX8kuRi3EZpZbUDtZ_WqqN9Ll15Q&s"
+const imageSrc = ref<string | null>(defaultImage) 
 
 const form = useForm({
   validationSchema: toTypedSchema(
@@ -139,6 +179,9 @@ const submit = form.handleSubmit(async (values) => {
     }
 
     await request.updateUser(body)
+    if (selectedFile.value) {
+      await request.updateUserImage(selectedFile.value)
+    }
 
     if (currentUser.value) {
       currentUser.value = {
@@ -166,6 +209,65 @@ const deleteAccount = async () => {
     showDeleteConfirm.value = false
   }
 }
+const getImageUrl = computed(() => {
+  return currentUser.value?.id
+    ? `https://eventio.grassbusinesslabs.uk/static/user_image/${currentUser.value.id}.png`
+    : defaultImage
+})
+const triggerFileInput = () => {
+  fileInput.value?.click() 
+}
+const handleFileChange = async (event: Event) => {
+  const target = event.target as HTMLInputElement
+  const files = target.files
+
+  if (files && files.length > 0) {
+    const file = files[0]
+
+    if (!file.type.startsWith('image/')) {
+      alert('Будь ласка, виберіть лише зображення.')
+      target.value = ''
+      return
+    }
+
+    selectedFile.value = file
+
+    try {
+      const imageExists = await checkImageExists(currentUser.value?.id)
+      
+      if (imageExists) {
+        await request.updateUserImage(file)
+      } else {
+        await request.uploadUserImage(file)
+      }
+      const timestamp = Date.now()
+      imageSrc.value = `${getImageUrl.value}?t=${timestamp}`
+    } catch (error) {
+      handleError(error)
+    }
+  }
+}
+
+const checkImageExists = async (userId: string | number | undefined): Promise<boolean> => {
+  if (!userId) return false;
+  
+  try {
+    const response = await fetch(`https://eventio.grassbusinesslabs.uk/static/user_image/${userId}.png`);
+    return response.status === 200;
+  } catch {
+    return false;
+  }
+}
+
+const deleteAvatar = async () => {
+  try {
+    await request.deleteUserImage() 
+    const timestamp = Date.now()
+    imageSrc.value = `https://eventio.grassbusinesslabs.uk/static/user_image/${currentUser.value?.id}.png?t=${timestamp}`
+  } catch (error) {
+    handleError(error)
+  }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -173,5 +275,29 @@ const deleteAccount = async () => {
   max-width: 670px;
   margin: 0 auto;
   padding: 24px;
+}
+.card-image {
+  width: 80px;
+  height: 80px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  align-self: center;
+  overflow: hidden;
+  margin-bottom: 8px; 
+}
+
+.hidden-input {
+  display: none;
+}
+
+.file-upload-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.photo-button {
+  font-size: small;
+  margin-top: 8px; 
 }
 </style>

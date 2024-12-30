@@ -26,7 +26,7 @@
       <v-avatar size="56px">
         <img
            :src="getImageUrl"
-            :error-src="defaultImage"
+           @error="onImageError"
           alt="User Avatar"
         />
       </v-avatar>
@@ -44,7 +44,7 @@ import { computed } from "vue"
 const userStore = useUserStore()
 const { currentUser } = storeToRefs(userStore)
 
-const defaultImage = "https://t4.ftcdn.net/jpg/02/29/75/83/360_F_229758328_7x8jwCwjtBMmC6rgFzLFhZoEpLobB6L8.jpg"
+const defaultImage = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSq8T0hZUoX8kuRi3EZpZbUDtZ_WqqN9Ll15Q&s"
   
 const props = defineProps<{
   drawer: boolean,
@@ -67,6 +67,9 @@ const toggleFilterDrawer = () => {
 const getImageUrl = computed(() => {
   return `https://eventio.grassbusinesslabs.uk/static/user_image/${currentUser.value?.id}.png`;
 })
+const onImageError = (event: Event) => {
+  (event.target as HTMLImageElement).src = defaultImage
+}
 </script>
 
 <style lang="scss" scoped>

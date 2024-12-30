@@ -11,6 +11,7 @@ export interface Event {
     location: string  
     lat: number 
     lon: number    
+    count: number
  }  
  
  export type GetEventsResponse = Pagination<{events: Event[]}>  

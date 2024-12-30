@@ -1,6 +1,13 @@
 <template>
    <auth-layout>
       <v-sheet class='mx-auto' width='320'>
+         <v-snackbar
+            v-model="showError"
+            color="error"
+            timeout="5000"
+         >
+            {{ errorMessage }}
+         </v-snackbar>
          <v-form @submit.prevent='submit'>
             <v-row dense class="gap-4">
                <v-row justify="center" class="mb-4">
@@ -73,6 +80,7 @@ import {useAppI18n} from '@/i18n'
 import {authTokenService, formService, requestService} from '@/services'
 import {useUserStore} from '@/stores'
 import AuthLayout from '@/layouts/AuthLayout.vue'
+import { utilsService } from '@/services'
 
 const {handleError} = useHandleError()
 const {translate} = useAppI18n()
@@ -83,6 +91,10 @@ const {setCurrentUser} = userStore
 const {vuetifyConfig, emailValidator, passwordValidator} = formService()
 const request = requestService()
 const authToken = authTokenService()
+const showError = ref(false)
+const errorMessage = ref('')
+const utils = utilsService()
+
 
 const form = useForm({
    validationSchema: toTypedSchema(
@@ -121,9 +133,10 @@ const submit = form.handleSubmit(async values => {
 
       isSubmitting.value = false
    } catch (e) {
-      alert('Помилка обробляється')
+      const errorMsg = utils.getErrorMessage(e)
+      errorMessage.value = "Неправильні пошта або пароль"
+      showError.value = true
       console.error(e)
-      handleError(e)
       isSubmitting.value = false
    }
 })
