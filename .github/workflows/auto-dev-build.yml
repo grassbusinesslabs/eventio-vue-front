@@ -2,9 +2,9 @@ name: Build & Deploy to DEV
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
 env:
   IMAGE_TAG: 'DEV-latest'
