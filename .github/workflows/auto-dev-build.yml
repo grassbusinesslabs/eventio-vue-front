@@ -1,0 +1,85 @@
+name: Build & Deploy to DEV
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+env:
+  IMAGE_TAG: 'DEV-latest'
+  SERVICE_NAME: 'eventio_web'
+
+jobs:
+  build_and_push:
+    name: Build Image. Push to Containers Registry
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Import Secrets
+        uses: amaneshi/infisical-action@main
+        with:
+          clientId: ${{ secrets.INFISICAL_CLIENT_ID }}
+          clientSecret: ${{ secrets.INFISICAL_CLIENT_SECRET }}
+          workspaceId: ${{ secrets.INFISICAL_WORKSPACE_ID }}
+          environment: ${{ 'DEV' }}
+          secrets: |
+            /Registry REGISTRY_ADDRESS;
+            /Registry REGISTRY_USERNAME;
+            /Registry REGISTRY_TOKEN;
+            /MobileMenu DEPLOY_HOST;
+            /MobileMenu DEPLOY_USERNAME;
+            /MobileMenu DEPLOY_KEY;
+            /MobileMenu DEPLOY_PORT;
+            /MobileMenu DEPLOY_PASSPHRASE;
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Builder
+        uses: docker/setup-buildx-action@v3
+
+      - name: Logging into Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY_ADDRESS }}
+          username: ${{ env.REGISTRY_USERNAME }}
+          password: ${{ env.REGISTRY_TOKEN }}
+
+      - name: Prepare repo name
+        run: echo "REPO=${GITHUB_REPOSITORY,,}" >>${GITHUB_ENV}
+
+      - name: Pushing Image to Container Registry
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          file: .docker/Dockerfile
+          tags: ${{ env.REGISTRY_ADDRESS }}/${{ env.REPO }}:${{ env.IMAGE_TAG }}
+
+      - name: Deploy to Droplet via SSH Action
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ env.DEPLOY_HOST }}
+          username: ${{ env.DEPLOY_USERNAME }}
+          key: ${{ env.DEPLOY_KEY }}
+          port: ${{ env.DEPLOY_PORT }}
+          passphrase: ${{ env.DEPLOY_PASSPHRASE }}
+          script_stop: true
+          script: |
+            # Free up space
+            docker image prune -f
+
+            # Login to Container Registry
+            docker login ${{ env.REGISTRY_ADDRESS }} -u '${{ env.REGISTRY_USERNAME }}' -p '${{ env.REGISTRY_TOKEN }}'
+
+            # Pull the Docker Image
+            docker pull "${{ env.REGISTRY_ADDRESS }}/${{ env.REPO }}:${{ env.IMAGE_TAG }}"
+
+            # Run a new container from a new image
+            docker compose up -d ${{ env.SERVICE_NAME }}
+
+            # Logout from Container Registry
+            docker logout ${{ env.REGISTRY_ADDRESS }}
