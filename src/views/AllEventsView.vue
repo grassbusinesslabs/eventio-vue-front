@@ -59,7 +59,7 @@
     </template>
       <v-sheet class='mx-auto'>
       <v-row class='ma-0'>
-        <v-col cols="auto" class="d-flex align-center">
+        <v-col cols="12" class="d-flex align-center">
           <v-text-field  
             :placeholder="translate('INPUTS.SEARCH')"
             v-model="searchQuery"
@@ -70,14 +70,6 @@
             @update:model-value="debouncedSearch">
             <v-icon left>mdi-magnify</v-icon>
           </v-text-field>
-        </v-col>
-        <v-col cols="auto" class="d-flex align-center">
-          <v-btn class="bookmark-button" 
-                variant="outlined"
-                height="50px"
-                width="90px">
-            <v-icon color="#3E3B3BFF" size="x-large">mdi-bookmark</v-icon>
-          </v-btn>
         </v-col>
       </v-row>
     </v-sheet>
@@ -195,6 +187,7 @@ async function loadEvents(): Promise<void> {
       page: currentPage.value
     }
     const response = await request.findEvents(params)
+
     events.value = response?.events || []
     totalPages.value = response.pages || 1
     totalItems.value = response.total || 0
@@ -242,7 +235,7 @@ watch(selectedCity, () => {
   font-size: 14px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  width:823px;
+  width: 100%;
   height: 50px;
 
 }

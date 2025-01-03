@@ -27,19 +27,29 @@
 
       <v-list density="comfortable" nav class="mt-2">
         <v-list-item
-          to="/profile"
-          class="drawer-item"
-        >
-          <v-list-item-title class="drawer-item-text">
-            {{ translate('BTNS.ACCOUNT_SETTINGS') }}
-          </v-list-item-title>
-        </v-list-item>
-        <v-list-item
           to="/myEvents"
           class="drawer-item"
         >
           <v-list-item-title class="drawer-item-text">
             {{ translate('BTNS.MY_EVENTS') }}
+          </v-list-item-title>
+        </v-list-item>
+        
+        <v-list-item
+          to="/mySubs"
+          class="drawer-item"
+        >
+          <v-list-item-title class="drawer-item-text">
+            {{ translate('BTNS.MY_SUBS') }}
+          </v-list-item-title>
+        </v-list-item>
+
+        <v-list-item
+          to="/profile"
+          class="drawer-item"
+        >
+          <v-list-item-title class="drawer-item-text">
+            {{ translate('BTNS.ACCOUNT_SETTINGS') }}
           </v-list-item-title>
         </v-list-item>
 

@@ -23,10 +23,6 @@
             <p class="card-date" v-if="event?.date">
               {{ formatDate(event.date) }}
             </p>
-            
-            <p class="card-members-number">
-              Кількість учасників: {{event?.count}}
-            </p>
           </div>
         </div>
         <div class="lower-section">
@@ -73,7 +69,7 @@
             @click="deleteEvent"
             :loading="isDeleting"
           >
-            {{ translate('BTNS.DELETE') }}
+            {{ translate('BTNS.DELETEEV') }}
           </v-btn>
         </v-card-actions>
       </v-card>

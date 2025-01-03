@@ -128,58 +128,131 @@ const goBack = () => {
 };
 </script>
 
-  <style scoped>
+<style lang='scss' scoped>
+.event-details-card {
+  max-width: 800px;
+  width: 100%;
+  margin: 0 auto;
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.2);
+}
+
+.event-image {
+  height: 300px;
+  width: 100%;
+}
+
+.card-content {
+  padding: 0;
+}
+
+.event-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 15px 20px 10px;
+  line-height: 1.3;
+}
+
+.event-description {
+  text-align: justify;
+  font-size: 16px;
+  margin: 0 20px 20px;
+}
+
+.event-location,
+.event-date {
+  font-size: 16px;
+  margin: 0 20px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.event-location {
+  margin-bottom: 5px;
+}
+
+.event-date {
+  margin-bottom: 40px;
+}
+
+.map {
+  width: calc(100% - 40px);
+  margin: 0 20px;
+}
+
+.card-actions {
+  padding: 0;
+}
+
+.accept-button {
+  margin: 0 20px 20px auto;
+}
+
+  @media screen and (max-width: 600px) {
   .event-details-card {
-    
-    max-width: 800px;
-    box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.2);
+    max-width: 100%;
   }
-  
+
   .event-image {
-    height: 300px;
+    height: 200px;
   }
-  
+
   .event-title {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 10px;
-    margin-top: 15px;
-    margin-left: 20px;
-    margin-right: 20px;
+    font-size: 20px;
+    margin: 10px 12px 6px;
   }
-  
 
-  .event-description{
-    text-align: justify;
-    font-size: 16px;
-    margin-left: 20px;
-    margin-right: 20px;
-    margin-bottom: 20px;
-  }
-  .event-location{
-    margin-bottom: 5px;
-    font-size: 16px;
-    margin-left: 20px;
-  }
+  .event-description,
+  .event-location,
   .event-date {
-    margin-bottom: 40px;
-    font-size: 16px;
-    width: 100%;
-    margin-left: 20px;
+    font-size: 14px;
+    margin-left: 12px;
+    margin-right: 12px;
   }
-  
-  .event-location v-icon,
-  .event-date v-icon {
-    margin-right: 5px;
-  }
-  .map{
-    width: 680px;
-    margin-left: 20px;
-  }
-  .accept-button{
-    margin-right: 20px;
+
+  .event-date {
     margin-bottom: 20px;
   }
 
+  .map {
+    width: calc(100% - 24px);
+    margin: 0 12px;
+  }
+
+  .accept-button {
+    margin: 0 12px 12px auto;
+    font-size: 14px;
+  }
+}
+
+/* Small Mobile Styles */
+@media screen and (max-width: 400px) {
+  .event-image {
+    height: 180px;
+  }
+
+  .event-title {
+    font-size: 18px;
+    margin: 8px 10px 6px;
+  }
+
+  .event-description,
+  .event-location,
+  .event-date {
+    font-size: 13px;
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+
+  .map {
+    width: calc(100% - 20px);
+    margin: 0 10px;
+  }
+
+  .accept-button {
+    margin: 0 10px 10px auto;
+    font-size: 13px;
+  }
+}
   </style>
   

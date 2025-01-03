@@ -12,6 +12,7 @@
           :error-src="defaultImage"
           alt="Event Image"
           class="card-image"
+          
           aspect-ratio="1"
           cover
         />

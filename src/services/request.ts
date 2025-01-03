@@ -77,6 +77,33 @@ export const requestService = () => {
         }
       }
     }
+    async function updateEventImage(Id: string | number, image: File): Promise<void> {
+      try {
+        const formData = new FormData();
+        formData.append('image', image);
+    
+        const response = await api.put(`/events/image?Id=${Id}`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+          transformRequest: [(data) => data],
+        });
+    
+        return response.data;
+    
+      } catch (error: any) {
+        if (error.response) {
+          throw new Error(
+            `Failed to upload image: ${error.response.status} ${error.response.statusText}` +
+            (error.response.data ? ` - ${JSON.stringify(error.response.data)}` : '')
+          );
+        } else if (error.request) {
+          throw new Error('No response received from server');
+        } else {
+          throw new Error(`Error setting up request: ${error.message}`);
+        }
+      }
+    }
     async function uploadUserImage(image: File): Promise<void> {
       try {
         const formData = new FormData();
@@ -209,6 +236,12 @@ export const requestService = () => {
           throw error;
       }
   }
+  async function getMySubs(page: number | string): Promise<GetEventsResponse> {
+    return api.get<GetEventsResponse>(`/subscription?page=${page}`)
+  }
+  async function cancelSubs(body: Record<number, any>) {
+    return api.del(`/subscription`, body)
+  }
    return {
       login,
       getEvents,
@@ -228,6 +261,9 @@ export const requestService = () => {
       subscribe,
       uploadUserImage,
       updateUserImage,
-      deleteUserImage
+      deleteUserImage,
+      getMySubs,
+      cancelSubs,
+      updateEventImage
    }
 }

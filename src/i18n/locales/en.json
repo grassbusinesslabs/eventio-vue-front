@@ -19,6 +19,7 @@
     "REGISTER": "Register",
     "OVERVIEW": "Event overview",
     "MY_EVENTS": "My created events",
+    "MY_SUBS": "My subscription",
     "ADD_EVENT": "Add",
     "ROLL-UP": "Roll up",
     "MORE": "Read more",
@@ -60,6 +61,8 @@
   },
   "DIALOGS":{
     "DELETE_ACCOUNT_TITLE": "Delete account?",
-    "DELETE_ACCOUNT_CONFIRM": "Are you sure you want to permanently delete your account? This action cannot be undone and will remove all your data associated with this account"
+    "DELETE_ACCOUNT_CONFIRM": "Are you sure you want to permanently delete your account? This action cannot be undone and will remove all your data associated with this account",
+    "DELETE_EVENT_TITLE": "Delete this event?",
+    "DELETE_EVENT_CONFIRM": "Are you sure you want to permanently delete this event? This action cannot be undone and will remove all data about event"
   }
 }

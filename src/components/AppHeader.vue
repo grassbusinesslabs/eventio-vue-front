@@ -79,16 +79,20 @@ const onImageError = (event: Event) => {
   z-index: 100;
 }
 
+.main-content {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
 .location-icon {
-  position: fixed;
   margin-left: 18%;
 }
 
 .search-wrapper {
-  margin-left: 20%;
-  position: fixed;
-  z-index: 1001;
+  margin-left: 20px;
   min-width: 200px;
+  z-index: 1001;
 }
 
 .account-button {
@@ -97,26 +101,83 @@ const onImageError = (event: Event) => {
   width: 60px;
   align-content: center;
   padding: 0;
-  border: 0px;
+  border: 0;
   z-index: 100;
-}
-.account-button img {
-  object-fit: cover;
-  width: 100%;
-  height: 100%;
+  margin-left: 16px;
+  
+  img {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+  }
 }
 
 .filter-button {
   border-radius: 50%;
   height: 60px;
-width: 30px;
+  width: 30px;
   align-content: center;
   padding: 0;
-  border: 0px;
+  border: 0;
   z-index: 100;
 }
 
 :deep(.v-toolbar__content) {
   z-index: auto;
+}
+
+@media screen and (max-width: 768px) {
+  .title {
+    font-size: 1.25rem;
+    white-space: nowrap;
+  }
+
+  .main-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .location-icon {
+    margin-left: 0;
+    margin-bottom: 8px;
+  }
+
+  .search-wrapper {
+    margin-left: 0;
+    width: 100%;
+    min-width: 100px;
+  }
+
+  .account-button,
+  .filter-button {
+    height: 48px;
+    width: 48px;
+  }
+
+  .account-button {
+    margin-left: 8px;
+  }
+
+  :deep(.v-avatar) {
+    height: 44px !important;
+    width: 44px !important;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .title {
+    font-size: 1.1rem;
+  }
+
+  .account-button,
+  .filter-button {
+    height: 40px;
+    width: 40px;
+  }
+
+  :deep(.v-avatar) {
+    height: 36px !important;
+    width: 36px !important;
+  }
 }
 </style>

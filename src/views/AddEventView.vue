@@ -67,11 +67,16 @@
 
         <div class="form-group">
           <label>Завантажити файл</label>
-          <v-text-field
-            type="file"
-            accept="image/*"
-             @change="handleFileChange"
-          />
+          <div class="image-upload-container">
+            <v-text-field
+              type="file"
+              accept="image/*"
+              @change="handleFileChange"
+            />
+            <div v-if="imageSrc" class="preview-image">
+              <img :src="imageSrc" alt="Попереднє зображення" />
+            </div>
+          </div>
         </div>
 
         <div class="form-actions">
@@ -133,6 +138,8 @@ const routing = useRouting()
 const showError = ref(false)
 const errorMessage = ref('')
 
+const page = localStorage.getItem('currentPage') || '1'
+
 interface Coordinates {
   location: string
   lat: number
@@ -145,6 +152,7 @@ const imageSrc = ref<string | null>(null)
   const eventDateString = ref<string | null>(null)
 
 const loadEventData = async () => {
+
   console.log('Starting loadEventData')
   console.log('isEditMode:', isEditMode.value)
   console.log('eventId:', eventId)
@@ -162,7 +170,10 @@ const loadEventData = async () => {
 
   try {
     console.log('Fetching events...')
-    const response = await request.findEvents({})
+    const params = {
+      page: parseInt(page, 10) 
+    }
+    const response = await request.findEvents(params)
     console.log('All events:', response.events)
     
     if (response.events) {
@@ -198,7 +209,7 @@ const loadEventData = async () => {
         }
         
         if (foundEvent.image) {
-          //image.value = foundEvent.image;
+          imageSrc.value = `https://eventio.grassbusinesslabs.uk/static/${foundEvent.image}`;
         }
       } else {
         console.log('Event not found in response')
@@ -296,7 +307,7 @@ const submit = form.handleSubmit(async (values) => {
       throw new Error('Не отримано id івенту')
     }
 
-    if (selectedFile.value) {
+    if (isEditMode.value && selectedFile.value) {
       await request.uploadEventImage(response.id, selectedFile.value)
     }
 
@@ -390,4 +401,17 @@ body {
   .form-actions .cancel:hover {
     background-color: #999;
   }
+  .image-upload-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.preview-image img {
+  width: 50px; 
+  height: 50px;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
 </style>

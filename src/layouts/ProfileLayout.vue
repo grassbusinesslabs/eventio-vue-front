@@ -73,5 +73,42 @@ import { useAppI18n } from '@/i18n';
     height: 35px; 
     color: #5C5C5CFF;
   }
+  @media screen and (max-width: 600px) {
+  .main-container,
+  .back-button-container {
+    padding: 12px;
+  }
 
+  .back-button {
+    margin-left: 0;
+  }
+
+  .content-sheet {
+    padding: 12px;
+  }
+
+  .authors {
+    font-size: 14px;
+    padding: 0 12px;
+    text-align: center;
+    height: auto;
+    min-height: 35px;
+  }
+}
+
+/* Small Mobile Styles */
+@media screen and (max-width: 400px) {
+  .main-container,
+  .back-button-container {
+    padding: 8px;
+  }
+
+  .content-sheet {
+    padding: 8px;
+  }
+
+  .authors {
+    font-size: 12px;
+  }
+}
  </style>
