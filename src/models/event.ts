@@ -1,8 +1,8 @@
-export interface Pagination<T> {
+export interface LocalPagination<T> {
     events: T[]
     pages: number
     total: number
-  }
+}
 
 export interface Event {
     id: string
@@ -19,7 +19,7 @@ export interface Event {
     target: HTMLInputElement
  }  
  
- export type GetEventsResponse = Pagination<Event>
+ export type GetEventsResponse = LocalPagination<Event>
  
  export interface AddEventBody {  
      userId: number  
