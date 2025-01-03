@@ -91,6 +91,7 @@
       </v-row>
       <v-row justify="center" class="mt-4">
         <v-pagination
+        class="pagination"
         v-if="totalPages > 1"
         v-model="currentPage"
         :length="totalPages"
@@ -290,6 +291,9 @@ watch(selectedCity, () => {
   width: 55px;
   border: 1px solid #ccc;
   border-radius: 4px;
+}
+.pagination{
+  margin-bottom: 15px;
 }
 
 .filter-drawer {

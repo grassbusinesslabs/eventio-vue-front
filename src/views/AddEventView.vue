@@ -2,6 +2,23 @@
   <auth-layout>
     <div class="container">
       <h1>{{ isEditMode ? 'Редагування заходу' : 'Створення заходу' }}</h1>
+      <v-snackbar
+        v-model="showError"
+        color="error"
+        timeout="5000"
+        location="top"
+      >
+        {{ errorMessage }}
+        <template v-slot:actions>
+          <v-btn
+            color="white"
+            variant="text"
+            @click="showError = false"
+          >
+            Закрити
+          </v-btn>
+        </template>
+      </v-snackbar>
       <form @submit.prevent="submit">
         <div class="form-group">
           <label>Назва заходу</label>
@@ -112,6 +129,9 @@ const [eventDate, eventDateAttrs] = form.defineField("eventDate")
 
 const request = requestService()
 const routing = useRouting()
+
+const showError = ref(false)
+const errorMessage = ref('')
 
 interface Coordinates {
   location: string
@@ -233,7 +253,7 @@ const handleFileChange = (event: Event) => {
   if (files && files.length > 0) {
     const file = files[0]
     if (!file.type.startsWith('image/')) {
-      alert('Будь ласка, виберіть лише зображення.')
+      errorMessage.value = 'Будь ласка, виберіть лише зображення.'
       target.value = ''
       return
     }
@@ -247,6 +267,12 @@ const handleFileChange = (event: Event) => {
 }
 
 const submit = form.handleSubmit(async (values) => {
+  const { valid } = await form.validate();
+  if (!valid) {
+    showError.value = true;
+    errorMessage.value = 'Будь ласка, заповніть усі обов\'язкові поля.';
+    return;
+  }
   try {
     const body = {
       title: values.eventTitle || '',
