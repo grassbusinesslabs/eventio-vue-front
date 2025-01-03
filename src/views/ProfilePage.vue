@@ -5,14 +5,16 @@
         {{ translate("TITLES.EDIT_PROFILE") }}
       </h2>
       <v-col cols="12" class="d-flex flex-column align-center">
-                     <v-img
+                    <v-avatar size="56px">
+                      <img
                         :src="getImageUrl"
-                        :error-src="defaultImage"
+                        @error="onImageError"
                         alt="User Image"
                         class="card-image"
                         aspect-ratio="1"
                         cover
                      />
+                    </v-avatar>
                      <div class="file-upload-wrapper d-flex flex-column align-center">
                         <v-btn
                            class="photo-button"
@@ -180,7 +182,7 @@ const submit = form.handleSubmit(async (values) => {
 
     await request.updateUser(body)
     if (selectedFile.value) {
-      await request.updateUserImage(selectedFile.value)
+      await request.uploadUserImage(selectedFile.value)
     }
 
     if (currentUser.value) {
@@ -232,31 +234,16 @@ const handleFileChange = async (event: Event) => {
 
     selectedFile.value = file
 
-    try {
-      const imageExists = await checkImageExists(currentUser.value?.id)
-      
-      if (imageExists) {
-        await request.updateUserImage(file)
-      } else {
+    
         await request.uploadUserImage(file)
-      }
+
       const timestamp = Date.now()
       imageSrc.value = `${getImageUrl.value}?t=${timestamp}`
-    } catch (error) {
-      handleError(error)
-    }
   }
 }
 
-const checkImageExists = async (userId: string | number | undefined): Promise<boolean> => {
-  if (!userId) return false;
-  
-  try {
-    const response = await fetch(`https://eventio.grassbusinesslabs.uk/static/user_image/${userId}.png`);
-    return response.status === 200;
-  } catch {
-    return false;
-  }
+const onImageError = (event: Event) => {
+  (event.target as HTMLImageElement).src = defaultImage
 }
 
 const deleteAvatar = async () => {
