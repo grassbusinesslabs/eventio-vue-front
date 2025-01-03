@@ -25,25 +25,29 @@ export const requestService = () => {
    }
    
    async function findEvents(params: FindListParams): Promise<GetEventsResponse> {
-      try {
-        const searchParams = new URLSearchParams()
+    try {
+      const searchParams = new URLSearchParams()
 
-        if(params.city) searchParams.append('city', params.city.toString())
-        if (params.day) searchParams.append('day', params.day.toString())
-        if (params.month) searchParams.append('month', params.month.toString())
-         if(params.year) searchParams.append('year', params.year.toString())
-        if (params.search) searchParams.append('search', params.search)
-         if (params.location) searchParams.append('location', params.location)  
-        return api.get(`/events/findlistby?${searchParams.toString()}`)
-      } catch (error) {
-        console.error('Error fetching events:', error)
-        throw error
-      }
+      if(params.user) searchParams.append('user', params.user.toString())
+      if(params.id) searchParams.append('id', params.id.toString())
+      if(params.city) searchParams.append('city', params.city.toString())
+      if (params.day) searchParams.append('day', params.day.toString())
+      if (params.month) searchParams.append('month', params.month.toString())
+       if(params.year) searchParams.append('year', params.year.toString())
+      if (params.search) searchParams.append('search', params.search)
+       if (params.location) searchParams.append('location', params.location)  
+        if(params.page) searchParams.append('page', params.page.toString())
+  
+      return api.get(`/events/find?${searchParams.toString()}`)
+    } catch (error) {
+      console.error('Error fetching events:', error);
+      throw error;
+    }
     }
   
 
    async function addEvent(body: Record<string, any>): Promise<{ id: string }> {
-      return api.post('/events', body)
+      return api.post('/events/save', body)
    }
 
    async function uploadEventImage(Id: string | number, image: File): Promise<void> {
@@ -51,7 +55,7 @@ export const requestService = () => {
         const formData = new FormData();
         formData.append('image', image);
     
-        const response = await api.post(`/events/uploadimage?Id=${Id}`, formData, {
+        const response = await api.post(`/events/image?Id=${Id}`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -78,7 +82,7 @@ export const requestService = () => {
         const formData = new FormData();
         formData.append('image', image);
     
-        const response = await api.post(`/users/uploaduserimage`, formData, {
+        const response = await api.post(`/users/image`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -106,7 +110,7 @@ export const requestService = () => {
         const formData = new FormData();
         formData.append('image', image);
     
-        const response = await api.put(`/users/updateuserimage`, formData, {
+        const response = await api.put(`/users/image`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -133,7 +137,7 @@ export const requestService = () => {
       return api.get('/users')
    }
    async function deleteUserImage() {
-    return api.del(`/users/deleteuserimage`)
+    return api.del(`/users/image`)
  }
 
    async function logout(): Promise<void> {

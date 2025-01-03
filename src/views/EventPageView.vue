@@ -68,13 +68,17 @@ const formatDate = (dateString: string | Date): string => {
   const date = new Date(dateString)
   return new Intl.DateTimeFormat('uk-UA').format(date)
 }
+const page = localStorage.getItem('currentPage') || '1'
 
 const loadEventDetails = async () => {
   if (!eventId) return
   eventsLoading.value = true
   
   try {
-    const response = await request.findEvents({})
+    const params = {
+      page: parseInt(page, 10) 
+    }
+    const response = await request.findEvents(params)
     if (response.events) {
       const foundEvent = response.events.find((e) => String(e.id) === String(eventId)) || null
       console.log('Found event with coordinates:', foundEvent)
@@ -176,5 +180,6 @@ const goBack = () => {
     margin-right: 20px;
     margin-bottom: 20px;
   }
+
   </style>
   

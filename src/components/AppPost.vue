@@ -159,4 +159,20 @@ const getImageUrl = computed(() => {
   display: flex;
   justify-content: flex-end;
 }
+
+@media (max-width: 768px) {
+  .card-image {
+    width: 100px;
+    height: 100px;
+  }
+
+  .text-content {
+    width: 100%;
+    padding: 5px;
+  }
+
+  .button-join {
+    font-size: 12px;
+  }
+}
 </style>

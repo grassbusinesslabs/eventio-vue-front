@@ -50,7 +50,7 @@
 
         <div class="form-group">
           <label>Завантажити файл</label>
-          <v-input
+          <v-text-field
             type="file"
             accept="image/*"
              @change="handleFileChange"

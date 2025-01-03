@@ -10,7 +10,7 @@
         <v-col cols="auto">
           <v-btn
             class="ml-auto"
-            to="/addEvent"
+            @click="navigateToAdd"
             size="large"
             prepend-icon="mdi-plus-circle"
           >
@@ -22,19 +22,29 @@
       <v-row>
         <app-post v-for="event in events" :key="event.id" :event="event" @event-deleted="loadEvents"/>
       </v-row>
+      <v-row justify="center" class="mt-4">
+        <v-pagination
+          v-if="totalPages > 1"
+          v-model="currentPage"
+          :length="totalPages"
+          :total-visible="7"
+          @update:model-value="handlePageChange"
+        ></v-pagination>
+      </v-row>
     </div>
   </home-layout>
 </template>
 
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue'
-import type { Event } from '@/models'
+import type { Event, GetEventsResponse } from '@/models'
 import { requestService } from '@/services'
 import { useHandleError } from '@/composables'
 import { useAppI18n } from '@/i18n'
 import { useUserStore } from '@/stores'
 import HomeLayout from '@/layouts/ProfileLayout.vue'
 import AppPost from '@/components/AppMyPost.vue'
+import router from '@/router'
 
 const request = requestService()
 const { handleError } = useHandleError()
@@ -44,15 +54,34 @@ const userStore = useUserStore()
 const events = ref<Event[]>([])
 const loadingEvents = ref(false)
 
- async function loadEvents(): Promise<void> {
+const currentPage = ref<number>(1)
+const totalPages = ref<number>(1)
+const totalItems = ref<number>(0)
+
+const handlePageChange = (page: number): void => {
+  currentPage.value = page
+  loadEvents()
+}
+
+async function loadEvents(): Promise<void> {
   try {
     loadingEvents.value = true
-    const response = await request.getMyEvents()
-    events.value = response.events || []
+    
+    const params = {
+      user: "true",
+      page: currentPage.value
+    }
+    
+    const response: GetEventsResponse = await request.findEvents(params)
+    events.value = response?.events || []
+    totalPages.value = response?.pages || 1
+    totalItems.value = response?.total || 0
   } catch (error) {
     console.error(error)
     handleError(error)
     events.value = []
+    totalPages.value = 1
+    totalItems.value = 0
   } finally {
     loadingEvents.value = false
   }
@@ -62,6 +91,10 @@ onMounted(() => {
   userStore.populate()
   loadEvents()
 })
+const navigateToAdd = () => {
+    localStorage.setItem('eventId', "")
+    router.push({ name: 'AddEvent' })
+}
 </script>
 
 <style lang="scss" scoped>

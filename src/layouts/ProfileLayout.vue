@@ -73,4 +73,5 @@ import { useAppI18n } from '@/i18n';
     height: 35px; 
     color: #5C5C5CFF;
   }
+
  </style>

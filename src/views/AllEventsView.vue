@@ -89,6 +89,15 @@
           :event='event'
         />
       </v-row>
+      <v-row justify="center" class="mt-4">
+        <v-pagination
+        v-if="totalPages > 1"
+        v-model="currentPage"
+        :length="totalPages"
+        :total-visible="7"
+        @update:model-value="handlePageChange"
+      ></v-pagination>
+    </v-row>
       <v-row>
       </v-row>
   </home-layout>
@@ -123,6 +132,10 @@ const filterYear = ref<number | null>(null)
 
 const yearOptions = [2024, 2025, 2026]
 
+const currentPage = ref<number>(1)
+const totalPages = ref<number>(1)
+const totalItems = ref<number>(0)
+
 function debounce<T extends (...args: any[]) => any>(
   fn: T,
   delay: number
@@ -138,20 +151,29 @@ function debounce<T extends (...args: any[]) => any>(
 const handleDayChange = () => {
   filterMonth.value = ''
   filterYear.value = null
+  currentPage.value = 1 
   loadEvents()
 }
 
 const handleMonthChange = () => {
   filterDay.value = ''
   filterYear.value = null
+  currentPage.value = 1 
   loadEvents()
 }
 
 const handleYearChange = () => {
   filterDay.value = ''
   filterMonth.value = ''
+  currentPage.value = 1 
   loadEvents()
 }
+
+const handlePageChange = (page: number): void => {
+      currentPage.value = page;
+      localStorage.setItem('currentPage', page.toString())
+      loadEvents();
+    }
 
 const getUnixTimestamp = (date: string): number | undefined => {
   if (!date) return undefined
@@ -168,16 +190,20 @@ async function loadEvents(): Promise<void> {
       month: filterMonth.value ? getUnixTimestamp(filterMonth.value) : undefined,
       year: filterYear.value ? getUnixTimestamp(`${filterYear.value}-01-01`) : undefined,
       search: searchQuery.value || undefined, 
-      location: undefined
+      location: undefined,
+      page: currentPage.value
     }
     const response = await request.findEvents(params)
-    events.value = response.events || []
-    console.log(selectedCity.value)
+    events.value = response?.events || []
+    totalPages.value = response.pages || 1
+    totalItems.value = response.total || 0
 
   } catch (error) {
     console.error('Error loading events:', error)
     handleError(error)
     events.value = []
+    totalPages.value = 1
+    totalItems.value = 0
   } finally {
     loadingEvents.value = false
   }
