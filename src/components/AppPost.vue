@@ -161,92 +161,45 @@ const getImageUrl = computed(() => {
   display: flex;
   justify-content: flex-end;
 }
+@media (max-width: 768px) {
+  .card-image {
+    width: 100px;
+    height: 100px;
+    margin-right: 10px;
+    margin-left: 5px;
+    border-radius: 4%;
+  }
 
-  @media (max-width: 768px) {
-          .event-card {
-            flex-direction: row;
-          }
+  .text-content {
+    width: 100%;
+    padding: 8px;
+  }
 
-          .event-image {
-            width: 100px;
-            height: 100px;
-          }
+  .card-title {
+    font-size: 16px;
+    margin-top: 10px;
+    margin-bottom: 5px;
+  }
 
-          .content-section {
-            width: 100%;
-            padding: 5px;
-          }
+  .card-map {
+    font-size: 12px;
+    padding: 5px;
+  }
 
-          .event-title {
-            font-size: 16px;
-            margin-top: 8px;
-            margin-bottom: 6px;
-          }
+  .card-date {
+    font-size: 14px;
+    margin-top: 15px;
+  }
 
-          .location {
-            font-size: 12px;
-            padding-bottom: 10px;
-          }
+  .card-body {
+    font-size: 12px;
+    margin-bottom: 8px;
+    margin-right: 8px;
+  }
 
-          .description {
-            font-size: 12px;
-            margin-bottom: 6px;
-          }
-
-          .date {
-            font-size: 14px;
-            margin-top: 10px;
-          }
-
-          .action-button {
-            padding: 6px 12px;
-            font-size: 12px;
-          }
-
-          .footer {
-            flex-direction: row;
-            align-items: center;
-          }
-        }
-
-        @media (max-width: 480px) {
-          .event-card-wrapper {
-            padding: 8px;
-          }
-
-          .event-image {
-            width: 80px;
-            height: 80px;
-          }
-
-          .content-section {
-            padding: 4px;
-          }
-
-          .event-title {
-            font-size: 14px;
-            margin-top: 6px;
-            margin-bottom: 4px;
-          }
-
-          .location {
-            font-size: 11px;
-            padding-bottom: 8px;
-          }
-
-          .description {
-            font-size: 11px;
-            margin-bottom: 4px;
-          }
-
-          .date {
-            font-size: 12px;
-            margin-top: 8px;
-          }
-
-          .action-button {
-            padding: 4px 8px;
-            font-size: 11px;
-          }
-        }
+  .button-join {
+    font-size: 12px;
+    padding: 5px;
+  }
+}
 </style>

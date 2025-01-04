@@ -41,24 +41,6 @@
         </div>
       </div>
     </v-card>
-
-    <v-snackbar
-      v-model="snackbar.show"
-      :timeout="snackbar.timeout"
-      :color="snackbar.color"
-      location="top"
-    >
-      {{ snackbar.message }}
-      <template v-slot:actions>
-        <v-btn
-          class="button"
-          variant="text"
-          @click="snackbar.show = false"
-        >
-          Закрити
-        </v-btn>
-      </template>
-    </v-snackbar>
   </v-col>
 </template>
 
@@ -69,13 +51,6 @@ import type { Event } from "@/models"
 import { getMonth, getYear, getDate, getHours, getMinutes } from 'date-fns'
 import { requestService } from "@/services"
 
-interface Snackbar {
-  show: boolean;
-  message: string;
-  timeout: number;
-  color: string;
-}
-
 const { translate } = useAppI18n()
 const request = requestService()
 const loading = ref(false)
@@ -85,13 +60,6 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits(['subsCanceled'])
-
-const snackbar = ref<Snackbar>({
-  show: false,
-  message: '',
-  timeout: 4000,
-  color: 'info'
-})
 
 const defaultImage = "https://marketing-cdn.tickettailor.com/ZgP1j7LRO5ile62O_HowdoyouhostasmallcommunityeventA10-stepguide%2CMiniflagsattheevent.jpg"
 
@@ -114,18 +82,9 @@ const getImageUrl = computed(() => {
   return `https://eventio.grassbusinesslabs.uk/static/${props.event.image}`;
 })
 
-const showSnackbar = (message: string, isError = false) => {
-  snackbar.value = {
-    show: true,
-    message,
-    timeout: isError ? 5000 : 4000,
-    color: isError ? 'error' : 'success'
-  }
-}
 
 const handleCancelSubscription = async () => {
   if (!props.event?.id) {
-    showSnackbar('ID події не вказано', true)
     return
   }
 
@@ -137,15 +96,9 @@ const handleCancelSubscription = async () => {
       event_id: eventId 
     })
     
-    showSnackbar('Підписку скасовано успішно', false)
     emit('subsCanceled')
   } catch (error: any) {
     console.error('Error canceling subscription:', error)
-    showSnackbar(
-      error.response?.data?.message || 
-      'Помилка при скасуванні підписки. Спробуйте ще раз.',
-      true
-    )
   } finally {
     loading.value = false
   }

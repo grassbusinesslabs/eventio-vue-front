@@ -103,6 +103,16 @@ import type { Event } from "@/models"
 const eventId = localStorage.getItem('eventId')
 const isEditMode = computed(() => Boolean(eventId))
 
+
+/*const formatDateForInput = (date: Date): string => {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  const hours = String(date.getHours()).padStart(2, '0')
+  const minutes = String(date.getMinutes()).padStart(2, '0')
+  
+  return `${year}-${month}-${day}T${hours}:${minutes}`
+}*/
 console.log('Found event with coordinates:', eventId)
 
 const { eventTitleValidator, descriptionValidator } = {
@@ -124,7 +134,7 @@ const form = useForm({
   initialValues: {
     eventTitle: "",
     description: "",
-    eventDate: undefined,
+    eventDate: new Date(),
   },
 });
 
@@ -151,8 +161,7 @@ const selectedFile = ref<File | null>(null)
 const imageSrc = ref<string | null>(null)
   const eventDateString = ref<string | null>(null)
 
-const loadEventData = async () => {
-
+  const loadEventData = async () => {
   console.log('Starting loadEventData')
   console.log('isEditMode:', isEditMode.value)
   console.log('eventId:', eventId)
@@ -164,33 +173,42 @@ const loadEventData = async () => {
   
   const currentEventId = eventId
   if (!currentEventId) {
-    console.log('No eventId found, returning')
+    console.log('No eventId found, returning');
     return;
   }
 
   try {
     console.log('Fetching events...')
-    const params = {
-      page: parseInt(page, 10) 
-    }
+    const params = { page: parseInt(page, 10) }
     const response = await request.findEvents(params)
     console.log('All events:', response.events)
-    
+
     if (response.events) {
       const foundEvent = response.events.find((e) => String(e.id) === String(currentEventId))
       console.log('Found event:', foundEvent)
-      
+
       if (foundEvent) {
         console.log('Setting form values...')
         eventTitle.value = foundEvent.title
         console.log('Set title:', eventTitle.value)
-        
+
         description.value = foundEvent.description
         console.log('Set description:', description.value)
-        
+
         const dateValue = new Date(foundEvent.date)
+        if (isNaN(dateValue.getTime())) {
+          console.error('Failed to parse date:', foundEvent.date)
+          return
+        }
+
         eventDate.value = dateValue
-        
+        const isoString = dateValue.toISOString().slice(0, 16);
+
+        const dateInput = document.querySelector('input[type="datetime-local"]') as HTMLInputElement
+        if (dateInput) {
+          dateInput.value = isoString
+        }
+
         const year = dateValue.getFullYear()
         const month = String(dateValue.getMonth() + 1).padStart(2, '0')
         const day = String(dateValue.getDate()).padStart(2, '0')
@@ -199,17 +217,17 @@ const loadEventData = async () => {
         
         eventDateString.value = `${year}-${month}-${day}T${hours}:${minutes}`
         console.log('Set date string:', eventDateString.value)
-        
+
         if (foundEvent.lat && foundEvent.lon) {
           coordinates.value = {
             location: foundEvent.location,
             lat: foundEvent.lat,
             lng: foundEvent.lon
-          };
+          }
         }
         
         if (foundEvent.image) {
-          imageSrc.value = `https://eventio.grassbusinesslabs.uk/static/${foundEvent.image}`;
+          imageSrc.value = `https://eventio.grassbusinesslabs.uk/static/${foundEvent.image}`
         }
       } else {
         console.log('Event not found in response')
@@ -221,6 +239,10 @@ const loadEventData = async () => {
     console.error('Error in loadEventData:', error)
   }
 }
+
+
+
+
 onMounted(async () => {
   await loadEventData();
   console.log('Form values after load:', {
@@ -408,9 +430,10 @@ body {
 }
 
 .preview-image img {
-  width: 50px; 
-  height: 50px;
+  width: 60px; 
+  height: 60px;
   object-fit: cover;
+  margin-top: -15px;
   border-radius: 4px;
   border: 1px solid #ccc;
 }

@@ -73,30 +73,40 @@ export const mapService = () => {
    } as MapOptions
 
    async function createMap(container: HTMLElement, options?: Partial<MapOptions>): Promise<Map> {
-      const combineOptions: MapOptions = {
-         ...defaultMapOptions,
-         ...options,
-         container
-      }
-
-      const map = tt.map(combineOptions)
-
-      map.addControl(new tt.FullscreenControl({
-         container
-      }))
-
-      const navControl = new tt.NavigationControl({
-         showZoom: true,
-         showPitch: true,
-         showExtendedPitchControls: true,
-         showCompass: true,
-         showExtendedRotationControls: true
-      })
-
-      map.addControl(navControl, 'top-left')
-      
-      return map
-}
+      return new Promise((resolve, reject) => {
+        try {
+          const combinedOptions: MapOptions = {
+            ...defaultMapOptions,
+            ...options,
+            container
+          };
+  
+          map = tt.map(combinedOptions);
+  
+          map.on('load', () => {
+            map!.addControl(new tt.FullscreenControl({
+              container
+            }));
+  
+            map!.addControl(new tt.NavigationControl({
+              showZoom: true,
+              showPitch: true,
+              showExtendedPitchControls: true,
+              showCompass: true,
+              showExtendedRotationControls: true
+            }), 'top-left');
+  
+            resolve(map!);
+          });
+  
+          map.on('error', (error) => {
+            reject(error);
+          });
+        } catch (error) {
+          reject(error);
+        }
+      });
+    }
 
    function getMap(): Map | null {
       return map
@@ -129,26 +139,37 @@ export const mapService = () => {
    }
 
    function createMarker(id: string, coords: LngLatLike, options?: Partial<CreateMarkerOptions>): Marker | null {
-      if (markers[id]) {
-         changeMarkerLocation(id, coords)
-         return null
+      if (!map) {
+        console.error('Map not initialized');
+        return null;
       }
-
-      const markerElement: HTMLDivElement = document.createElement('div')
-      markerElement.setAttribute('id', id)
-      markerElement.classList.add('map-marker', `map-marker_${id}`)
-      markerElement.style.setProperty('background-image', `url('${mapMarker}')`)
-
-      const marker: Marker = new tt.Marker({
-         element: markerElement,
-         ...options
-      })
-
-      marker.setLngLat(coords)
-
-      markers[id] = marker
-      return marker
-   }
+  
+      if (markers[id]) {
+        markers[id].remove();
+      }
+  
+      try {
+        const markerElement = document.createElement('div');
+        markerElement.setAttribute('id', id);
+        markerElement.classList.add('map-marker', `map-marker_${id}`);
+        
+        const markerIcon = document.createElement('img');
+        markerIcon.src = mapMarker;
+        markerIcon.className = 'marker-icon';
+        markerElement.appendChild(markerIcon);
+  
+        const marker = new tt.Marker({
+          element: markerElement,
+          ...options
+        }).setLngLat(coords);
+  
+        markers[id] = marker;
+        return marker;
+      } catch (error) {
+        console.error('Error creating marker:', error);
+        return null;
+      }
+    }
 
    function addMarkerToMap(marker: Marker): void {
       marker.addTo(map!)

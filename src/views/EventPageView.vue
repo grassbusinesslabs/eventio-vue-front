@@ -93,7 +93,6 @@ const snackbar = ref({
 const loadEventDetails = async () => {
   if (!eventId) return
   eventsLoading.value = true
-  console.log("Page: ", page)
   
   try {
     const params = {
@@ -102,11 +101,9 @@ const loadEventDetails = async () => {
     const response = await request.findEvents(params)
     if (response.events) {
       const foundEvent = response.events.find((e) => String(e.id) === String(eventId)) || null
-      console.log('Found event with coordinates:', foundEvent)
       event.value = foundEvent
     }
   } catch (error) {
-    console.error('Error:', error)
     event.value = null
   } finally {
     eventsLoading.value = false
