@@ -148,6 +148,7 @@ const goBack = () => {
     showSnackbar('Успішно підписано на подію!');
     router.push('/events');
   } catch (error) {
+    showSnackbar('Ви вже підписані на цю подію', true);
     const apiError = error as ApiError;
 
     if (apiError.status === 500) {
