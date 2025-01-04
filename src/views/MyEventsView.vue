@@ -25,7 +25,7 @@
       <v-row justify="center" class="mt-4">
         <v-pagination
           v-if="totalPages > 1"
-          v-model="currentPage"
+          v-model="currentMyPage"
           :length="totalPages"
           :total-visible="7"
           @update:model-value="handlePageChange"
@@ -54,12 +54,12 @@ const userStore = useUserStore()
 const events = ref<Event[]>([])
 const loadingEvents = ref(false)
 
-const currentPage = ref<number>(1)
+const currentMyPage = ref<number>(1)
 const totalPages = ref<number>(1)
 const totalItems = ref<number>(0)
 
 const handlePageChange = (page: number): void => {
-  currentPage.value = page
+  currentMyPage.value = page
   loadEvents()
 }
 
@@ -69,7 +69,7 @@ async function loadEvents(): Promise<void> {
     
     const params = {
       user: "true",
-      page: currentPage.value
+      page: currentMyPage.value
     }
     
     const response: GetEventsResponse = await request.findEvents(params)
@@ -93,6 +93,7 @@ onMounted(() => {
 })
 const navigateToAdd = () => {
     localStorage.setItem('eventId', "")
+    localStorage.setItem('currentMyPage', currentMyPage.value.toString())
     router.push({ name: 'AddEvent' })
 }
 </script>

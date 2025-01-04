@@ -209,6 +209,7 @@ const debouncedSearch = debounce(() => {
 
 onMounted(() => {
   userStore.populate()
+  currentPage.value = 1
   loadEvents()
 })
 

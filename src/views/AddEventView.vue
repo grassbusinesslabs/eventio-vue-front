@@ -138,7 +138,7 @@ const routing = useRouting()
 const showError = ref(false)
 const errorMessage = ref('')
 
-const page = localStorage.getItem('currentPage') || '1'
+const page = localStorage.getItem('currentMyPage') || '1'
 
 interface Coordinates {
   location: string
@@ -307,7 +307,7 @@ const submit = form.handleSubmit(async (values) => {
       throw new Error('Не отримано id івенту')
     }
 
-    if (isEditMode.value && selectedFile.value) {
+    if (selectedFile.value) {
       await request.uploadEventImage(response.id, selectedFile.value)
     }
 
