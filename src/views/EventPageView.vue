@@ -4,7 +4,7 @@
       v-model="snackbar.show"
       :timeout="snackbar.timeout"
       color="#AC2424FF"
-      location="top"
+      location="bottom"
     >
       {{ snackbar.message }}
       <template v-slot:actions>

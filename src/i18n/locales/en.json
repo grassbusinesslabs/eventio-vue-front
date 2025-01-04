@@ -34,7 +34,8 @@
     "CANCEL": "Cancel",
     "RETURN": "Return to all events",
     "VIEW_DETAILS": "View details",
-    "ACCOUNT_SETTINGS": "Account settings"
+    "ACCOUNT_SETTINGS": "Account settings",
+    "CANCEL_SUBS": "Cancel subscription"
   },
   "LANGUAGES": {
     "ENGLISH": "EN",

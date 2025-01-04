@@ -38,7 +38,8 @@
     "CANCEL": "Скасувати",
     "RETURN": "Повернутись до усіх подій",
     "VIEW_DETAILS": "Переглянути деталі",
-    "ACCOUNT_SETTINGS": "Налаштування акаунту"
+    "ACCOUNT_SETTINGS": "Налаштування акаунту",
+    "CANCEL_SUBS": "Відмінити статус участі"
   },
   "LANGUAGES": {
     "ENGLISH": "EN",

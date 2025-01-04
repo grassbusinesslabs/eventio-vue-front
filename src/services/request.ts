@@ -240,8 +240,15 @@ export const requestService = () => {
   async function getMySubs(page: number | string): Promise<GetEventsResponse> {
     return api.get<GetEventsResponse>(`/subscription?page=${page}`)
   }
-  async function cancelSubs(body: Record<number, any>) {
-    return api.del(`/subscription`, body)
+  
+  interface CancelSubscriptionRequest {
+    event_id: number;
+  }
+  
+  async function cancelSubs(body: CancelSubscriptionRequest) {
+    return api.del('/subscription', { 
+      data: body 
+    });
   }
    return {
       login,
