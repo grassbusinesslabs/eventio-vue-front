@@ -73,6 +73,7 @@ const page = localStorage.getItem('currentPage') || '1'
 const loadEventDetails = async () => {
   if (!eventId) return
   eventsLoading.value = true
+  console.log("Page: ", page)
   
   try {
     const params = {
