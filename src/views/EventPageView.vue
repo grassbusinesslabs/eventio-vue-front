@@ -132,33 +132,37 @@ const goBack = () => {
   localStorage.setItem('eventId', "")}
 
   const acceptSubscription = async () => {
-    if (!eventId) {
-        throw new Error('ID події не вказано');
+  if (!eventId) {
+    showSnackbar('ID події не вказано', true);
+    return;
+  }
+
+  const numericEventId = parseInt(eventId, 10);
+
+  try {
+    const response = await request.subscribe(numericEventId);
+    if (!response?.user_id) {
+      throw new Error('Ви вже підписані на цю подію');
     }
 
-    const numericEventId = parseInt(eventId, 10);
-    
-    try {
-        const response = await request.subscribe(numericEventId);
-        if (!response?.user_id) {
-            throw new Error('Ви вже підписані на цю подію');
-        }
-        
-        router.push('/events');
-    } catch (error) {
-    const apiError = error as ApiError
+    showSnackbar('Успішно підписано на подію!');
+    router.push('/events');
+  } catch (error) {
+    const apiError = error as ApiError;
+
     if (apiError.status === 500) {
-      showSnackbar('Ви вже підписані на цю подію', true)
+      showSnackbar('Ви вже підписані на цю подію', true);
     } else {
       showSnackbar(
-        apiError.message || 
-        'Сталася помилка під час підписки. Спробуйте ще раз.',
+        apiError.message || 'Сталася помилка під час підписки. Спробуйте ще раз.',
         true
-      )
+      );
     }
-    console.error('Помилка під час підписки:', apiError)
+
+    console.error('Помилка під час підписки:', apiError);
   }
-}
+};
+
 
 const showSnackbar = async (message: string, isError = false) => {
   snackbar.value.show = false
