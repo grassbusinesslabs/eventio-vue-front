@@ -226,4 +226,44 @@ const getImageUrl = computed(() => {
   width: fit-content;
   margin-right: 10px;
 }
+@media (max-width: 600px) {
+  .upper-section {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .card-image {
+    width: 100%;
+    height: auto;
+    margin-bottom: 16px;
+  }
+
+  .info-section {
+    width: 100%;
+    text-align: center;
+  }
+
+  .card-title {
+    font-size: 18px;
+  }
+
+  .card-map, .card-date {
+    font-size: 12px;
+  }
+
+  .card-body {
+    font-size: 13px;
+  }
+
+  .button-row {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .button-edit,
+  .button-delete {
+    width: 100%;
+    margin-bottom: 8px;
+  }
+}
 </style>

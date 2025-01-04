@@ -157,18 +157,21 @@ const handleCancelSubscription = async () => {
   display: flex;
   flex-direction: column;
   width: 100%;
+  padding: 16px;
+
+  @media (max-width: 768px) {
+    padding: 12px;
+  }
 }
 
 .upper-section {
   display: flex;
-  padding: 16px;
-  gap: 20px;
-  
+  gap: 16px;
+
   @media (max-width: 768px) {
     flex-direction: column;
-    gap: 12px;
     align-items: center;
-    padding: 12px;
+    gap: 12px;
   }
 }
 
@@ -178,10 +181,11 @@ const handleCancelSubscription = async () => {
   flex-shrink: 0;
   border-radius: 4px;
   overflow: hidden;
-  
+
   @media (max-width: 768px) {
     width: 100%;
-    height: 200px;
+    height: auto;
+    aspect-ratio: 16/9;
     margin-bottom: 8px;
   }
 }
@@ -189,91 +193,74 @@ const handleCancelSubscription = async () => {
 .info-section {
   display: flex;
   flex-direction: column;
-  width: 380px;
   flex-grow: 1;
-  
+
   @media (max-width: 768px) {
     width: 100%;
-    padding: 0 8px;
+    align-items: center;
+    text-align: center;
   }
 }
 
 .card-title {
-  margin: 20px 0 16px 0;
-  font-size: 19px;
+  margin: 12px 0;
+  font-size: 18px;
   font-weight: bold;
-  
+
   @media (max-width: 768px) {
-    margin: 8px 0 12px 0;
-    font-size: 17px;
-    text-align: center;
+    margin: 8px 0;
+    font-size: 16px;
   }
 }
 
-.card-map {
-  display: flex;
-  align-items: center;
-  font-size: 14px;
-  margin: 0 0 8px 0;
-  gap: 4px;
-  
-  @media (max-width: 768px) {
-    justify-content: center;
-  }
-}
-
+.card-map,
 .card-date {
   font-size: 14px;
-  margin: 0 0 8px 0;
-  
+  margin-bottom: 8px;
+
   @media (max-width: 768px) {
-    text-align: center;
+    font-size: 13px;
   }
 }
 
 .lower-section {
-  padding: 0 16px 16px 16px;
-  text-align: justify;
-  
+  padding: 16px 0;
+
   @media (max-width: 768px) {
-    padding: 0 12px 12px 12px;
+    padding: 12px 0;
+    text-align: left;
   }
 }
 
 .card-body {
-  margin: 0 0 16px 0;
+  margin-bottom: 16px;
   font-size: 14px;
   color: #555;
-  width: 100%;
-  
+
   @media (max-width: 768px) {
     font-size: 13px;
-    text-align: left;
-    padding: 0 4px;
-  }
-}
-
-.button {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 10px;
-  margin-right: 3px;
-  margin-bottom: 5px;
-  
-  @media (max-width: 768px) {
-    margin: 8px 0;
+    text-align: justify;
   }
 }
 
 .button-edit {
-  width: fit-content;
-  margin-top: 10px;
-  
+  margin-top: 16px;
+  padding: 12px;
+  font-size: 14px;
+
   @media (max-width: 768px) {
     width: 100%;
-    margin: 8px 0;
-    padding: 12px;
-    font-size: 14px;
+    padding: 10px;
+    font-size: 13px;
   }
 }
+
+.v-snackbar {
+  @media (max-width: 768px) {
+    bottom: 16px;
+    left: 16px;
+    right: 16px;
+  }
+}
+
 </style>

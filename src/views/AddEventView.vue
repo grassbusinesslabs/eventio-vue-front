@@ -388,11 +388,11 @@ body {
     align-items: center;
   }
   .form-actions .save {
-    background-color: #007bff;
+    background-color: #753737FF;
     color: #fff;
   }
   .form-actions .save:hover {
-    background-color: #0056b3;
+    background-color: rgb(85, 33, 33);
   }
   .form-actions .cancel {
     background-color: #ccc;

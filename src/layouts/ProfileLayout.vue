@@ -47,68 +47,54 @@ import { useAppI18n } from '@/i18n';
  </script>
  
  <style lang="scss" scoped>
- .app-header {
-   position: relative;
-   z-index: 10;
-   height: auto;
-   overflow: visible;
- }
- 
- .container {
-   width: 950px;
- }
- 
- .back-button-container {
-   width: 950px;
-   padding-bottom: 0;
- }
- 
- .back-button {
-   margin-left: 70px;
- }
- .authors {
-    display: flex;
-    justify-content: center; 
-    align-items: center; 
-    height: 35px; 
-    color: #5C5C5CFF;
-  }
-  @media screen and (max-width: 600px) {
-  .main-container,
-  .back-button-container {
-    padding: 12px;
-  }
+.app-header {
+  position: relative;
+  z-index: 10;
+  height: auto;
+  overflow: visible;
+}
 
-  .back-button {
-    margin-left: 0;
-  }
+.container {
+  max-width: 100%;
+  padding: 0 16px;
 
-  .content-sheet {
-    padding: 12px;
-  }
-
-  .authors {
-    font-size: 14px;
-    padding: 0 12px;
-    text-align: center;
-    height: auto;
-    min-height: 35px;
+  @media screen and (min-width: 600px) {
+    max-width: 950px;
   }
 }
 
-/* Small Mobile Styles */
-@media screen and (max-width: 400px) {
-  .main-container,
-  .back-button-container {
-    padding: 8px;
-  }
+.back-button-container {
+  max-width: 100%;
+  padding: 8px 16px;
 
-  .content-sheet {
-    padding: 8px;
-  }
-
-  .authors {
-    font-size: 12px;
+  @media screen and (min-width: 600px) {
+    max-width: 950px;
+    padding-bottom: 0;
   }
 }
+
+.back-button {
+  margin-left: 0;
+
+  @media screen and (min-width: 600px) {
+    margin-left: 70px;
+  }
+}
+
+.authors {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: auto;
+  font-size: 14px;
+  color: #5c5c5c;
+  padding: 8px 16px;
+  text-align: center;
+
+  @media screen and (min-width: 600px) {
+    font-size: 16px;
+    height: 35px;
+  }
+}
+
  </style>
