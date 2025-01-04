@@ -219,6 +219,7 @@ export const requestService = () => {
       return api.put(`/events/update?Id=${id}`, body)
    }
 
+   
    async function subscribe(event_id: number): Promise<GetSubscriptionResponse> {
       try {
           const response = await api.post('/subscription', {

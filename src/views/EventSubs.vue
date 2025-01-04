@@ -1,28 +1,34 @@
 <template>
-    <profile-layout>
-
-  
-      <v-row class='ma-0'>
+  <profile-layout>
+    <v-row class="ma-0">
+      <template v-if="events.length">
         <app-post
-          v-for='event in events'
-          :key='event.id'
-          :event='event'
+          v-for="event in events"
+          :key="event.id"
+          :event="event"
           @subs-canceled="loadEvents"
         />
-      </v-row>
-  
-      <v-row justify="center" class="mt-4">
-        <v-pagination
-          class="pagination"
-          v-if="totalPages > 1"
-          v-model="currentPage"
-          :length="totalPages"
-          :total-visible="7"
-          @update:model-value="handlePageChange"
-        ></v-pagination>
-      </v-row>
-    </profile-layout>
-  </template>
+      </template>
+      <template v-else>
+        <v-col cols="12" class="text-center py-6">
+          <v-icon size="48" color="grey lighten-1">mdi-calendar-remove</v-icon>
+          <p class="mt-4 text-h6 grey--text">Ви не берете участі у жодному івенті</p>
+        </v-col>
+      </template>
+    </v-row>
+
+    <v-row justify="center" class="mt-4">
+      <v-pagination
+        class="pagination"
+        v-if="totalPages > 1"
+        v-model="currentPage"
+        :length="totalPages"
+        :total-visible="7"
+        @update:model-value="handlePageChange"
+      ></v-pagination>
+    </v-row>
+  </profile-layout>
+</template>
   
   <script lang='ts' setup>
   import { onMounted, ref } from 'vue'

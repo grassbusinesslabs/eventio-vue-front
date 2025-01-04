@@ -1,5 +1,19 @@
 <template>
   <profile-layout>
+    <v-snackbar
+      v-model="snackbar.show"
+      :timeout="snackbar.timeout"
+      color="#AC2424FF"
+      location="top"
+    >
+      {{ snackbar.message }}
+      <template v-slot:actions>
+        <v-btn color="white" variant="text" @click="snackbar.show = false">
+          Закрити
+        </v-btn>
+      </template>
+    </v-snackbar>
+
     <v-card class="event-details-card" v-if="eventsLoading">
       <v-progress-circular indeterminate></v-progress-circular>
     </v-card>
@@ -31,7 +45,7 @@
     :lon="Number(event.lon)" 
   />
       </v-card-text>
-      <v-card-actions>
+      <v-card-actions v-if="!isEventPast">
         <v-btn class="accept-button ml-auto" size="large" elevation="2" @click="acceptSubscription">
           <v-icon left>mdi-check-circle</v-icon>Підтвердити участь
         </v-btn>
@@ -48,10 +62,10 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, computed } from 'vue'
+import { onMounted, ref, computed, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { requestService } from '@/services'
-import type { Event} from '@/models'
+import type { ApiError, Event} from '@/models'
 import ProfileLayout from '@/layouts/ProfileLayout.vue'
 import AppMap from '@/components/AppMap.vue'
 
@@ -69,6 +83,12 @@ const formatDate = (dateString: string | Date): string => {
   return new Intl.DateTimeFormat('uk-UA').format(date)
 }
 const page = localStorage.getItem('currentPage') || '1'
+
+const snackbar = ref({
+  show: false,
+  message: '',
+  timeout: 4000,
+})
 
 const loadEventDetails = async () => {
   if (!eventId) return
@@ -102,7 +122,10 @@ const getEventImage = computed(() => {
 
 onMounted(loadEventDetails)
 
-
+const isEventPast = computed(() => {
+  if (!event.value?.date) return false
+  return new Date(event.value.date) < new Date()
+})
 
 const goBack = () => {
   router.back()
@@ -123,9 +146,28 @@ const goBack = () => {
         
         router.push('/events');
     } catch (error) {
-        console.error('Помилка під час підписки:', error);
-        throw new Error('Сталася помилка під час підписки. Спробуйте ще раз.');
+    const apiError = error as ApiError
+    if (apiError.status === 500) {
+      showSnackbar('Ви вже підписані на цю подію', true)
+    } else {
+      showSnackbar(
+        apiError.message || 
+        'Сталася помилка під час підписки. Спробуйте ще раз.',
+        true
+      )
     }
+    console.error('Помилка під час підписки:', apiError)
+  }
+}
+
+const showSnackbar = async (message: string, isError = false) => {
+  snackbar.value.show = false
+  await nextTick()
+  snackbar.value = {
+    show: true,
+    message,
+    timeout: isError ? 5000 : 4000,
+  };
 };
 </script>
 

@@ -127,7 +127,7 @@ const getImageUrl = computed(() => {
 }
 .card-image {
   width: 240px;
-  height: 240px;
+  height: 260px;
  
   margin-right: 10px;
   margin-left: 0px;
