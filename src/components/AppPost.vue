@@ -99,6 +99,7 @@ const formatDate = (dateString: string | Date): string => {
 const navigateToEventDetails = () => {
   if (props.event?.id) {
     localStorage.setItem('eventId', props.event.id)
+    console.log("Передане id івента: ", localStorage.getItem('eventId'))
     router.push({ name: 'EventDetails' })
   }
 }
