@@ -265,7 +265,7 @@ const deleteAvatar = async () => {
 }
 .card-image {
   width: 60px;
-  height: 70px;
+  height: 65px;
   flex-shrink: 0;
   border-radius: 50%;
   align-self: center;

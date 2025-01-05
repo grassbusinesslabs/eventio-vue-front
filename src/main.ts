@@ -21,6 +21,9 @@ import 'vue-toastification/dist/index.css'
 import {DEFAULT_TOAST_CONFIG} from '@/constants/app'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css'
+
 // Global styles
 import '@/styles.scss'
 
@@ -42,6 +45,6 @@ const app = createApp(App)
    .use(Toast, DEFAULT_TOAST_CONFIG as any)
    .use(router)
 
-   
+app.component('VueDatePicker', VueDatePicker)
 
 app.mount('#app')

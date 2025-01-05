@@ -42,21 +42,22 @@
 
         <div class="form-group">
           <label>Дата та час проведення</label>
-          <input
-            type="datetime-local"
-            v-model="eventDate"
-            v-bind="eventDateAttrs"
-            :min="minDateTime"
-            :max="maxDateTime"
-          />
+          <VueDatePicker 
+              height="200px"
+              v-model="eventDate"
+              v-bind="eventDateAttrs"
+              :min-date="minDateTime"
+              :max-date="maxDateTime">
+          </VueDatePicker>
         </div>
-
         <div class="form-group">
           <label>Місце проведення</label>
+          <label font-weight="light">Поточне місце: {{ coordinates?.location }}</label>
           <app-address-autocomplete 
             @select="onAddressSelect"
             :initial-value="coordinates?.location"
           />
+
         </div>
 
         <div v-if="coordinates" class="form-group">
@@ -68,7 +69,7 @@
         <div class="form-group">
           <label>Завантажити файл</label>
           <div class="image-upload-container">
-            <v-text-field
+            <v-file-input
               type="file"
               accept="image/*"
               @change="handleFileChange"
@@ -103,16 +104,6 @@ import type { Event } from "@/models"
 const eventId = localStorage.getItem('eventId')
 const isEditMode = computed(() => Boolean(eventId))
 
-
-/*const formatDateForInput = (date: Date): string => {
-  const year = date.getFullYear()
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const day = String(date.getDate()).padStart(2, '0')
-  const hours = String(date.getHours()).padStart(2, '0')
-  const minutes = String(date.getMinutes()).padStart(2, '0')
-  
-  return `${year}-${month}-${day}T${hours}:${minutes}`
-}*/
 console.log('Found event with coordinates:', eventId)
 
 const { eventTitleValidator, descriptionValidator } = {
@@ -254,16 +245,14 @@ onMounted(async () => {
 })
 
 const minDateTime = computed(() => {
-  const now = new Date()
-  now.setMinutes(now.getMinutes() - now.getTimezoneOffset())
-  return now.toISOString().slice(0, 16)
+  const now = new Date();
+  return now;
 });
 
 const maxDateTime = computed(() => {
-  const nextYear = new Date()
-  nextYear.setFullYear(nextYear.getFullYear() + 1)
-  nextYear.setMinutes(nextYear.getMinutes() - nextYear.getTimezoneOffset())
-  return nextYear.toISOString().slice(0, 16)
+  const nextYear = new Date();
+  nextYear.setFullYear(nextYear.getFullYear() + 1);
+  return nextYear;
 });
 
 const onAddressSelect = (address: AddressItem) => {
@@ -311,7 +300,7 @@ const submit = form.handleSubmit(async (values) => {
       title: values.eventTitle || '',
       description: values.description || '',
       date: values.eventDate ? Math.floor(values.eventDate.getTime() / 1000) : '',
-      image: "",
+      image: `${eventId}.png`,
       city: coordinates.value?.location?.split(',').pop()?.trim() || '',
       location: coordinates.value?.location || '',
       lat: coordinates.value?.lat ?? null,
@@ -437,4 +426,5 @@ body {
   border-radius: 4px;
   border: 1px solid #ccc;
 }
+
 </style>
