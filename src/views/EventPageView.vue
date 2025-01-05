@@ -165,9 +165,10 @@ const goBack = () => {
 const showSnackbar = async (message: string, isError = false) => {
   snackbar.value.show = false
   await nextTick()
+  message 
   snackbar.value = {
     show: true,
-    message,
+    message: "Ви вже підписані на цю подію",
     timeout: isError ? 5000 : 4000,
   };
 };
