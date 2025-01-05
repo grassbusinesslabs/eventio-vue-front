@@ -130,7 +130,7 @@ const goBack = () => {
 
   const acceptSubscription = async () => {
   if (!eventId) {
-    showSnackbar('ID події не вказано', true);
+    showSnackbar(true);
     return;
   }
 
@@ -141,18 +141,15 @@ const goBack = () => {
     if (!response?.user_id) {
       throw new Error('Ви вже підписані на цю подію');
     }
-
-    showSnackbar('Успішно підписано на подію!');
     router.push('/events');
   } catch (error) {
-    showSnackbar('Ви вже підписані на цю подію', true);
+    showSnackbar(true);
     const apiError = error as ApiError;
 
     if (apiError.status === 500) {
-      showSnackbar('Ви вже підписані на цю подію', true);
+      showSnackbar(true);
     } else {
       showSnackbar(
-        apiError.message || 'Сталася помилка під час підписки. Спробуйте ще раз.',
         true
       );
     }
@@ -162,13 +159,12 @@ const goBack = () => {
 };
 
 
-const showSnackbar = async (message: string, isError = false) => {
+const showSnackbar = async (isError = false) => {
   snackbar.value.show = false
   await nextTick()
-  message 
   snackbar.value = {
     show: true,
-    message: "Ви вже підписані на цю подію",
+    message: "Ви вже підписані на цей івент",
     timeout: isError ? 5000 : 4000,
   };
 };

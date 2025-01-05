@@ -203,7 +203,7 @@ const deleteAccount = async () => {
   try {
     isDeletingAccount.value = true
     await logout()
-    router.push('/login')
+    router.push('/sign-in')
   } catch (error) {
     handleError(error)
   } finally {
