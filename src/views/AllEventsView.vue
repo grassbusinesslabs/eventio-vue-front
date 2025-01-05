@@ -4,7 +4,7 @@
       <v-list>
         <v-list-item class="justify-center pa-4">
           <v-list-item-title class="filter-title text-center">
-            Фільтрування івентів
+            {{ translate('TEXT.FILTER') }}
           </v-list-item-title>
         </v-list-item>
       </v-list>
@@ -13,7 +13,7 @@
 
       <v-list class="pa-4">
         <v-list-item>
-          <v-list-item-title class="filter-subtitle mb-2">За конкретною датою</v-list-item-title>
+          <v-list-item-title class="filter-subtitle mb-2">{{ translate('BTNS.SEARCH-BY-DATE') }}</v-list-item-title>
           <input 
             type="date"
             v-model="filterDay"
@@ -23,7 +23,7 @@
         </v-list-item>
 
         <v-list-item>
-          <v-list-item-title class="filter-subtitle mb-2">За місяцем та роком</v-list-item-title>
+          <v-list-item-title class="filter-subtitle mb-2">{{ translate('BTNS.SEARCH-BY-MONTH') }}</v-list-item-title>
           <input 
             type="month"
             v-model="filterMonth"
@@ -33,7 +33,7 @@
         </v-list-item>
 
         <v-list-item>
-          <v-list-item-title class="filter-subtitle mb-2">За роком</v-list-item-title>
+          <v-list-item-title class="filter-subtitle mb-2">{{ translate('BTNS.SEARCH-BY-YEAR') }}</v-list-item-title>
           <v-select
             v-model="filterYear"
             :items="yearOptions"

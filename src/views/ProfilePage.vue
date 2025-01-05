@@ -22,7 +22,7 @@
                            density="compact"
                            elevation="0"
                         >
-                           змінити фото профілю
+                           {{translate('BTNS.CHANGE_PHOTO')}}
                         </v-btn>
                         <v-btn
                             class="photo-button"
@@ -32,7 +32,7 @@
                             elevation="0"
                             variant="text"
                           >
-                            видалити фото
+                          {{translate('BTNS.DELETE_PHOTO')}}
                           </v-btn>
                         <input
                            ref="fileInput"
@@ -120,7 +120,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/yup'
@@ -255,6 +255,15 @@ const deleteAvatar = async () => {
     handleError(error)
   }
 }
+watch(() => currentUser.value, (newUser) => {
+  if (newUser) {
+    form.setValues({
+      firstName: newUser.firstName || '',
+      secondName: newUser.secondName || '',
+      email: newUser.email || '',
+    })
+  }
+}, { immediate: true })
 </script>
 
 <style lang="scss" scoped>

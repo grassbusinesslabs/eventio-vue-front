@@ -30,12 +30,15 @@
      "SAVE": "Save changes",
      "SEARCH-BY-DATE": "Search by date",
     "SEARCH-BY-MONTH": "Search by month",
+    "SEARCH-BY-YEAR": "Search by year",
     "GO_BACK": "Go back",
     "CANCEL": "Cancel",
     "RETURN": "Return to all events",
     "VIEW_DETAILS": "View details",
     "ACCOUNT_SETTINGS": "Account settings",
-    "CANCEL_SUBS": "Cancel subscription"
+    "CANCEL_SUBS": "Cancel subscription",
+    "CHANGE_PHOTO": "Change photo",
+    "DELETE_PHOTO": "Delete photo"
   },
   "LANGUAGES": {
     "ENGLISH": "EN",
@@ -46,13 +49,29 @@
   },
   "TEXT": {
     "PAGE_NOT_FOUND": "404 Page not found",
-  "EVENTS": "created events",
-  "CREATION": "Event creation",
-  "EVENT_TITLE": "Event title",
-  "ENTER_TITLE": "Enter title",
-  "EVENT_DESCRIPTION": "Event description",
-  "ENTER_DESCRIPTION": "Enter description",
-  "EVENT_DATE": "Date and time of the event"
+    "EVENTS": "created events",
+    "CREATION": "Event creation",
+    "EVENT_TITLE": "Event title",
+    "ENTER_TITLE": "Enter title",
+    "EVENT_DESCRIPTION": "Event description",
+    "ENTER_DESCRIPTION": "Enter description",
+    "EVENT_DATE": "Date and time of the event",
+    "EDIT_EVENT": "Edit event",
+    "CREATE_EVENT": "Create event",
+    "EVENT_DATE_TIME": "Event date & time",
+    "EVENT_LOCATION": "Event location",
+    "CURRENT_LOCATION": "Current location",
+    "SELECTED_COORDINATES": "Selected coordinates",
+    "LATITUDE": "Latitude",
+    "LONGITUDE": "Longitude",
+    "UPLOAD_FILE": "Upload file",
+    "PREVIEW_IMAGE": "Preview image",
+    "SAVE": "Save",
+    "UPDATE": "Update",
+    "CANCEL": "Cancel",
+    "CLOSE": "Close",
+    "FILTER": "Filter events",
+    "ALL_CITIES": "All cities"
   },
   "MENU":{
     "ACCOUNT_SETTINGS": "Account settings"

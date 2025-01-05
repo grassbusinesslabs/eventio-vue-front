@@ -5,7 +5,7 @@
       @click="startEditing"
       class="city-label white-text"
     >
-      <span>Всі міста</span>
+      <span>{{translate('TEXT.ALL_CITIES')}}</span>
     </div>
     <div 
       v-else-if="!isEditing && selectedCity" 
@@ -83,6 +83,7 @@ import { ref, computed, nextTick, onMounted, watch } from 'vue'
 import type { CityItem } from '@/services/map'
 import { useCityStore } from '@/stores/city-store'
 import { mapService } from "@/services/map"
+import { useAppI18n } from '@/i18n'
 
 const cityStore = useCityStore()
 const searchText = ref('')
@@ -92,7 +93,7 @@ const highlightedIndex = ref(-1)
 const searchInput = ref<HTMLInputElement | null>(null)
 const isEditing = ref(false)
 const selectedCity = ref('')
-
+const { translate } = useAppI18n()
 const searchHistory = computed(() => cityStore.searchHistory)
 const { searchCities } = mapService()
 

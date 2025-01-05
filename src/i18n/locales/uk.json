@@ -32,14 +32,17 @@
     "DELETE": "Видалити акаунт",
     "DELETEEV": "Видалити",
     "SAVE": "Зберегти",
-    "SEARCH-BY-DATE": "Шукати за датою",
-    "SEARCH-BY-MONTH": "Шукати за місяцем",
+    "SEARCH-BY-DATE": "За конкретною датою",
+    "SEARCH-BY-MONTH": "За місяцем та роком",
+    "SEARCH-BY-YEAR": "За роком",
     "GO_BACK": "Повернутися",
     "CANCEL": "Скасувати",
     "RETURN": "Повернутись до усіх подій",
     "VIEW_DETAILS": "Переглянути деталі",
     "ACCOUNT_SETTINGS": "Налаштування акаунту",
-    "CANCEL_SUBS": "Відмінити статус участі"
+    "CANCEL_SUBS": "Відмінити статус участі",
+    "CHANGE_PHOTO": "Змінити фото профілю",
+    "DELETE_PHOTO": "Видалити фото"
   },
   "LANGUAGES": {
     "ENGLISH": "EN",
@@ -50,7 +53,27 @@
   },
   "TEXT": {
     "PAGE_NOT_FOUND": "404 Сторінку не знайдено",
-    "EVENTS": "створених подій"
+    "EVENTS": "створених подій",
+    "CREATION": "Створення події",
+    "EVENT_TITLE": "Назва події",
+    "ENTER_TITLE": "Введіть назву",
+    "EVENT_DESCRIPTION": "Опис події",
+    "ENTER_DESCRIPTION": "Введіть опис",
+    "EVENT_DATE": "Дата та час події",
+    "EDIT_EVENT": "Редагувати подію",
+    "CREATE_EVENT": "Створити подію",
+    "EVENT_DATE_TIME": "Дата й час події",
+    "EVENT_LOCATION": "Місце події",
+    "CURRENT_LOCATION": "Поточне місцезнаходження",
+    "SELECTED_COORDINATES": "Вибрані координати",
+    "LATITUDE": "Широта",
+    "LONGITUDE": "Довгота",
+    "UPLOAD_FILE": "Завантажити файл",
+    "PREVIEW_IMAGE": "Попередній перегляд зображення",
+    "UPDATE": "Оновити",
+    "CLOSE": "Закрити",
+    "FILTER": "Фільтрувати івенти",
+    "ALL_CITIES": "Всі міста"
   },
   "MENU":{
     "ACCOUNT_SETTINGS": "Налаштування акаунту"

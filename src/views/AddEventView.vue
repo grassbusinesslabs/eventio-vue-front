@@ -1,7 +1,7 @@
 <template>
   <auth-layout>
     <div class="container">
-      <h1>{{ isEditMode ? 'Редагування заходу' : 'Створення заходу' }}</h1>
+      <h1>{{ isEditMode ? translate('TEXT.EDIT_EVENT') : translate('TEXT.CREATE_EVENT') }}</h1>
       <v-snackbar
         v-model="showError"
         color="error"
@@ -15,33 +15,33 @@
             variant="text"
             @click="showError = false"
           >
-            Закрити
+            {{ translate('TEXT.CLOSE') }}
           </v-btn>
         </template>
       </v-snackbar>
       <form @submit.prevent="submit">
         <div class="form-group">
-          <label>Назва заходу</label>
+          <label>{{ translate('TEXT.EVENT_TITLE') }}</label>
           <input
             type="text"
             v-model="eventTitle"
             v-bind="eventTitleAttrs"
-            placeholder="Введіть назву"
+            :placeholder="translate('TEXT.ENTER_TITLE')"
           />
         </div>
 
         <div class="form-group">
-          <label>Опис заходу</label>
+          <label>{{ translate('TEXT.EVENT_DESCRIPTION') }}</label>
           <textarea
             v-model="description"
             v-bind="descriptionAttrs"
-            placeholder="Введіть опис"
+            :placeholder="translate('TEXT.ENTER_DESCRIPTION')"
             height="200px"
           ></textarea>
         </div>
 
         <div class="form-group">
-          <label>Дата та час проведення</label>
+          <label>{{ translate('TEXT.EVENT_DATE_TIME') }}</label>
           <VueDatePicker 
               height="200px"
               v-model="eventDate"
@@ -51,23 +51,22 @@
           </VueDatePicker>
         </div>
         <div class="form-group">
-          <label>Місце проведення</label>
-          <label font-weight="light">Поточне місце: {{ coordinates?.location }}</label>
+          <label>{{ translate('TEXT.EVENT_LOCATION') }}</label>
+          <label font-weight="light">{{ translate('TEXT.CURRENT_LOCATION') }}: {{ coordinates?.location }}</label>
           <app-address-autocomplete 
             @select="onAddressSelect"
             :initial-value="coordinates?.location"
           />
-
         </div>
 
         <div v-if="coordinates" class="form-group">
-          <label>Координати обраного місця</label>
-          <p>Широта: {{ coordinates.lat }}</p>
-          <p>Довгота: {{ coordinates.lng }}</p>
+          <label>{{ translate('TEXT.SELECTED_COORDINATES') }}</label>
+          <p>{{ translate('TEXT.LATITUDE') }}: {{ coordinates.lat }}</p>
+          <p>{{ translate('TEXT.LONGITUDE') }}: {{ coordinates.lng }}</p>
         </div>
 
         <div class="form-group">
-          <label>Завантажити файл</label>
+          <label>{{ translate('TEXT.UPLOAD_FILE') }}</label>
           <div class="image-upload-container">
             <v-file-input
               type="file"
@@ -75,14 +74,14 @@
               @change="handleFileChange"
             />
             <div v-if="imageSrc" class="preview-image">
-              <img :src="imageSrc" alt="Попереднє зображення" />
+              <img :src="imageSrc" alt="{{ translate('TEXT.PREVIEW_IMAGE') }}" />
             </div>
           </div>
         </div>
 
         <div class="form-actions">
-          <v-btn type="submit" class="save">{{ isEditMode ? 'Оновити' : 'Зберегти' }}</v-btn>
-          <v-btn to="/myEvents" @click="cancel">Скасувати</v-btn>
+          <v-btn type="submit" class="save">{{ isEditMode ? translate('TEXT.UPDATE') : translate('TEXT.SAVE') }}</v-btn>
+          <v-btn to="/myEvents" @click="cancel">{{ translate('TEXT.CANCEL') }}</v-btn>
         </div>
       </form>
     </div>
@@ -100,9 +99,11 @@ import type { AddressItem } from "@/services/map"
 import { requestService } from '@/services'
 import { useRouting } from '@/composables'
 import type { Event } from "@/models"
+import { useAppI18n } from "@/i18n"
 
 const eventId = localStorage.getItem('eventId')
 const isEditMode = computed(() => Boolean(eventId))
+const { translate } = useAppI18n()
 
 console.log('Found event with coordinates:', eventId)
 
