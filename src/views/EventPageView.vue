@@ -47,7 +47,7 @@
       </v-card-text>
       <v-card-actions v-if="!isEventPast">
         <v-btn class="accept-button ml-auto" size="large" elevation="2" @click="acceptSubscription">
-          <v-icon left>mdi-check-circle</v-icon>Підтвердити участь
+          <v-icon left>mdi-check-circle</v-icon>{{ translate('BTNS.CONFIRM') }}
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -68,12 +68,14 @@ import { requestService } from '@/services'
 import type { ApiError, Event} from '@/models'
 import ProfileLayout from '@/layouts/ProfileLayout.vue'
 import AppMap from '@/components/AppMap.vue'
+import { useAppI18n } from '@/i18n'
 
 
 const router = useRouter()
 const event = ref<Event | null>(null)
 const eventsLoading = ref(true)
 const request = requestService()
+const { translate } = useAppI18n()
 const defaultImage =
   'https://marketing-cdn.tickettailor.com/ZgP1j7LRO5ile62O_HowdoyouhostasmallcommunityeventA10-stepguide%2CMiniflagsattheevent.jpg'
 const eventId = localStorage.getItem('eventId')

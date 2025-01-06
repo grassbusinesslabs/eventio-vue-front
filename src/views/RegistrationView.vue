@@ -12,7 +12,7 @@
             <v-row dense class="gap-4">
                <v-row justify="center" class="mb-4">
                   <v-col cols="12" class="text-center">
-                     <h2 class="font-weight-bold">Реєстрація</h2>
+                     <h2 class="font-weight-bold">{{ translate('TEXT.REGISTRATION') }}</h2>
                   </v-col>
                </v-row>
                <v-col cols='12'>
@@ -32,7 +32,7 @@
                            density="compact"
                            elevation="0"
                         >
-                           змінити фото профілю
+                        {{ translate('BTNS.CHANGE-AVATAR') }}
                         </v-btn>
                         <input
                            ref="fileInput"

@@ -20,7 +20,20 @@
       </v-row>
 
       <v-row>
+        <template v-if="events.length">
         <app-post v-for="event in events" :key="event.id" :event="event" @event-deleted="loadEvents"/>
+        </template>
+        <template v-else>
+        <v-col cols="12" class="text-center py-6">
+          <v-icon size="48" color="grey lighten-1">mdi-calendar-remove</v-icon>
+          <div class="text-h6 text-grey-darken-1">
+          <p class="mt-4 text-h6 grey--text">{{ translate('TEXT.NO-EVENTS') }}</p>
+          </div>
+          <div class="text-body-1 text-grey-darken-1">
+            {{ translate("TEXT.CLICK-ADD") }}
+          </div>
+        </v-col>
+      </template>
       </v-row>
       <v-row justify="center" class="mt-4">
         <v-pagination

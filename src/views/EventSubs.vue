@@ -12,7 +12,7 @@
       <template v-else>
         <v-col cols="12" class="text-center py-6">
           <v-icon size="48" color="grey lighten-1">mdi-calendar-remove</v-icon>
-          <p class="mt-4 text-h6 grey--text">Ви не берете участі у жодному івенті</p>
+          <p class="mt-4 text-h6 grey--text">{{ translate('TEXT.NOT-PARTICIPANT') }}</p>
         </v-col>
       </template>
     </v-row>
@@ -30,33 +30,34 @@
   </profile-layout>
 </template>
   
-  <script lang='ts' setup>
-  import { onMounted, ref } from 'vue'
-  import type { Event } from '@/models'
-  import { requestService } from '@/services'
-  import { useHandleError } from '@/composables'
-  import { useUserStore } from '@/stores'
-  import ProfileLayout from '@/layouts/ProfileLayout.vue'
-  import AppPost from '@/components/AppSubs.vue'
+<script lang='ts' setup>
+import { onMounted, ref } from 'vue'
+import type { Event } from '@/models'
+import { requestService } from '@/services'
+import { useHandleError } from '@/composables'
+import { useUserStore } from '@/stores'
+import ProfileLayout from '@/layouts/ProfileLayout.vue'
+import AppPost from '@/components/AppSubs.vue'
+import { useAppI18n } from '@/i18n'
   
-  const { handleError } = useHandleError()
-  const userStore = useUserStore()
-  const request = requestService()
+const { handleError } = useHandleError()
+const userStore = useUserStore()
+const request = requestService()
+const { translate } = useAppI18n()
+const events = ref<Event[]>([])
+const loadingEvents = ref<boolean>(false)
+const currentPage = ref<number>(1)
+const totalPages = ref<number>(1)
+const totalItems = ref<number>(0)
   
-  const events = ref<Event[]>([])
-  const loadingEvents = ref<boolean>(false)
-  const currentPage = ref<number>(1)
-  const totalPages = ref<number>(1)
-  const totalItems = ref<number>(0)
-  
-  const handlePageChange = (page: number): void => {
+const handlePageChange = (page: number): void => {
     currentPage.value = page
     localStorage.setItem('currentPage', page.toString())
     loadEvents()
-  }
+}
   
-  async function loadEvents(): Promise<void> {
-    try {
+async function loadEvents(): Promise<void> {
+  try {
       loadingEvents.value = true
       const response = await request.getMySubs(currentPage.value)
       
@@ -72,18 +73,18 @@
       totalItems.value = 0
     } finally {
       loadingEvents.value = false
-    }
   }
+}
   
-  onMounted(() => {
-    userStore.populate()
-    loadEvents()
-  })
-  </script>
+onMounted(() => {
+  userStore.populate()
+  loadEvents()
+})
+</script>
   
-  <style lang='scss' scoped>
+<style lang='scss' scoped>
   
-  .pagination {
-    margin-bottom: 15px;
-  }
-  </style>
+.pagination {
+  margin-bottom: 15px;
+}
+</style>

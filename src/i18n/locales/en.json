@@ -38,7 +38,9 @@
     "ACCOUNT_SETTINGS": "Account settings",
     "CANCEL_SUBS": "Cancel subscription",
     "CHANGE_PHOTO": "Change photo",
-    "DELETE_PHOTO": "Delete photo"
+    "DELETE_PHOTO": "Delete photo",
+    "CONFIRM": "Confirm participation",
+    "GHANGE-AVATAR": "Change profile photo"
   },
   "LANGUAGES": {
     "ENGLISH": "EN",
@@ -71,7 +73,12 @@
     "CANCEL": "Cancel",
     "CLOSE": "Close",
     "FILTER": "Filter events",
-    "ALL_CITIES": "All cities"
+    "ALL_CITIES": "All cities",
+    "REGISTRATION": "Registration",
+    "SIGN-IN": "Sign in",
+    "NOT-PARTICIPANT": "You are not participating in any events yet",
+    "NO-EVENTS": "No events created,",
+    "CLICK-ADD": "click ADD to create"
   },
   "MENU":{
     "ACCOUNT_SETTINGS": "Account settings"

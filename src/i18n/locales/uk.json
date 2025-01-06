@@ -42,7 +42,9 @@
     "ACCOUNT_SETTINGS": "Налаштування акаунту",
     "CANCEL_SUBS": "Відмінити статус участі",
     "CHANGE_PHOTO": "Змінити фото профілю",
-    "DELETE_PHOTO": "Видалити фото"
+    "DELETE_PHOTO": "Видалити фото",
+    "CONFIRM": "Підтвердити участь",
+    "GHANGE-AVATAR": "Змінити фото профілю"
   },
   "LANGUAGES": {
     "ENGLISH": "EN",
@@ -73,7 +75,12 @@
     "UPDATE": "Оновити",
     "CLOSE": "Закрити",
     "FILTER": "Фільтрувати івенти",
-    "ALL_CITIES": "Всі міста"
+    "ALL_CITIES": "Всі міста",
+    "REGISTRATION": "Реєстрація",
+    "SIGN-IN": "Увійти",
+    "NOT-PARTICIPANT": "Ви поки що не берете участі у жодному івенті",
+    "NO-EVENTS": "Немає створених івентів,",
+    "CLICK-ADD": "натисніть ДОДАТИ для створення"
   },
   "MENU":{
     "ACCOUNT_SETTINGS": "Налаштування акаунту"

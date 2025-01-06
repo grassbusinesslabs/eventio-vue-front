@@ -12,7 +12,7 @@
             <v-row dense class="gap-4">
                <v-row justify="center" class="mb-4">
                   <v-col cols="12" class="text-center">
-                     <h2 class="font-weight-bold">Увійти</h2>
+                     <h2 class="font-weight-bold">{{ translate('TEXT.SIGN-IN') }}</h2>
                   </v-col>
                </v-row>
 
