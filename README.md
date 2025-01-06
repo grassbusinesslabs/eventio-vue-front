@@ -8,7 +8,6 @@
 
 [На веб-сайт](https://eventio.grassbusinesslabs.uk/)
 
-[Презентація](https://docs.google.com/presentation/d/1qy8-6jv_0wtJmgS6wbkWTJ29J8MiFzSMsOQc-VGr4uc/edit?usp=sharing)
 
 ## Інструкція користувача
 
