@@ -1,6 +1,6 @@
 <template>
    <auth-layout>
-      <v-sheet class='mx-auto' width='320'>
+      <v-sheet class='mx-auto' width='320' color="transparent">
          <v-snackbar
             v-model="showError"
             color="error"
@@ -31,6 +31,7 @@
                            @click="triggerFileInput"
                            density="compact"
                            elevation="0"
+                           color="transparent"
                         >
                         {{ translate('BTNS.CHANGE-AVATAR') }}
                         </v-btn>
@@ -131,7 +132,7 @@ const {translate} = useAppI18n()
 const routing = useRouting()
 const {vuetifyConfig, emailValidator, passwordValidator, nameValidator} = formService()
 //const request = requestService()
-const defaultImage = "https://t4.ftcdn.net/jpg/02/29/75/83/360_F_229758328_7x8jwCwjtBMmC6rgFzLFhZoEpLobB6L8.jpg"
+const defaultImage = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSq8T0hZUoX8kuRi3EZpZbUDtZ_WqqN9Ll15Q&s"
 
 const form = useForm({
    validationSchema: toTypedSchema(

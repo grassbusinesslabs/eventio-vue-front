@@ -1,6 +1,6 @@
 <template>
    <auth-layout>
-      <v-sheet class='mx-auto' width='320'>
+      <v-sheet class='mx-auto' width='320' color="transparent">
          <v-snackbar
             v-model="showError"
             color="error"
